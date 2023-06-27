@@ -4,6 +4,26 @@ jpm is a next-generation package management system for JavaScript, that is not c
 
 ## Why?
 
-The state of Node.js, npm, and the `node_modules` folder is a complete mess, especially for package owners, but also for package consumers. With the introduction of ESM, the `.cjs` and `.mjs` file extensions, the dual-package hazard problem, and competition between npm, pnpm, and yarn, the ecosystem is in a state of chaos. This is further exacerbated By TypeScript, its insane number of compiler options, the `.cts` (`.d.cts`) and `.mts` (`.d.mts`) file extensions, and overall interoperation.
+The state of Node.js, npm, and the `node_modules` folder is a complete mess, especially for package authors, but also for package consumers. With the introduction of ESM, the `.cjs` and `.mjs` file extensions, the dual-package hazard problem, and overlapping competition between npm, pnpm, and yarn, the ecosystem is in a state of chaos. This is further exacerbated by TypeScript, its insane number of compiler options, the `.cts` (`.d.cts`) and `.mts` (`.d.mts`) file extensions, and overall interoperability.
 
-The overhead of publishing a package is far too great, and there's no solution in sight. Instead of trying to "fix" the state of things, jpm is a complete reimagining of how everything can work in a modern world.
+The overhead of publishing a package is far too great, and there's no solution in sight. Instead of trying to "fix" the state of things, jpm is a complete reimagining of how everything can work using modern practices and technologies.
+
+### As a package author
+
+With jpm, packages and their source code are published as-is, as packages are compiled on-demand within the registry. No longer are you required to pre-compile packages before publishing, nor fiddle with `package.json` configuration (especially `exports`), or worry about the dual-package hazard problem.
+
+### As a package consumer
+
+When consuming a package, tailor it to your exact requirements, by requesting all packages in a specific module format and compilation target. The days of mismatching module systems and incorrectly compiled packages are over.
+
+```toml
+module = "esm"
+target = "es2016"
+```
+
+## Learn more
+
+In order of context and importance.
+
+- [How it works](./docs/how-it-works)
+- [Package registy](./docs/package-registry)
