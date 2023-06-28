@@ -1,4 +1,4 @@
-# Registry
+# Package registry
 
 The registry is an upstream service (the server) that stores records of all available packages, their versions, supported platforms and module formats, and stores their compiled tarballs (in cloud storage).
 
@@ -42,7 +42,7 @@ Each package can denote which platforms the package can be consumed/run on. If n
 
 - `browser` - Any browser engine.
 - `node` - Node/Bun runtimes.
-- `deno` - Deno runtime.
+- `deno` - Deno runtime (TBD???)
 - `electron` - Electron runtime.
 
 Why is this necessary? A few reasons:
@@ -84,4 +84,4 @@ The benefits of this are:
 
 - **What if GitHub or the VCS provider is down or inaccessible?**
 
-  If so, the package will be compiled on the client machine, using the `jpm compile` command. This is the same command that would run on the server.
+  Not sure... simply blocked?

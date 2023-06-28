@@ -25,6 +25,8 @@ The module format to use when compiling packages for the current project. Will r
 module = "esm"
 ```
 
+> TBD: Maybe everything is _always_ ESM???
+
 ## `target`
 
 The ECMAScript specification to target when compiling packages for the current project. Will recursively be applied to all dependencies.

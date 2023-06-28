@@ -43,7 +43,7 @@ package/
 │   ├── images/*.png
 │   └── index.ts
 ├── tests/
-│   └── **/*
+│   └── **/*.test.ts
 └── jpm.toml
 ```
 
@@ -64,5 +64,3 @@ package/esm/
 Images and other applicable files will be optimized/compressed when copied during the compilation process.
 
 > Minification _does not_ happen during compilation, as that's a bundling feature, and primarily an application concern!
-
-## Publishing
