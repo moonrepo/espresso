@@ -1,6 +1,6 @@
 # jpm
 
-jpm is a next-generation package management system for JavaScript, that is not coupled to the current Node.js module and npm systems, and instead is a new paradigm to move the JavaScript ecosystem forward.
+jpm is a next-generation package management system for JavaScript, that only supports ESM, and is not coupled to the current Node.js module and npm systems, and instead is a new paradigm to move the JavaScript ecosystem forward.
 
 ## Why?
 
@@ -10,14 +10,13 @@ The overhead of publishing a package is far too great, and there's no solution i
 
 ### As a package author
 
-With jpm, packages and their source code are published as-is, as packages are compiled on-demand for consumers. No longer are you required to pre-compile packages before publishing, nor fiddle with `package.json` configuration (especially `exports`), or worry about deep imports or the dual-package hazard problem.
+Author your packages in modern ESM. Packages and their source code are published as-is, as packages are compiled on-demand for consumers. No longer are you required to pre-compile packages before publishing, nor fiddle with `package.json` configuration (especially `exports`), or worry about deep imports or the dual-package hazard problem.
 
 ### As a package consumer
 
-When consuming packages, tailor them to your exact requirements, by requesting all packages in a specific module format and compilation target. The days of mismatching module systems and incorrectly compiled packages are over.
+When consuming packages, tailor them to your exact requirements, by requesting all packages in a specific compilation target. The days of mismatching module systems and incorrectly compiled packages are over.
 
 ```toml
-module = "esm"
 target = "es2016"
 ```
 

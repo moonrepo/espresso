@@ -56,16 +56,17 @@ Why is this necessary? A few reasons:
 
 ## Supported module formats
 
-Alongside platforms, packages will also denote what module formats it can compile to. Formats are automatically detected based on the package's source code. The following formats are supported:
+In jpm, only ESM source code is allowed, and only ESM compiled code will be produced. We require that all packages are written in native ESM, and during the publishing process, we'll run some verification checks to ensure that the package is valid ESM.
 
-- `cjs` - CommonJS.
-- `esm` - ECMAScript modules (default, preferred).
+For example, we'll check file extensions.
 
-The following detection rules will be applied based on source file extensions.
+- `.js`, `.jsx`, `.ts`, `.tsx` - Possibly allowed, will scan contents.
+- `.cjs`, `.cts` - Not allowed.
+- `.mjs`, `.mts` - Allowed.
 
-- `.js`, `.jsx`, `.ts`, `.tsx` - Both `cjs` and `esm`.
-- `.cjs`, `.cts` - Only `cjs`.
-- `.mjs`, `.mts` - Only `esm`.
+And then check the source code itself.
+
+- `require()`, `__filename`, `__dirname`, etc - Not allowed.
 
 ## Compile on demand
 
