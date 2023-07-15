@@ -47,15 +47,15 @@ package/
 └── jpm.toml
 ```
 
-When compiled to a [`module`](./project-manifest#module) format (like `esm`), the following files will be available for consumers.
+When compiled to ESM, the following files will be available for consumers.
 
 ```
 package/esm/
-├── components/*.{js,d.ts}
+├── components/*.{mjs,d.ts}
 ├── data/*.json
 ├── styles/*.css
 ├── images/*.png
-├── index.{js,d.ts}
+├── index.{mjs,d.ts}
 └── jpm.toml
 ```
 

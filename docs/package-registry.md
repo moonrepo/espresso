@@ -41,9 +41,9 @@ The benefits of this are:
 Each package can denote which platforms the package can be consumed/run on. If nothing denoted, we can attempt to detect it, or assume it can run on any platform. The following platforms are supported:
 
 - `browser` - Any browser engine.
-- `node` - Node/Bun runtimes.
+- `runtime` - Node/Bun.
 - `deno` - Deno runtime (TBD???)
-- `electron` - Electron runtime.
+- `electron` - Electron.
 
 Why is this necessary? A few reasons:
 
