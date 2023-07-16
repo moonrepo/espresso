@@ -4,8 +4,8 @@ use starbase_utils::fs;
 use std::path::{Path, PathBuf};
 
 pub struct Package {
-    root: PathBuf,
-    src_dir: PathBuf,
+    pub root: PathBuf,
+    pub src_dir: PathBuf,
 }
 
 impl Package {
@@ -35,9 +35,11 @@ impl Package {
                 continue;
             }
 
+            let rel_file = file.strip_prefix(&self.src_dir).unwrap().to_path_buf();
+
             // Filter out test files
-            if SourceFiles::is_test_file(&file) {
-                sources.tests.push(file);
+            if SourceFiles::is_test_file(&rel_file) {
+                sources.tests.push(rel_file);
                 continue;
             }
 
@@ -46,14 +48,14 @@ impl Package {
                     return Err(PackageError::NoCommonJS { file }.into());
                 }
                 Some(ext) if ext == "js" || ext == "jsx" || ext == "mjs" => {
-                    sources.modules.push(file);
+                    sources.modules.push(rel_file);
                 }
                 Some(ext) if ext == "ts" || ext == "tsx" || ext == "mts" => {
                     sources.typescript = true;
-                    sources.modules.push(file);
+                    sources.modules.push(rel_file);
                 }
                 _ => {
-                    sources.assets.push(file);
+                    sources.assets.push(rel_file);
                 }
             }
         }

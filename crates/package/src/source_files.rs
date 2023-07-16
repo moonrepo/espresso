@@ -1,5 +1,6 @@
 use std::path::{Component, Path, PathBuf};
 
+// All file paths are relative from the package's `src` directory.
 #[derive(Debug, Default)]
 pub struct SourceFiles {
     /// Non-JavaScript files, like CSS or images.
