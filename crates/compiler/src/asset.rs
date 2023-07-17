@@ -34,10 +34,10 @@ impl Asset {
             self.create_png(&bytes)?;
 
         // .svg
-        } else if self.is_svg() {
-            fs::write_file(&self.dst_path, &bytes)?;
+        // } else if self.is_svg() {
+        //     fs::write_file(&self.dst_path, &bytes)?;
 
-            // other
+        // other
         } else {
             fs::write_file(&self.dst_path, &bytes)?;
         }
@@ -46,9 +46,10 @@ impl Asset {
     }
 
     fn create_png(&self, bytes: &[u8]) -> miette::Result<()> {
-        let data = optimize_from_memory(bytes, &Options::from_preset(2)).into_diagnostic()?;
-
-        fs::write_file(&self.dst_path, &data)?;
+        fs::write_file(
+            &self.dst_path,
+            optimize_from_memory(bytes, &Options::from_preset(2)).into_diagnostic()?,
+        )?;
 
         Ok(())
     }

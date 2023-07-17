@@ -12,6 +12,8 @@ miette = { workspace = true }
 oxipng = "8.0.0"
 swc = "0.264.15"
 swc_common = "0.31.17"
+swc_ecma_ast = "0.107.1"
+swc_ecma_parser = "0.137.3"
 starbase_styles = { workspace = true }
 starbase_utils = { workspace = true }
 thiserror = { workspace = true }
