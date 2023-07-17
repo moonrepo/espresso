@@ -1,64 +1,55 @@
+use crate::helpers::has_extension;
 use miette::IntoDiagnostic;
 use oxipng::{optimize_from_memory, Options};
 use starbase_utils::fs;
-use std::path::Path;
+use std::path::PathBuf;
 
-pub struct Asset<'pkg> {
-    src_path: &'pkg Path,
+pub struct Asset {
+    dst_path: PathBuf,
+    src_path: PathBuf,
 }
 
-impl<'pkg> Asset<'pkg> {
-    pub fn new(src_path: &'pkg Path) -> miette::Result<Self> {
-        Ok(Self { src_path })
-    }
-
-    pub fn has_extension(&self, ext: &str) -> bool {
-        self.src_path
-            .extension()
-            .map(|e| e.eq_ignore_ascii_case(ext))
-            .unwrap_or(false)
+impl Asset {
+    pub fn new(src_path: PathBuf, dst_path: PathBuf) -> Self {
+        Self { dst_path, src_path }
     }
 
     pub fn is_jpg(&self) -> bool {
-        self.has_extension("jpg") || self.has_extension("jpeg")
+        has_extension(&self.src_path, &["jpg", "jpeg"])
     }
 
     pub fn is_png(&self) -> bool {
-        self.has_extension("png")
+        has_extension(&self.src_path, &["png"])
     }
 
     pub fn is_svg(&self) -> bool {
-        self.has_extension("svg")
+        has_extension(&self.src_path, &["svg"])
     }
 
-    pub fn copy_to(&self, dest_path: &Path) -> miette::Result<()> {
+    pub fn copy(&self) -> miette::Result<()> {
         let bytes = fs::read_file_bytes(&self.src_path)?;
 
         // .png
         if self.is_png() {
-            self.create_png(dest_path, &bytes)?;
+            self.create_png(&bytes)?;
 
         // .svg
         } else if self.is_svg() {
-            fs::write_file(dest_path, &bytes)?;
+            fs::write_file(&self.dst_path, &bytes)?;
 
             // other
         } else {
-            fs::write_file(dest_path, &bytes)?;
+            fs::write_file(&self.dst_path, &bytes)?;
         }
 
         Ok(())
     }
 
-    pub fn create_png(&self, dest_path: &Path, bytes: &[u8]) -> miette::Result<()> {
+    fn create_png(&self, bytes: &[u8]) -> miette::Result<()> {
         let data = optimize_from_memory(bytes, &Options::from_preset(2)).into_diagnostic()?;
 
-        fs::write_file(dest_path, &data)?;
+        fs::write_file(&self.dst_path, &data)?;
 
         Ok(())
     }
-
-    // pub fn optimize_svg(&self, path: &Path) -> miette::Result<()> {
-    //     Ok(())
-    // }
 }

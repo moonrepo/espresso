@@ -1,4 +1,5 @@
 use crate::compiler_error::CompilerError;
+use crate::Asset;
 use futures::future::try_join_all;
 use jpm_es_spec::EsSpec;
 use jpm_package::{Package, SourceFiles};
@@ -9,6 +10,7 @@ use std::sync::Arc;
 use swc::config::{CallerOptions, Config, ModuleConfig, Options};
 use swc::{try_with_handler, Compiler as SwcCompiler};
 use swc_common::{FileName, FilePathMapping, SourceFile, SourceMap};
+use tokio::task::{self, JoinHandle};
 
 pub struct Compiler<'pkg> {
     es_spec: EsSpec,
@@ -34,21 +36,38 @@ impl<'pkg> Compiler<'pkg> {
             .root
             .join(".jpm")
             .join(self.es_spec.to_string());
-        let sources = self.package.load_source_files()?;
 
-        self.transform_modules(&sources, &out_dir).await?;
-        self.copy_assets(&sources, &out_dir).await?;
+        let sources = self.package.load_source_files()?;
+        let assets = self.create_assets(&sources, &out_dir);
+
+        let mut futures: Vec<JoinHandle<miette::Result<()>>> = vec![];
+
+        futures.push(task::spawn(async {
+            for asset in assets {
+                asset.copy()?;
+            }
+
+            Ok(())
+        }));
+
+        for future in futures {
+            future.await.into_diagnostic()??;
+        }
 
         Ok(out_dir)
     }
 
-    pub async fn copy_assets(&self, sources: &SourceFiles, out_dir: &Path) -> miette::Result<()> {
-        for asset in &sources.assets {
-            // TODO, optimize assets
-            fs::copy_file(self.package.src_dir.join(asset), out_dir.join(asset))?;
-        }
-
-        Ok(())
+    pub fn create_assets(&self, sources: &SourceFiles, out_dir: &Path) -> Vec<Asset> {
+        sources
+            .assets
+            .iter()
+            .map(|asset_path| {
+                Asset::new(
+                    self.package.src_dir.join(asset_path),
+                    out_dir.join(asset_path),
+                )
+            })
+            .collect::<Vec<_>>()
     }
 
     pub async fn transform_modules(
