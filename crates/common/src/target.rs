@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 // We intentionally do not support old targets, like ES5.
 #[derive(Clone, Copy, Debug)]
-pub enum EsSpec {
+pub enum EsTarget {
     Es2015,
     Es2016,
     Es2017,
@@ -13,7 +13,7 @@ pub enum EsSpec {
     Es2022,
 }
 
-impl Display for EsSpec {
+impl Display for EsTarget {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", format!("{:?}", self).to_lowercase())
     }

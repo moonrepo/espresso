@@ -1,5 +1,5 @@
 use crate::helpers::has_extension;
-use jpm_es_spec::EsSpec;
+use jpm_common::EsTarget;
 use starbase_utils::fs;
 use std::path::PathBuf;
 use swc::config::{
@@ -23,7 +23,7 @@ impl Module {
         has_extension(&self.src_path, &["ts", "tsx", "mts"])
     }
 
-    pub fn create_transform_options(&self, spec: &EsSpec) -> Options {
+    pub fn create_transform_options(&self, target: &EsTarget) -> Options {
         // TODO: react
         let transform = TransformConfig {
             const_modules: None,
@@ -63,14 +63,14 @@ impl Module {
                     ..EsConfig::default()
                 })
             }),
-            target: Some(match spec {
-                EsSpec::Es2016 => EsVersion::Es2016,
-                EsSpec::Es2017 => EsVersion::Es2017,
-                EsSpec::Es2018 => EsVersion::Es2018,
-                EsSpec::Es2019 => EsVersion::Es2019,
-                EsSpec::Es2020 => EsVersion::Es2020,
-                EsSpec::Es2021 => EsVersion::Es2021,
-                EsSpec::Es2022 => EsVersion::Es2022,
+            target: Some(match target {
+                EsTarget::Es2016 => EsVersion::Es2016,
+                EsTarget::Es2017 => EsVersion::Es2017,
+                EsTarget::Es2018 => EsVersion::Es2018,
+                EsTarget::Es2019 => EsVersion::Es2019,
+                EsTarget::Es2020 => EsVersion::Es2020,
+                EsTarget::Es2021 => EsVersion::Es2021,
+                EsTarget::Es2022 => EsVersion::Es2022,
                 _ => EsVersion::Es2015,
             }),
             transform: Some(transform).into(),
@@ -97,7 +97,7 @@ impl Module {
         }
     }
 
-    pub async fn transform(&self, compiler: &SwcCompiler, spec: &EsSpec) -> miette::Result<()> {
+    pub async fn transform(&self, compiler: &SwcCompiler, target: &EsTarget) -> miette::Result<()> {
         let input = fs::read_file(&self.src_path)?;
 
         let output = try_with_handler(compiler.cm.clone(), HandlerOpts::default(), |handler| {
@@ -106,7 +106,7 @@ impl Module {
                     .cm
                     .new_source_file(self.src_path.clone().into(), input),
                 handler,
-                &self.create_transform_options(spec),
+                &self.create_transform_options(target),
             )
         })
         .unwrap(); // TODO

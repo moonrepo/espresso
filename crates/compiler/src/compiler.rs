@@ -1,6 +1,6 @@
 use crate::asset::Asset;
 use crate::module::Module;
-use jpm_es_spec::EsSpec;
+use jpm_common::EsTarget;
 use jpm_package::{Package, SourceFiles};
 use miette::IntoDiagnostic;
 use std::path::{Path, PathBuf};
@@ -10,16 +10,15 @@ use swc_common::{FilePathMapping, SourceMap};
 use tokio::task::{self, JoinHandle};
 
 pub struct Compiler<'pkg> {
-    es_spec: EsSpec,
-    package: &'pkg Package,
-
     compiler: Arc<SwcCompiler>,
+    package: &'pkg Package,
+    target: EsTarget,
 }
 
 impl<'pkg> Compiler<'pkg> {
-    pub fn new(package: &Package, es_spec: EsSpec) -> miette::Result<Compiler> {
+    pub fn new(package: &Package, target: EsTarget) -> miette::Result<Compiler> {
         Ok(Compiler {
-            es_spec,
+            target,
             package,
             compiler: Arc::new(SwcCompiler::new(Arc::new(SourceMap::new(
                 FilePathMapping::empty(),
@@ -28,11 +27,7 @@ impl<'pkg> Compiler<'pkg> {
     }
 
     pub async fn compile(self) -> miette::Result<PathBuf> {
-        let out_dir = self
-            .package
-            .root
-            .join(".jpm")
-            .join(self.es_spec.to_string());
+        let out_dir = self.package.root.join(".jpm").join(self.target.to_string());
 
         let sources = self.package.load_source_files()?;
         let assets = self.create_assets(&sources, &out_dir);
@@ -40,7 +35,7 @@ impl<'pkg> Compiler<'pkg> {
 
         let mut futures: Vec<JoinHandle<miette::Result<()>>> = vec![];
         let compiler = self.compiler.clone();
-        let spec = self.es_spec.clone();
+        let target = self.target;
 
         futures.push(task::spawn(async {
             for asset in assets {
@@ -52,7 +47,7 @@ impl<'pkg> Compiler<'pkg> {
 
         futures.push(task::spawn(async move {
             for module in modules {
-                module.transform(&compiler, &spec).await?;
+                module.transform(&compiler, &target).await?;
             }
 
             Ok(())
