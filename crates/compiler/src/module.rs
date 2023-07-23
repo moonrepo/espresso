@@ -6,6 +6,7 @@ use swc::config::{
     CallerOptions, Config, IsModule, JscConfig, ModuleConfig, Options, TransformConfig,
 };
 use swc::{try_with_handler, Compiler as SwcCompiler, HandlerOpts};
+use swc_common::GLOBALS;
 use swc_ecma_ast::EsVersion;
 use swc_ecma_parser::{EsConfig, Syntax, TsConfig};
 
@@ -101,13 +102,15 @@ impl Module {
         let input = fs::read_file(&self.src_path)?;
 
         let output = try_with_handler(compiler.cm.clone(), HandlerOpts::default(), |handler| {
-            compiler.process_js_file(
-                compiler
-                    .cm
-                    .new_source_file(self.src_path.clone().into(), input),
-                handler,
-                &self.create_transform_options(target),
-            )
+            GLOBALS.set(&Default::default(), || {
+                compiler.process_js_file(
+                    compiler
+                        .cm
+                        .new_source_file(self.src_path.clone().into(), input),
+                    handler,
+                    &self.create_transform_options(target),
+                )
+            })
         })
         .unwrap(); // TODO
 

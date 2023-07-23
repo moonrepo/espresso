@@ -12,13 +12,11 @@ use tokio::task::{self, JoinHandle};
 pub struct Compiler<'pkg> {
     compiler: Arc<SwcCompiler>,
     package: &'pkg Package,
-    target: EsTarget,
 }
 
 impl<'pkg> Compiler<'pkg> {
-    pub fn new(package: &Package, target: EsTarget) -> miette::Result<Compiler> {
+    pub fn new(package: &Package) -> miette::Result<Compiler> {
         Ok(Compiler {
-            target,
             package,
             compiler: Arc::new(SwcCompiler::new(Arc::new(SourceMap::new(
                 FilePathMapping::empty(),
@@ -26,8 +24,8 @@ impl<'pkg> Compiler<'pkg> {
         })
     }
 
-    pub async fn compile(self) -> miette::Result<PathBuf> {
-        let out_dir = self.package.root.join(".jpm").join(self.target.to_string());
+    pub async fn compile(&self, target: EsTarget) -> miette::Result<PathBuf> {
+        let out_dir = self.package.root.join(".jpm").join(target.to_string());
 
         let sources = self.package.load_source_files()?;
         let assets = self.create_assets(&sources, &out_dir);
@@ -35,7 +33,6 @@ impl<'pkg> Compiler<'pkg> {
 
         let mut futures: Vec<JoinHandle<miette::Result<()>>> = vec![];
         let compiler = self.compiler.clone();
-        let target = self.target;
 
         futures.push(task::spawn(async {
             for asset in assets {
