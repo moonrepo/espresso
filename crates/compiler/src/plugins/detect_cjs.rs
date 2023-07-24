@@ -12,7 +12,7 @@ impl DetectCjsVisitor {
             handler
                 .struct_span_err(
                     span,
-                    &format!("CommonJS is not supported, found `{}`", value),
+                    &format!("CommonJS is not supported, found `{}`.", value),
                 )
                 .emit();
         });

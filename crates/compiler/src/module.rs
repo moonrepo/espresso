@@ -1,5 +1,6 @@
 use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
+use crate::plugins::DetectCjsVisitor;
 use jpm_common::EsTarget;
 use starbase_utils::fs;
 use std::path::PathBuf;
@@ -9,6 +10,7 @@ use swc::config::{
 use swc::{try_with_handler, Compiler as SwcCompiler, HandlerOpts};
 use swc_common::GLOBALS;
 use swc_core::ecma::transforms::base::pass::noop;
+use swc_core::ecma::visit::as_folder;
 use swc_ecma_ast::EsVersion;
 use swc_ecma_parser::{EsConfig, Syntax, TsConfig};
 
@@ -116,7 +118,7 @@ impl Module {
                     handler,
                     &self.create_transform_options(target),
                     Default::default(),
-                    |_| noop(),
+                    |_| as_folder(DetectCjsVisitor),
                     |_| noop(),
                 )
             })
