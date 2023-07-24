@@ -3,6 +3,7 @@ mod compiler;
 mod compiler_error;
 mod helpers;
 mod module;
+mod plugins;
 
 pub use asset::*;
 pub use compiler::*;
