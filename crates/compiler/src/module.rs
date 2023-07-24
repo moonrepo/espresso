@@ -1,3 +1,4 @@
+use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
 use jpm_common::EsTarget;
 use starbase_utils::fs;
@@ -11,8 +12,8 @@ use swc_ecma_ast::EsVersion;
 use swc_ecma_parser::{EsConfig, Syntax, TsConfig};
 
 pub struct Module {
-    dst_path: PathBuf,
-    src_path: PathBuf,
+    pub dst_path: PathBuf,
+    pub src_path: PathBuf,
 }
 
 impl Module {
@@ -36,7 +37,7 @@ impl Module {
             ..TransformConfig::default()
         };
 
-        // TODO: paths, baseUrl
+        // TODO: root, paths, baseUrl
         let jsc = JscConfig {
             // assumptions: Some(Assumptions::all()),
             external_helpers: false.into(),
@@ -46,7 +47,7 @@ impl Module {
             preserve_all_comments: true.into(),
             syntax: Some(if self.is_typescript() {
                 Syntax::Typescript(TsConfig {
-                    // decorators: false, // TODO
+                    decorators: false,
                     disallow_ambiguous_jsx_like: true,
                     dts: false,
                     tsx: true,
@@ -56,8 +57,8 @@ impl Module {
                 Syntax::Es(EsConfig {
                     allow_super_outside_method: false,
                     allow_return_outside_function: false,
-                    // decorators: false, // TODO
-                    // decorators_before_export: true,
+                    decorators: false,
+                    decorators_before_export: true,
                     export_default_from: true,
                     fn_bind: true,
                     jsx: true,
@@ -91,7 +92,6 @@ impl Module {
             env_name: "production".into(),
             filename: fs::file_name(&self.src_path),
             output_path: Some(self.dst_path.clone()),
-            // root: Some(self.package.root.clone()),
             swcrc: false,
             swcrc_roots: None,
             ..Options::default()
@@ -99,7 +99,11 @@ impl Module {
     }
 
     pub async fn transform(&self, compiler: &SwcCompiler, target: &EsTarget) -> miette::Result<()> {
-        let input = fs::read_file(&self.src_path)?;
+        let input =
+            fs::read_file(&self.src_path).map_err(|error| CompilerError::ModuleWriteFailed {
+                path: self.src_path.clone(),
+                error,
+            })?;
 
         let output = try_with_handler(compiler.cm.clone(), HandlerOpts::default(), |handler| {
             GLOBALS.set(&Default::default(), || {
@@ -112,9 +116,17 @@ impl Module {
                 )
             })
         })
-        .unwrap(); // TODO
+        .map_err(|error| CompilerError::ModuleTransformFailed {
+            path: self.src_path.clone(),
+            error,
+        })?;
 
-        fs::write_file(&self.dst_path, output.code)?;
+        fs::write_file(&self.dst_path, output.code).map_err(|error| {
+            CompilerError::ModuleWriteFailed {
+                path: self.src_path.clone(),
+                error,
+            }
+        })?;
 
         Ok(())
     }

@@ -7,6 +7,7 @@ license = "MIT"
 [dependencies]
 jpm_common = { path = "../common" }
 jpm_package = { path = "../package" }
+anyhow = "1.0.72"
 futures = "0.3.28"
 miette = { workspace = true }
 oxipng = "8.0.0"

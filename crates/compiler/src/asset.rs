@@ -1,12 +1,12 @@
+use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
-use miette::IntoDiagnostic;
 use oxipng::{optimize_from_memory, Options};
 use starbase_utils::fs;
 use std::path::PathBuf;
 
 pub struct Asset {
-    dst_path: PathBuf,
-    src_path: PathBuf,
+    pub dst_path: PathBuf,
+    pub src_path: PathBuf,
 }
 
 impl Asset {
@@ -27,30 +27,34 @@ impl Asset {
     }
 
     pub fn copy(&self) -> miette::Result<()> {
-        let bytes = fs::read_file_bytes(&self.src_path)?;
+        let mut bytes = fs::read_file_bytes(&self.src_path).map_err(|error| {
+            CompilerError::AssetFailedCopy {
+                path: self.src_path.clone(),
+                error,
+            }
+        })?;
 
         // .png
         if self.is_png() {
-            self.create_png(&bytes)?;
-
-        // .svg
-        // } else if self.is_svg() {
-        //     fs::write_file(&self.dst_path, &bytes)?;
-
-        // other
-        } else {
-            fs::write_file(&self.dst_path, &bytes)?;
+            bytes = self.create_png(&bytes)?;
         }
+
+        fs::write_file(&self.dst_path, &bytes).map_err(|error| CompilerError::AssetFailedCopy {
+            path: self.src_path.clone(),
+            error,
+        })?;
 
         Ok(())
     }
 
-    fn create_png(&self, bytes: &[u8]) -> miette::Result<()> {
-        fs::write_file(
-            &self.dst_path,
-            optimize_from_memory(bytes, &Options::from_preset(2)).into_diagnostic()?,
-        )?;
-
-        Ok(())
+    fn create_png(&self, bytes: &[u8]) -> miette::Result<Vec<u8>> {
+        Ok(
+            optimize_from_memory(bytes, &Options::from_preset(2)).map_err(|error| {
+                CompilerError::AssetFailedPngOptimize {
+                    path: self.src_path.clone(),
+                    error,
+                }
+            })?,
+        )
     }
 }

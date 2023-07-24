@@ -26,7 +26,6 @@ impl<'pkg> Compiler<'pkg> {
 
     pub async fn compile(&self, target: EsTarget) -> miette::Result<PathBuf> {
         let out_dir = self.package.root.join(".jpm").join(target.to_string());
-
         let sources = self.package.load_source_files()?;
         let assets = self.create_assets(&sources, &out_dir);
         let modules = self.create_modules(&sources, &out_dir);
