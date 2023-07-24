@@ -36,7 +36,7 @@ impl Asset {
 
         // .png
         if self.is_png() {
-            bytes = self.create_png(&bytes)?;
+            bytes = self.optimize_png(&bytes)?;
         }
 
         fs::write_file(&self.dst_path, &bytes).map_err(|error| CompilerError::AssetFailedCopy {
@@ -47,7 +47,7 @@ impl Asset {
         Ok(())
     }
 
-    fn create_png(&self, bytes: &[u8]) -> miette::Result<Vec<u8>> {
+    fn optimize_png(&self, bytes: &[u8]) -> miette::Result<Vec<u8>> {
         Ok(
             optimize_from_memory(bytes, &Options::from_preset(2)).map_err(|error| {
                 CompilerError::AssetFailedPngOptimize {

@@ -8,6 +8,7 @@ use swc::config::{
 };
 use swc::{try_with_handler, Compiler as SwcCompiler, HandlerOpts};
 use swc_common::GLOBALS;
+use swc_core::ecma::transforms::base::pass::noop;
 use swc_ecma_ast::EsVersion;
 use swc_ecma_parser::{EsConfig, Syntax, TsConfig};
 
@@ -107,12 +108,16 @@ impl Module {
 
         let output = try_with_handler(compiler.cm.clone(), HandlerOpts::default(), |handler| {
             GLOBALS.set(&Default::default(), || {
-                compiler.process_js_file(
+                compiler.process_js_with_custom_pass(
                     compiler
                         .cm
                         .new_source_file(self.src_path.clone().into(), input),
+                    None,
                     handler,
                     &self.create_transform_options(target),
+                    Default::default(),
+                    |_| noop(),
+                    |_| noop(),
                 )
             })
         })
