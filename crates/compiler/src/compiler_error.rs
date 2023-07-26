@@ -23,7 +23,7 @@ pub enum CompilerError {
     },
 
     #[diagnostic(code(compiler::module::transform))]
-    #[error("Failed to transform module {}.", .path.style(Style::Path))]
+    #[error("Failed to transform module {}.\n{error}", .path.style(Style::Path))]
     ModuleTransformFailed {
         path: PathBuf,
         #[source]

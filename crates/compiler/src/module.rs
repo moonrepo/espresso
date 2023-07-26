@@ -1,6 +1,6 @@
 use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
-use crate::plugins::DetectCjsVisitor;
+use crate::plugins::{AddMjsExtensionVisitor, DetectCjsVisitor};
 use jpm_common::EsTarget;
 use starbase_utils::fs;
 use std::path::PathBuf;
@@ -12,9 +12,10 @@ use swc_core::common::GLOBALS;
 use swc_core::ecma::{
     ast::EsVersion,
     parser::{EsConfig, Syntax, TsConfig},
-    transforms::base::pass::noop,
+    // transforms::base::pass::noop,
     visit::as_folder,
 };
+// use swc_visit::chain;
 
 pub struct Module {
     pub dst_path: PathBuf,
@@ -120,8 +121,9 @@ impl Module {
                     handler,
                     &self.create_transform_options(target),
                     Default::default(),
+                    // |_| as_folder(chain!(DetectCjsVisitor, AddMjsExtensionVisitor)),
                     |_| as_folder(DetectCjsVisitor),
-                    |_| noop(),
+                    |_| as_folder(AddMjsExtensionVisitor),
                 )
             })
         })
@@ -129,6 +131,8 @@ impl Module {
             path: self.src_path.clone(),
             error,
         })?;
+
+        dbg!(&output);
 
         fs::write_file(&self.dst_path, output.code).map_err(|error| {
             CompilerError::ModuleWriteFailed {

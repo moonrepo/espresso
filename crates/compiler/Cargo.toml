@@ -12,12 +12,13 @@ futures = "0.3.28"
 miette = { workspace = true }
 oxipng = "8.0.0"
 swc = "0.264.22"
-swc_core = { version = "0.79.24", features = [
+swc_core = { version = "0.79.24", default-features = false, features = [
 	"common",
 	"ecma_ast",
 	"ecma_parser",
 	"ecma_plugin_transform",
 ] }
+swc_visit = "0.5.7"
 starbase_styles = { workspace = true }
 starbase_utils = { workspace = true }
 thiserror = { workspace = true }
