@@ -1,6 +1,6 @@
 use swc_common::{errors::HANDLER, MultiSpan};
 use swc_core::ecma::{
-    ast::Ident,
+    ast::{CallExpr, Callee, Expr, Ident, MemberExpr, MemberProp},
     visit::{VisitMut, VisitMutWith},
 };
 
@@ -20,6 +20,8 @@ impl DetectCjsVisitor {
 }
 
 impl VisitMut for DetectCjsVisitor {
+    // __dirname
+    // __filename
     fn visit_mut_ident(&mut self, n: &mut Ident) {
         n.visit_mut_children_with(self);
 
@@ -27,6 +29,46 @@ impl VisitMut for DetectCjsVisitor {
             self.report_error(n.span, "__dirname");
         } else if n.sym.eq_str_ignore_ascii_case("__filename") {
             self.report_error(n.span, "__filename");
+        }
+    }
+
+    // require()
+    fn visit_mut_call_expr(&mut self, e: &mut CallExpr) {
+        e.visit_mut_children_with(self);
+
+        if let Callee::Expr(callee) = &e.callee {
+            if let Expr::Ident(ident) = &**callee {
+                if ident.sym.eq_str_ignore_ascii_case("require") && e.args.len() == 1 {
+                    self.report_error(ident.span, "require()");
+                }
+            }
+        }
+    }
+
+    // require.resolve()
+    // require.cache
+    // require.extensions
+    // require.main
+    fn visit_mut_member_expr(&mut self, e: &mut MemberExpr) {
+        e.visit_mut_children_with(self);
+
+        if let Expr::Ident(ident) = &*e.obj {
+            if ident.sym.eq_str_ignore_ascii_case("require") {
+                match &e.prop {
+                    MemberProp::Ident(ident) => {
+                        if ident.sym.eq_str_ignore_ascii_case("resolve") {
+                            self.report_error(ident.span, "require.resolve()");
+                        } else if ident.sym.eq_str_ignore_ascii_case("cache") {
+                            self.report_error(ident.span, "require.cache");
+                        } else if ident.sym.eq_str_ignore_ascii_case("extensions") {
+                            self.report_error(ident.span, "require.extensions");
+                        } else if ident.sym.eq_str_ignore_ascii_case("main") {
+                            self.report_error(ident.span, "require.main");
+                        }
+                    }
+                    _ => {}
+                };
+            }
         }
     }
 }
