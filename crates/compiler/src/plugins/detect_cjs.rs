@@ -1,4 +1,4 @@
-use swc_common::{errors::HANDLER, MultiSpan};
+use swc_core::common::{errors::HANDLER, MultiSpan};
 use swc_core::ecma::{
     ast::{CallExpr, Callee, Expr, Ident, MemberExpr, MemberProp},
     visit::{VisitMut, VisitMutWith},

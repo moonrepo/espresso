@@ -1078,10 +1078,7 @@ dependencies = [
  "starbase_styles",
  "starbase_utils",
  "swc",
- "swc_common",
  "swc_core",
- "swc_ecma_ast",
- "swc_ecma_parser",
  "thiserror",
  "tokio",
 ]
@@ -2578,6 +2575,7 @@ dependencies = [
  "swc_atoms",
  "swc_common",
  "swc_ecma_ast",
+ "swc_ecma_parser",
  "swc_ecma_transforms_base",
  "swc_ecma_transforms_testing",
  "swc_ecma_visit",

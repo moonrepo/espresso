@@ -6,7 +6,7 @@ use miette::IntoDiagnostic;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use swc::Compiler as SwcCompiler;
-use swc_common::{FilePathMapping, SourceMap};
+use swc_core::common::{FilePathMapping, SourceMap};
 use tokio::task::{self, JoinHandle};
 
 pub struct Compiler<'pkg> {

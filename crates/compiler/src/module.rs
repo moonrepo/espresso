@@ -8,11 +8,13 @@ use swc::config::{
     CallerOptions, Config, IsModule, JscConfig, ModuleConfig, Options, TransformConfig,
 };
 use swc::{try_with_handler, Compiler as SwcCompiler, HandlerOpts};
-use swc_common::GLOBALS;
-use swc_core::ecma::transforms::base::pass::noop;
-use swc_core::ecma::visit::as_folder;
-use swc_ecma_ast::EsVersion;
-use swc_ecma_parser::{EsConfig, Syntax, TsConfig};
+use swc_core::common::GLOBALS;
+use swc_core::ecma::{
+    ast::EsVersion,
+    parser::{EsConfig, Syntax, TsConfig},
+    transforms::base::pass::noop,
+    visit::as_folder,
+};
 
 pub struct Module {
     pub dst_path: PathBuf,
