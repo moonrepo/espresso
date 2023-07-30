@@ -132,8 +132,6 @@ impl Module {
             error,
         })?;
 
-        dbg!(&output);
-
         fs::write_file(&self.dst_path, output.code).map_err(|error| {
             CompilerError::ModuleWriteFailed {
                 path: self.src_path.clone(),

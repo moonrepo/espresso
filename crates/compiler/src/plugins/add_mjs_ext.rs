@@ -1,16 +1,15 @@
 use swc_core::ecma::{
-    ast::{ExportAll, ImportDecl, NamedExport, Str},
+    ast::{CallExpr, ExportAll, Expr, ImportDecl, Lit, NamedExport, Str},
     visit::{VisitMut, VisitMutWith},
 };
 
 pub struct AddMjsExtensionVisitor;
 
-impl AddMjsExtensionVisitor {
-    fn add_ext(&mut self, source: &mut Box<Str>) {
-        // ./, ../, etc
-        if source.value.starts_with('.') && !source.value.ends_with(".mjs") {
-            source.value = format!("{}.mjs", source.value).into();
-        }
+fn add_ext(source: &mut Str) {
+    // ./, ../, etc
+    if source.value.starts_with('.') && !source.value.ends_with(".mjs") {
+        source.value = format!("{}.mjs", source.value).into();
+        source.raw = None;
     }
 }
 
@@ -18,16 +17,14 @@ impl VisitMut for AddMjsExtensionVisitor {
     // export * from './file'
     fn visit_mut_export_all(&mut self, n: &mut ExportAll) {
         n.visit_mut_children_with(self);
-
-        self.add_ext(&mut n.src);
+        add_ext(&mut n.src);
     }
 
     // import './file'
     // import ... from './file'
     fn visit_mut_import_decl(&mut self, n: &mut ImportDecl) {
         n.visit_mut_children_with(self);
-
-        self.add_ext(&mut n.src);
+        add_ext(&mut n.src);
     }
 
     // export {} from './file'
@@ -36,7 +33,18 @@ impl VisitMut for AddMjsExtensionVisitor {
         n.visit_mut_children_with(self);
 
         if let Some(src) = &mut n.src {
-            self.add_ext(src);
+            add_ext(src);
+        }
+    }
+
+    // import("./file");
+    fn visit_mut_call_expr(&mut self, n: &mut CallExpr) {
+        n.visit_mut_children_with(self);
+
+        if n.callee.is_import() && n.args.len() == 1 {
+            if let Expr::Lit(Lit::Str(arg)) = &mut (*n.args[0].expr) {
+                add_ext(arg);
+            }
         }
     }
 }
