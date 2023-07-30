@@ -54,19 +54,16 @@ impl VisitMut for DetectCjsVisitor {
 
         if let Expr::Ident(ident) = &*e.obj {
             if ident.sym.eq_str_ignore_ascii_case("require") {
-                match &e.prop {
-                    MemberProp::Ident(ident) => {
-                        if ident.sym.eq_str_ignore_ascii_case("resolve") {
-                            self.report_error(ident.span, "require.resolve()");
-                        } else if ident.sym.eq_str_ignore_ascii_case("cache") {
-                            self.report_error(ident.span, "require.cache");
-                        } else if ident.sym.eq_str_ignore_ascii_case("extensions") {
-                            self.report_error(ident.span, "require.extensions");
-                        } else if ident.sym.eq_str_ignore_ascii_case("main") {
-                            self.report_error(ident.span, "require.main");
-                        }
+                if let MemberProp::Ident(ident) = &e.prop {
+                    if ident.sym.eq_str_ignore_ascii_case("resolve") {
+                        self.report_error(ident.span, "require.resolve()");
+                    } else if ident.sym.eq_str_ignore_ascii_case("cache") {
+                        self.report_error(ident.span, "require.cache");
+                    } else if ident.sym.eq_str_ignore_ascii_case("extensions") {
+                        self.report_error(ident.span, "require.extensions");
+                    } else if ident.sym.eq_str_ignore_ascii_case("main") {
+                        self.report_error(ident.span, "require.main");
                     }
-                    _ => {}
                 };
             }
         }

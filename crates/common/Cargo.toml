@@ -3,3 +3,7 @@ name = "jpm_common"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
+
+[dependencies]
+schematic = { workspace = true }
+serde = { workspace = true }

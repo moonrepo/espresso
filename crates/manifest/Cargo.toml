@@ -1,0 +1,13 @@
+[package]
+name = "jpm_manifest"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+jpm_common = { path = "../common" }
+miette = { workspace = true }
+schematic = { workspace = true }
+serde = { workspace = true }
+starbase_utils = { workspace = true }
+thiserror = { workspace = true }

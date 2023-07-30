@@ -4,6 +4,10 @@ members = ["crates/*"]
 
 [workspace.dependencies]
 miette = "5.10.0"
+schematic = { version = "0.11.0", default-features = false, features = [
+	"toml",
+] }
+serde = "1.0.177"
 starbase_sandbox = { version = "0.1.6" }
 starbase_styles = "0.1.12"
 starbase_utils = { version = "0.2.14", default-features = false }
