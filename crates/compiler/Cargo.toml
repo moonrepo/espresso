@@ -6,6 +6,7 @@ license = "MIT"
 
 [dependencies]
 jpm_common = { path = "../common" }
+jpm_manifest = { path = "../manifest" }
 jpm_package = { path = "../package" }
 anyhow = "1.0.72"
 futures = "0.3.28"

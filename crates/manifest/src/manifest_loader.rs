@@ -1,6 +1,6 @@
 use crate::package_manifest::PackageManifest;
 use crate::workspace_manifest::WorkspaceManifest;
-use schematic::{ConfigLoader, Format};
+use schematic::{Config, ConfigLoader, Format};
 use starbase_utils::fs;
 use std::path::Path;
 
@@ -14,32 +14,52 @@ pub enum Manifest {
 pub struct ManifestLoader;
 
 impl ManifestLoader {
-    pub fn load_from<P: AsRef<Path>>(root: P) -> miette::Result<Manifest> {
-        Self::load(root.as_ref().join(MANIFEST_FILE))
-    }
-
     pub fn load<P: AsRef<Path>>(path: P) -> miette::Result<Manifest> {
         let path = path.as_ref();
-        let content = fs::read_file(path)?;
+
+        let content = fs::read_file(if path.ends_with(MANIFEST_FILE) {
+            path.to_path_buf()
+        } else {
+            path.join(MANIFEST_FILE)
+        })?;
 
         // Schematic doesn't support loading different structs depending on the
         // content of the file, so we need to handle this manually.
         Ok(if content.contains("[package]") {
-            Manifest::Package(Self::do_load_package(content)?)
+            Manifest::Package(Self::do_load_from_string::<PackageManifest>(content)?)
         } else {
-            Manifest::Workspace(Self::do_load_workspace(content)?)
+            Manifest::Workspace(Self::do_load_from_string::<WorkspaceManifest>(content)?)
         })
     }
 
-    fn do_load_package(content: String) -> miette::Result<PackageManifest> {
+    pub fn load_package<P: AsRef<Path>>(path: P) -> miette::Result<PackageManifest> {
+        let path = path.as_ref();
         let mut loader = ConfigLoader::<PackageManifest>::new();
-        loader.code(content, Format::Toml)?;
+
+        loader.file(if path.ends_with(MANIFEST_FILE) {
+            path.to_path_buf()
+        } else {
+            path.join(MANIFEST_FILE)
+        })?;
 
         Ok(loader.load()?.config)
     }
 
-    fn do_load_workspace(content: String) -> miette::Result<WorkspaceManifest> {
+    pub fn load_workspace<P: AsRef<Path>>(path: P) -> miette::Result<WorkspaceManifest> {
+        let path = path.as_ref();
         let mut loader = ConfigLoader::<WorkspaceManifest>::new();
+
+        loader.file(if path.ends_with(MANIFEST_FILE) {
+            path.to_path_buf()
+        } else {
+            path.join(MANIFEST_FILE)
+        })?;
+
+        Ok(loader.load()?.config)
+    }
+
+    fn do_load_from_string<T: Config>(content: String) -> miette::Result<T> {
+        let mut loader = ConfigLoader::<T>::new();
         loader.code(content, Format::Toml)?;
 
         Ok(loader.load()?.config)

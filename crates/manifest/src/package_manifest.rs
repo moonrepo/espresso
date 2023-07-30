@@ -1,10 +1,13 @@
-use schematic::Config;
+use schematic::{validate, Config};
+use semver::Version;
 use std::collections::HashMap;
 
 pub type ManifestDependencies = HashMap<String, String>;
 
-#[derive(Config)]
+#[derive(Config, Clone)]
 pub struct PackageManifestBuild {
+    pub exclude: Vec<String>,
+
     #[setting(default = true)]
     pub optimize_png: bool,
 
@@ -14,11 +17,15 @@ pub struct PackageManifestBuild {
 
 #[derive(Config)]
 pub struct PackageManifestMetadata {
+    #[setting(validate = validate::not_empty)]
     pub name: String,
-    pub version: String,
+    pub version: Option<Version>,
     pub description: String,
     pub keywords: Vec<String>,
-    pub license: String,
+    pub license: Option<String>,
+
+    #[setting(default = true)]
+    pub publish: bool,
 }
 
 #[derive(Config)]

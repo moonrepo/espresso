@@ -1,17 +1,28 @@
 use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
+use jpm_manifest::PackageManifestBuild;
 use oxipng::{optimize_from_memory, Options};
 use starbase_utils::fs;
 use std::path::PathBuf;
+use std::sync::Arc;
 
 pub struct Asset {
+    pub build_settings: Arc<PackageManifestBuild>,
     pub dst_path: PathBuf,
     pub src_path: PathBuf,
 }
 
 impl Asset {
-    pub fn new(src_path: PathBuf, dst_path: PathBuf) -> Self {
-        Self { dst_path, src_path }
+    pub fn new(
+        src_path: PathBuf,
+        dst_path: PathBuf,
+        build_settings: Arc<PackageManifestBuild>,
+    ) -> Self {
+        Self {
+            build_settings,
+            dst_path,
+            src_path,
+        }
     }
 
     pub fn is_jpg(&self) -> bool {
@@ -35,7 +46,7 @@ impl Asset {
         })?;
 
         // .png
-        if self.is_png() {
+        if self.is_png() && self.build_settings.optimize_png {
             bytes = self.optimize_png(&bytes)?;
         }
 

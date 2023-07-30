@@ -1,9 +1,11 @@
 use crate::package_error::PackageError;
 use crate::source_files::SourceFiles;
-use starbase_utils::fs;
+use jpm_manifest::{ManifestLoader, PackageManifest};
+use starbase_utils::{fs, glob};
 use std::path::{Path, PathBuf};
 
 pub struct Package {
+    pub manifest: PackageManifest,
     pub root: PathBuf,
     pub src_dir: PathBuf,
 }
@@ -13,6 +15,7 @@ impl Package {
         let root = root.as_ref().to_path_buf();
 
         Ok(Package {
+            manifest: ManifestLoader::load_package(&root)?,
             src_dir: root.join("src"),
             root,
         })
@@ -27,6 +30,7 @@ impl Package {
         }
 
         let mut sources = SourceFiles::default();
+        let exclude = glob::GlobSet::new(&self.manifest.build.exclude)?;
 
         for entry in fs::read_dir_all(&self.src_dir)? {
             let file = entry.path();
@@ -36,6 +40,12 @@ impl Package {
             }
 
             let rel_file = file.strip_prefix(&self.src_dir).unwrap().to_path_buf();
+
+            // Exclude files first
+            if exclude.is_match(&rel_file) {
+                sources.excluded.push(rel_file);
+                continue;
+            }
 
             // Filter out test files
             if SourceFiles::is_test_file(&rel_file) {

@@ -57,6 +57,8 @@ impl<'pkg> Compiler<'pkg> {
     }
 
     pub fn create_assets(&self, sources: &SourceFiles, out_dir: &Path) -> Vec<Asset> {
+        let build_settings = Arc::new(self.package.manifest.build.clone());
+
         sources
             .assets
             .iter()
@@ -64,6 +66,7 @@ impl<'pkg> Compiler<'pkg> {
                 Asset::new(
                     self.package.src_dir.join(asset_path),
                     out_dir.join(asset_path),
+                    Arc::clone(&build_settings),
                 )
             })
             .collect::<Vec<_>>()

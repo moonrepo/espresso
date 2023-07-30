@@ -6,6 +6,9 @@ pub struct SourceFiles {
     /// Non-JavaScript files, like CSS or images.
     pub assets: Vec<PathBuf>,
 
+    /// Files that have been explicitly excluded.
+    pub excluded: Vec<PathBuf>,
+
     /// JavaScript or TypeScript files.
     pub modules: Vec<PathBuf>,
 
