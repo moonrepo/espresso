@@ -1,9 +1,18 @@
 use crate::package_manifest::ManifestDependencies;
 use jpm_common::EsTarget;
-use schematic::Config;
+use schematic::{derive_enum, Config, ConfigEnum};
+
+derive_enum!(
+    #[derive(ConfigEnum, Default)]
+    pub enum LinkerType {
+        #[default]
+        NodeModules,
+    }
+);
 
 #[derive(Config)]
 pub struct WorkspaceManifestInstall {
+    pub linker: LinkerType,
     pub target: EsTarget,
 }
 
