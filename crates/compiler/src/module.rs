@@ -16,15 +16,16 @@ use swc_core::ecma::{
     visit::as_folder,
 };
 // use swc_visit::chain;
+use tracing::debug;
 
 pub struct Module {
-    pub dst_path: PathBuf,
+    pub out_path: PathBuf,
     pub src_path: PathBuf,
 }
 
 impl Module {
-    pub fn new(src_path: PathBuf, dst_path: PathBuf) -> Self {
-        Self { dst_path, src_path }
+    pub fn new(src_path: PathBuf, out_path: PathBuf) -> Self {
+        Self { out_path, src_path }
     }
 
     pub fn is_typescript(&self) -> bool {
@@ -97,7 +98,7 @@ impl Module {
             caller: Some(CallerOptions { name: "jpm".into() }),
             env_name: "production".into(),
             filename: fs::file_name(&self.src_path),
-            output_path: Some(self.dst_path.clone()),
+            output_path: Some(self.out_path.clone()),
             swcrc: false,
             swcrc_roots: None,
             ..Options::default()
@@ -105,6 +106,8 @@ impl Module {
     }
 
     pub async fn transform(&self, compiler: &SwcCompiler, target: &EsTarget) -> miette::Result<()> {
+        debug!(src = ?self.src_path, out = ?self.out_path, "Transforming module");
+
         let input =
             fs::read_file(&self.src_path).map_err(|error| CompilerError::ModuleWriteFailed {
                 path: self.src_path.clone(),
@@ -132,7 +135,7 @@ impl Module {
             error,
         })?;
 
-        fs::write_file(&self.dst_path, output.code).map_err(|error| {
+        fs::write_file(&self.out_path, output.code).map_err(|error| {
             CompilerError::ModuleWriteFailed {
                 path: self.src_path.clone(),
                 error,

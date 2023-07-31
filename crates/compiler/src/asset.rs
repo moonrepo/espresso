@@ -5,22 +5,23 @@ use oxipng::{optimize_from_memory, Options};
 use starbase_utils::fs;
 use std::path::PathBuf;
 use std::sync::Arc;
+use tracing::{debug, trace};
 
 pub struct Asset {
     pub build_settings: Arc<PackageManifestBuild>,
-    pub dst_path: PathBuf,
+    pub out_path: PathBuf,
     pub src_path: PathBuf,
 }
 
 impl Asset {
     pub fn new(
         src_path: PathBuf,
-        dst_path: PathBuf,
+        out_path: PathBuf,
         build_settings: Arc<PackageManifestBuild>,
     ) -> Self {
         Self {
             build_settings,
-            dst_path,
+            out_path,
             src_path,
         }
     }
@@ -38,6 +39,8 @@ impl Asset {
     }
 
     pub fn copy(&self) -> miette::Result<()> {
+        debug!(src = ?self.src_path, out = ?self.out_path, "Copying asset");
+
         let mut bytes = fs::read_file_bytes(&self.src_path).map_err(|error| {
             CompilerError::AssetFailedCopy {
                 path: self.src_path.clone(),
@@ -50,7 +53,7 @@ impl Asset {
             bytes = self.optimize_png(&bytes)?;
         }
 
-        fs::write_file(&self.dst_path, &bytes).map_err(|error| CompilerError::AssetFailedCopy {
+        fs::write_file(&self.out_path, &bytes).map_err(|error| CompilerError::AssetFailedCopy {
             path: self.src_path.clone(),
             error,
         })?;
@@ -59,6 +62,8 @@ impl Asset {
     }
 
     fn optimize_png(&self, bytes: &[u8]) -> miette::Result<Vec<u8>> {
+        trace!(png = ?self.src_path, level = 2, "Optimizing png");
+
         Ok(
             optimize_from_memory(bytes, &Options::from_preset(2)).map_err(|error| {
                 CompilerError::AssetFailedPngOptimize {

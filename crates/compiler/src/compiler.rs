@@ -8,6 +8,7 @@ use std::sync::Arc;
 use swc::Compiler as SwcCompiler;
 use swc_core::common::{FilePathMapping, SourceMap};
 use tokio::task::{self, JoinHandle};
+use tracing::debug;
 
 pub struct Compiler<'pkg> {
     compiler: Arc<SwcCompiler>,
@@ -16,6 +17,11 @@ pub struct Compiler<'pkg> {
 
 impl<'pkg> Compiler<'pkg> {
     pub fn new(package: &Package) -> miette::Result<Compiler> {
+        debug!(
+            package = &package.manifest.package.name,
+            "Creating new compiler for package"
+        );
+
         Ok(Compiler {
             package,
             compiler: Arc::new(SwcCompiler::new(Arc::new(SourceMap::new(
@@ -26,6 +32,9 @@ impl<'pkg> Compiler<'pkg> {
 
     pub async fn compile(&self, target: EsTarget) -> miette::Result<PathBuf> {
         let out_dir = self.package.root.join(".jpm").join(target.to_string());
+
+        debug!(out_dir = ?out_dir, target = target.to_string(), "Compiling package");
+
         let sources = self.package.load_source_files()?;
         let assets = self.create_assets(&sources, &out_dir);
         let modules = self.create_modules(&sources, &out_dir);

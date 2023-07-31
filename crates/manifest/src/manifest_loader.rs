@@ -4,6 +4,7 @@ use crate::workspace_manifest::WorkspaceManifest;
 use schematic::{Config, ConfigLoader, Format};
 use starbase_utils::fs;
 use std::path::{Path, PathBuf};
+use tracing::debug;
 
 pub const MANIFEST_FILE: &str = "jpm.toml";
 
@@ -34,6 +35,9 @@ impl ManifestLoader {
 
     pub fn load<P: AsRef<Path>>(path: P) -> miette::Result<Manifest> {
         let path = Self::resolve_path(path.as_ref())?;
+
+        debug!(manifest = ?path, "Loading manifest");
+
         let content = fs::read_file(&path)?;
 
         // Schematic doesn't support loading different structs depending on the
@@ -54,15 +58,23 @@ impl ManifestLoader {
     }
 
     pub fn load_package<P: AsRef<Path>>(path: P) -> miette::Result<PackageManifest> {
+        let path = Self::resolve_path(path.as_ref())?;
+
+        debug!(manifest = ?path, "Loading package manifest");
+
         let mut loader = ConfigLoader::<PackageManifest>::new();
-        loader.file(Self::resolve_path(path.as_ref())?)?;
+        loader.file(path)?;
 
         Ok(loader.load()?.config)
     }
 
     pub fn load_workspace<P: AsRef<Path>>(path: P) -> miette::Result<WorkspaceManifest> {
+        let path = Self::resolve_path(path.as_ref())?;
+
+        debug!(manifest = ?path, "Loading workspace manifest");
+
         let mut loader = ConfigLoader::<WorkspaceManifest>::new();
-        loader.file(Self::resolve_path(path.as_ref())?)?;
+        loader.file(path)?;
 
         Ok(loader.load()?.config)
     }

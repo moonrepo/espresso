@@ -19,7 +19,8 @@ async fn main() -> MainResult {
 
     App::setup_tracing_with_options(TracingOptions {
         filter_modules: vec!["jpm".into(), "schematic".into(), "starbase".into()],
-        log_env: "STARBASE_LOG".into(),
+        // log_env: "STARBASE_LOG".into(),
+        log_env: "JPM_LOG".into(),
         test_env: "JPM_TEST".into(),
         ..TracingOptions::default()
     });
@@ -27,7 +28,7 @@ async fn main() -> MainResult {
     let args = CLI::parse();
 
     match args.command {
-        Commands::Build { target } => commands::build(target).await?,
+        Commands::Build { path, target } => commands::build(path, target).await?,
     };
 
     Ok(())

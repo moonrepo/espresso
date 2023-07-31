@@ -12,6 +12,9 @@ pub enum Commands {
         rename_all = "camelCase"
     )]
     Build {
+        #[arg(help = "Package path, relative from the current working directory.")]
+        path: Option<String>,
+
         #[arg(
             value_enum,
             long,

@@ -1401,6 +1401,7 @@ dependencies = [
  "miette 5.10.0",
  "mimalloc",
  "starbase",
+ "starbase_styles",
  "tokio",
 ]
 
@@ -1432,6 +1433,7 @@ dependencies = [
  "swc_visit",
  "thiserror",
  "tokio",
+ "tracing",
 ]
 
 [[package]]
@@ -1447,6 +1449,7 @@ dependencies = [
  "starbase_styles",
  "starbase_utils",
  "thiserror",
+ "tracing",
 ]
 
 [[package]]
@@ -1459,6 +1462,7 @@ dependencies = [
  "starbase_styles",
  "starbase_utils",
  "thiserror",
+ "tracing",
 ]
 
 [[package]]
