@@ -5,5 +5,6 @@ edition = "2021"
 license = "MIT"
 
 [dependencies]
+clap = { workspace = true }
 schematic = { workspace = true }
 serde = { workspace = true }

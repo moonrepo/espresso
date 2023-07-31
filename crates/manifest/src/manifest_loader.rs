@@ -15,16 +15,25 @@ pub enum Manifest {
 pub struct ManifestLoader;
 
 impl ManifestLoader {
-    pub fn resolve_path(path: &Path) -> PathBuf {
-        if path.ends_with(MANIFEST_FILE) {
+    pub fn resolve_path(path: &Path) -> miette::Result<PathBuf> {
+        let file_path = if path.ends_with(MANIFEST_FILE) {
             path.to_path_buf()
         } else {
             path.join(MANIFEST_FILE)
+        };
+
+        if file_path.exists() {
+            return Ok(file_path);
         }
+
+        Err(ManifestError::MissingFile {
+            path: file_path.parent().unwrap().to_path_buf(),
+        }
+        .into())
     }
 
     pub fn load<P: AsRef<Path>>(path: P) -> miette::Result<Manifest> {
-        let path = Self::resolve_path(path.as_ref());
+        let path = Self::resolve_path(path.as_ref())?;
         let content = fs::read_file(&path)?;
 
         // Schematic doesn't support loading different structs depending on the
@@ -46,14 +55,14 @@ impl ManifestLoader {
 
     pub fn load_package<P: AsRef<Path>>(path: P) -> miette::Result<PackageManifest> {
         let mut loader = ConfigLoader::<PackageManifest>::new();
-        loader.file(Self::resolve_path(path.as_ref()))?;
+        loader.file(Self::resolve_path(path.as_ref())?)?;
 
         Ok(loader.load()?.config)
     }
 
     pub fn load_workspace<P: AsRef<Path>>(path: P) -> miette::Result<WorkspaceManifest> {
         let mut loader = ConfigLoader::<WorkspaceManifest>::new();
-        loader.file(Self::resolve_path(path.as_ref()))?;
+        loader.file(Self::resolve_path(path.as_ref())?)?;
 
         Ok(loader.load()?.config)
     }

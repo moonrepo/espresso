@@ -1,3 +1,4 @@
+use crate::manifest_loader::MANIFEST_FILE;
 use miette::Diagnostic;
 use starbase_styles::{Style, Stylize};
 use std::path::PathBuf;
@@ -13,4 +14,12 @@ pub enum ManifestError {
         "[workspace]".style(Style::Symbol),
     )]
     DetectionFailure { path: PathBuf },
+
+    #[diagnostic(code(manifest::missing_file))]
+    #[error(
+        "No {} manifest file found in {}.",
+        MANIFEST_FILE.style(Style::File),
+        .path.style(Style::Path),
+    )]
+    MissingFile { path: PathBuf },
 }
