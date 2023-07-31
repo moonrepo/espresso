@@ -1363,6 +1363,7 @@ version = "0.1.0"
 dependencies = [
  "jpm_manifest",
  "miette 5.10.0",
+ "starbase_sandbox",
  "starbase_styles",
  "starbase_utils",
  "thiserror",
@@ -2749,9 +2750,9 @@ dependencies = [
 
 [[package]]
 name = "starbase_sandbox"
-version = "0.1.6"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac618afab14732b830ec11baedba9720f74381156274808d03d9259bd9da7643"
+checksum = "e03cea8d1fd34d42fc47979aa670e28f276f395c70a6e446b6e68c8136dd2ae2"
 dependencies = [
  "assert_cmd",
  "assert_fs",
@@ -2776,9 +2777,9 @@ dependencies = [
 
 [[package]]
 name = "starbase_utils"
-version = "0.2.14"
+version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "29288d3ad4d809a2850170b73153a7893b7856c8a5d86290b24601db2ced6ad2"
+checksum = "18760c689c06ef716e0fc82e715f9083ec521d60980bf1d808a5c7791f82329d"
 dependencies = [
  "dirs",
  "miette 5.10.0",

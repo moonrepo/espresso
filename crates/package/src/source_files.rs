@@ -1,7 +1,7 @@
 use std::path::{Component, Path, PathBuf};
 
 // All file paths are relative from the package's `src` directory.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq)]
 pub struct SourceFiles {
     /// Non-JavaScript files, like CSS or images.
     pub assets: Vec<PathBuf>,
@@ -15,7 +15,7 @@ pub struct SourceFiles {
     /// Test files found within the source directory, typically ignored.
     pub tests: Vec<PathBuf>,
 
-    /// Many or all module files are written in TypeScript.
+    /// Some or all module files are written in TypeScript.
     pub typescript: bool,
 }
 
