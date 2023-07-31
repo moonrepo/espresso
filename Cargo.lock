@@ -1351,6 +1351,7 @@ dependencies = [
  "schematic",
  "semver 1.0.18",
  "serde",
+ "starbase_sandbox",
  "starbase_utils",
  "thiserror",
 ]

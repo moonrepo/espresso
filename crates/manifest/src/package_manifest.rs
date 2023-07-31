@@ -1,10 +1,10 @@
 use schematic::{validate, Config};
-use semver::Version;
+use semver::{Version, VersionReq};
 use std::collections::HashMap;
 
-pub type ManifestDependencies = HashMap<String, String>;
+pub type ManifestDependencies = HashMap<String, VersionReq>;
 
-#[derive(Config, Clone)]
+#[derive(Config, Clone, Debug, Eq, PartialEq)]
 pub struct PackageManifestBuild {
     pub exclude: Vec<String>,
 
@@ -15,7 +15,7 @@ pub struct PackageManifestBuild {
     pub optimize_svg: bool,
 }
 
-#[derive(Config)]
+#[derive(Config, Debug, Eq, PartialEq)]
 pub struct PackageManifestMetadata {
     #[setting(validate = validate::not_empty)]
     pub name: String,
@@ -28,7 +28,7 @@ pub struct PackageManifestMetadata {
     pub publish: bool,
 }
 
-#[derive(Config)]
+#[derive(Config, Debug, Eq, PartialEq)]
 pub struct PackageManifest {
     /// Controls how a package is built.
     #[setting(nested)]

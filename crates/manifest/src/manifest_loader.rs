@@ -2,7 +2,7 @@ use crate::package_manifest::PackageManifest;
 use crate::workspace_manifest::WorkspaceManifest;
 use schematic::{Config, ConfigLoader, Format};
 use starbase_utils::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 pub const MANIFEST_FILE: &str = "jpm.toml";
 
@@ -14,14 +14,17 @@ pub enum Manifest {
 pub struct ManifestLoader;
 
 impl ManifestLoader {
-    pub fn load<P: AsRef<Path>>(path: P) -> miette::Result<Manifest> {
-        let path = path.as_ref();
-
-        let content = fs::read_file(if path.ends_with(MANIFEST_FILE) {
+    pub fn resolve_path(path: &Path) -> PathBuf {
+        if path.ends_with(MANIFEST_FILE) {
             path.to_path_buf()
         } else {
             path.join(MANIFEST_FILE)
-        })?;
+        }
+    }
+
+    pub fn load<P: AsRef<Path>>(path: P) -> miette::Result<Manifest> {
+        let path = path.as_ref();
+        let content = fs::read_file(Self::resolve_path(path))?;
 
         // Schematic doesn't support loading different structs depending on the
         // content of the file, so we need to handle this manually.
@@ -34,26 +37,18 @@ impl ManifestLoader {
 
     pub fn load_package<P: AsRef<Path>>(path: P) -> miette::Result<PackageManifest> {
         let path = path.as_ref();
-        let mut loader = ConfigLoader::<PackageManifest>::new();
 
-        loader.file(if path.ends_with(MANIFEST_FILE) {
-            path.to_path_buf()
-        } else {
-            path.join(MANIFEST_FILE)
-        })?;
+        let mut loader = ConfigLoader::<PackageManifest>::new();
+        loader.file(Self::resolve_path(path))?;
 
         Ok(loader.load()?.config)
     }
 
     pub fn load_workspace<P: AsRef<Path>>(path: P) -> miette::Result<WorkspaceManifest> {
         let path = path.as_ref();
-        let mut loader = ConfigLoader::<WorkspaceManifest>::new();
 
-        loader.file(if path.ends_with(MANIFEST_FILE) {
-            path.to_path_buf()
-        } else {
-            path.join(MANIFEST_FILE)
-        })?;
+        let mut loader = ConfigLoader::<WorkspaceManifest>::new();
+        loader.file(Self::resolve_path(path))?;
 
         Ok(loader.load()?.config)
     }
