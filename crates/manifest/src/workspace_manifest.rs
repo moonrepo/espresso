@@ -1,6 +1,6 @@
 use crate::package_manifest::ManifestDependencies;
 use jpm_common::EsTarget;
-use schematic::{derive_enum, Config, ConfigEnum};
+use schematic::{derive_enum, validate, Config, ConfigEnum};
 
 derive_enum!(
     #[derive(ConfigEnum, Default)]
@@ -10,18 +10,19 @@ derive_enum!(
     }
 );
 
-#[derive(Config)]
+#[derive(Config, Debug, Eq, PartialEq)]
 pub struct WorkspaceManifestInstall {
     pub linker: LinkerType,
     pub target: EsTarget,
 }
 
-#[derive(Config)]
+#[derive(Config, Debug, Eq, PartialEq)]
 pub struct WorkspaceManifestMetadata {
+    #[setting(validate = validate::not_empty)]
     pub packages: Vec<String>,
 }
 
-#[derive(Config)]
+#[derive(Config, Debug, Eq, PartialEq)]
 pub struct WorkspaceManifest {
     /// Dependencies for all packages in the workspace.
     pub dependencies: ManifestDependencies,

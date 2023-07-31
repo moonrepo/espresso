@@ -1,3 +1,4 @@
+use crate::manifest_error::ManifestError;
 use crate::package_manifest::PackageManifest;
 use crate::workspace_manifest::WorkspaceManifest;
 use schematic::{Config, ConfigLoader, Format};
@@ -23,32 +24,36 @@ impl ManifestLoader {
     }
 
     pub fn load<P: AsRef<Path>>(path: P) -> miette::Result<Manifest> {
-        let path = path.as_ref();
-        let content = fs::read_file(Self::resolve_path(path))?;
+        let path = Self::resolve_path(path.as_ref());
+        let content = fs::read_file(&path)?;
 
         // Schematic doesn't support loading different structs depending on the
         // content of the file, so we need to handle this manually.
-        Ok(if content.contains("[package]") {
-            Manifest::Package(Self::do_load_from_string::<PackageManifest>(content)?)
-        } else {
-            Manifest::Workspace(Self::do_load_from_string::<WorkspaceManifest>(content)?)
-        })
+        if content.contains("[package]") {
+            return Ok(Manifest::Package(Self::do_load_from_string::<
+                PackageManifest,
+            >(content)?));
+        }
+
+        if content.contains("[workspace]") {
+            return Ok(Manifest::Workspace(Self::do_load_from_string::<
+                WorkspaceManifest,
+            >(content)?));
+        }
+
+        Err(ManifestError::DetectionFailure { path }.into())
     }
 
     pub fn load_package<P: AsRef<Path>>(path: P) -> miette::Result<PackageManifest> {
-        let path = path.as_ref();
-
         let mut loader = ConfigLoader::<PackageManifest>::new();
-        loader.file(Self::resolve_path(path))?;
+        loader.file(Self::resolve_path(path.as_ref()))?;
 
         Ok(loader.load()?.config)
     }
 
     pub fn load_workspace<P: AsRef<Path>>(path: P) -> miette::Result<WorkspaceManifest> {
-        let path = path.as_ref();
-
         let mut loader = ConfigLoader::<WorkspaceManifest>::new();
-        loader.file(Self::resolve_path(path))?;
+        loader.file(Self::resolve_path(path.as_ref()))?;
 
         Ok(loader.load()?.config)
     }
