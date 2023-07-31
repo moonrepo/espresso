@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use swc_core::ecma::{
     ast::{CallExpr, ExportAll, Expr, ImportDecl, Lit, NamedExport, Str},
     visit::{VisitMut, VisitMutWith},
@@ -7,7 +8,12 @@ pub struct AddMjsExtensionVisitor;
 
 fn add_ext(source: &mut Str) {
     // ./, ../, etc
-    if source.value.starts_with('.') && !source.value.ends_with(".mjs") {
+    if source.value.starts_with('.')
+        // Only append to those without extensions
+        && PathBuf::from(source.value.to_string())
+            .extension()
+            .is_none()
+    {
         source.value = format!("{}.mjs", source.value).into();
         source.raw = None;
     }

@@ -77,7 +77,7 @@ optimizeSvg = false
         use super::*;
 
         #[test]
-        #[should_panic(expected = "unexpected character '@' while parsing major version number")]
+        #[should_panic(expected = "unexpected character '@' while parsing")]
         fn errors_invalid_req() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(

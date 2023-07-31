@@ -6,6 +6,7 @@ expression: "read_file(out_dir.join(\"index.mjs\"))"
 import 'module';
 import "./file.mjs";
 import './file.mjs';
+import 'styles.css';
 // Dynamic imports
 await import('module');
 await import("./nested/file.mjs");

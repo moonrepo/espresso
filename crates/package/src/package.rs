@@ -72,8 +72,16 @@ impl Package {
                     sources.modules.push(rel_file);
                 }
                 Some(ext) if ext == "ts" || ext == "tsx" || ext == "mts" => {
+                    let name = fs::file_name(&rel_file);
+
+                    // Filter out declarations
+                    if name.contains(".d") {
+                        sources.excluded.push(rel_file);
+                    } else {
+                        sources.modules.push(rel_file);
+                    }
+
                     sources.typescript = true;
-                    sources.modules.push(rel_file);
                 }
                 _ => {
                     sources.assets.push(rel_file);

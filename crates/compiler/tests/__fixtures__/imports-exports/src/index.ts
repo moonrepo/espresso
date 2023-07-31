@@ -2,6 +2,9 @@
 import 'module';
 import './file';
 import './file.mjs';
+import 'styles.css';
+import icon from '../icons/add.svg';
+import image from './img/hero.png';
 
 import { foo } from 'module';
 import { bar } from '../file';
