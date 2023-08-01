@@ -1,0 +1,4 @@
+[toolchain]
+profile = "default"
+# Required by swc
+channel = "nightly-2023-07-03"

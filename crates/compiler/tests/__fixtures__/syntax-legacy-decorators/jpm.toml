@@ -1,0 +1,5 @@
+[package]
+name = "syntax-legacy-decorators"
+
+[build]
+decorators = "legacy"

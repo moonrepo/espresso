@@ -1,0 +1,21 @@
+---
+source: crates/compiler/tests/plugin_output_test.rs
+expression: "read_file(out_dir.join(\"index.mjs\"))"
+---
+// Imports
+import 'module';
+import "./file.mjs";
+import './file.mjs';
+import 'styles.css';
+import "./index.mjs";
+// Dynamic imports
+await import('module');
+await import("./nested/file.mjs");
+await import("../parent/file.mjs");
+// Exports
+export * from "./file.mjs";
+export { baz } from '../parent/file.mjs';
+export { foo, bar } from "./file.mjs";
+export * as ns from "./file/../weird/path.mjs";
+export { qux } from "./index.mjs";
+

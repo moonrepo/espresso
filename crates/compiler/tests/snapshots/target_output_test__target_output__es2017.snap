@@ -1,0 +1,103 @@
+---
+source: crates/compiler/tests/target_output_test.rs
+expression: "read_file(out_dir.join(\"index.mjs\"))"
+---
+function _check_private_redeclaration(obj, privateCollection) {
+    if (privateCollection.has(obj)) {
+        throw new TypeError("Cannot initialize the same private elements twice on an object");
+    }
+}
+function _class_apply_descriptor_set(receiver, descriptor, value) {
+    if (descriptor.set) {
+        descriptor.set.call(receiver, value);
+    } else {
+        if (!descriptor.writable) {
+            throw new TypeError("attempted to set read only private field");
+        }
+        descriptor.value = value;
+    }
+}
+function _class_extract_field_descriptor(receiver, privateMap, action) {
+    if (!privateMap.has(receiver)) {
+        throw new TypeError("attempted to " + action + " private field on non-instance");
+    }
+    return privateMap.get(receiver);
+}
+function _class_private_field_init(obj, privateMap, value) {
+    _check_private_redeclaration(obj, privateMap);
+    privateMap.set(obj, value);
+}
+function _class_private_field_set(receiver, privateMap, value) {
+    var descriptor = _class_extract_field_descriptor(receiver, privateMap, "set");
+    _class_apply_descriptor_set(receiver, descriptor, value);
+    return value;
+}
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+var _obj;
+var _private = new WeakMap();
+export class ClassName {
+    method() {
+        _class_private_field_set(this, _private, false);
+    }
+    constructor(){
+        _define_property(this, "field", 123);
+        _class_private_field_init(this, _private, {
+            writable: true,
+            value: true
+        });
+        _define_property(this, "anonMethod", ()=>{
+            this.field = 456789;
+        });
+    }
+}
+_define_property(ClassName, "field", 'abc');
+(()=>{
+    ClassName.field = 'xyz';
+})();
+export async function asyncFunc(...args) {
+    return Promise.resolve();
+}
+export function* genFunc(value = 'abc') {
+    yield 1;
+}
+export async function* asyncGenFunc() {
+    yield 'abc';
+}
+const obj = {
+    a: 1,
+    b: 2,
+    c: 3
+};
+const { a, b, c } = obj;
+const [d, e, f] = [
+    1,
+    2,
+    3
+];
+var _ref, _ref1;
+const nullable = (_ref1 = (_ref = 1) !== null && _ref !== void 0 ? _ref : 2) !== null && _ref1 !== void 0 ? _ref1 : 3;
+const optional = ((_obj = obj) === null || _obj === void 0 ? void 0 : _obj.a) || 0;
+let assign = 0;
+assign || (assign = a);
+assign && (assign = b);
+assign !== null && assign !== void 0 ? assign : assign = b;
+try {
+    await import('path');
+} catch (e) {}
+// Hrmmm
+export function Component() {
+    return /*#__PURE__*/ React.createElement("div", null);
+} /*#__PURE__*/ 
+

@@ -1,0 +1,10 @@
+[package]
+name = "jpm_common"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+clap = { workspace = true }
+schematic = { workspace = true }
+serde = { workspace = true }
