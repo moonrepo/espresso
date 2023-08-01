@@ -1,19 +1,17 @@
+use crate::common_settings::*;
 use schematic::{derive_enum, validate, Config, ConfigEnum};
-use semver::{Version, VersionReq};
-use std::collections::HashMap;
-
-pub type ManifestDependencies = HashMap<String, VersionReq>;
+use semver::Version;
 
 derive_enum!(
     #[derive(ConfigEnum)]
-    pub enum BuildDecorators {
+    pub enum PackageManifestBuildDecorators {
         Legacy,
     }
 );
 
 #[derive(Config, Clone, Debug, Eq, PartialEq)]
 pub struct PackageManifestBuild {
-    pub decorators: Option<BuildDecorators>,
+    pub decorators: Option<PackageManifestBuildDecorators>,
 
     pub exclude: Vec<String>,
 
@@ -46,6 +44,10 @@ pub struct PackageManifest {
     /// Dependencies for this package.
     pub dependencies: ManifestDependencies,
     pub dev_dependencies: ManifestDependencies,
+
+    /// Controls how dependencies are installed.
+    #[setting(nested)]
+    pub install: ManifestInstall,
 
     /// Metadata about the package.
     #[setting(nested)]

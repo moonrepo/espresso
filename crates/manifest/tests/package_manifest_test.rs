@@ -30,6 +30,10 @@ name = "pkg"
                 },
                 dependencies: HashMap::new(),
                 dev_dependencies: HashMap::new(),
+                install: ManifestInstall {
+                    linker: ManifestInstallLinker::NodeModules,
+                    target: EsTarget::Es2018,
+                },
                 package: PackageManifestMetadata {
                     name: "pkg".into(),
                     version: None,

@@ -2,7 +2,7 @@ use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
 use crate::plugins::{AddMjsExtensionVisitor, DetectCjsVisitor};
 use jpm_common::EsTarget;
-use jpm_manifest::{BuildDecorators, PackageManifestBuild};
+use jpm_manifest::{PackageManifestBuild, PackageManifestBuildDecorators};
 use starbase_utils::fs;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -44,7 +44,7 @@ impl Module {
         self.build_settings
             .decorators
             .as_ref()
-            .is_some_and(|dec| dec == &BuildDecorators::Legacy)
+            .is_some_and(|dec| dec == &PackageManifestBuildDecorators::Legacy)
             || self.build_settings.decorators.is_some() && self.is_typescript()
     }
 
@@ -63,7 +63,7 @@ impl Module {
                 Some(DecoratorVersion::V202112)
             } else {
                 decorators.map(|dec| match dec {
-                    BuildDecorators::Legacy => DecoratorVersion::V202112,
+                    PackageManifestBuildDecorators::Legacy => DecoratorVersion::V202112,
                 })
             },
             legacy_decorator: self.is_legacy_decorators().into(),

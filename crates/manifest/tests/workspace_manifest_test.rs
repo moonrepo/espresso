@@ -23,8 +23,8 @@ packages = ["*"]
             WorkspaceManifest {
                 dependencies: HashMap::new(),
                 dev_dependencies: HashMap::new(),
-                install: WorkspaceManifestInstall {
-                    linker: LinkerType::NodeModules,
+                install: ManifestInstall {
+                    linker: ManifestInstallLinker::NodeModules,
                     target: EsTarget::Es2018,
                 },
                 workspace: WorkspaceManifestMetadata {
@@ -74,8 +74,8 @@ target = "es2022"
 
             assert_eq!(
                 manifest.install,
-                WorkspaceManifestInstall {
-                    linker: LinkerType::NodeModules,
+                ManifestInstall {
+                    linker: ManifestInstallLinker::NodeModules,
                     target: EsTarget::Es2022,
                 },
             );
