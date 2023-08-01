@@ -1,6 +1,8 @@
 use crate::package_error::PackageError;
 use crate::source_files::SourceFiles;
 use jpm_manifest::{ManifestLoader, PackageManifest};
+use miette::IntoDiagnostic;
+use relative_path::RelativePathBuf;
 use starbase_utils::{fs, glob};
 use std::path::{Path, PathBuf};
 use tracing::{debug, trace};
@@ -55,10 +57,11 @@ impl Package {
                 continue;
             }
 
-            let rel_file = file.strip_prefix(&self.src_dir).unwrap().to_path_buf();
+            let rel_file = RelativePathBuf::from_path(file.strip_prefix(&self.src_dir).unwrap())
+                .into_diagnostic()?;
 
             // Exclude files first
-            if exclude.is_match(&rel_file) {
+            if exclude.is_match(rel_file.as_str()) {
                 trace!(file = ?rel_file, "Excluding source file as it matches an exclude pattern");
 
                 sources.excluded.push(rel_file);
@@ -66,7 +69,7 @@ impl Package {
             }
 
             // Filter out test files
-            if SourceFiles::is_test_file(&rel_file) {
+            if SourceFiles::is_test_file(rel_file.as_ref()) {
                 trace!(file = ?rel_file, "Filtering source file as it was detected as a test file");
 
                 sources.tests.push(rel_file);
@@ -83,10 +86,7 @@ impl Package {
                     sources.modules.push(rel_file);
                 }
                 Some(ext) if ext == "ts" || ext == "tsx" || ext == "mts" => {
-                    let name = fs::file_name(&rel_file);
-
-                    // Filter out declarations
-                    if name.contains(".d") {
+                    if rel_file.as_str().contains(".d.") {
                         trace!(file = ?rel_file, "Ignoring TypeScript declaration");
 
                         sources.excluded.push(rel_file);

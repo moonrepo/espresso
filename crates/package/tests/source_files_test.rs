@@ -1,6 +1,6 @@
 use jpm_package::*;
+use relative_path::RelativePathBuf;
 use starbase_sandbox::create_sandbox;
-use std::path::PathBuf;
 
 mod source_files {
     use super::*;
@@ -41,25 +41,25 @@ mod source_files {
             package.load_source_files().unwrap(),
             SourceFiles {
                 assets: vec![
-                    PathBuf::from("img/help.png"),
-                    PathBuf::from("icons/add.svg"),
-                    PathBuf::from("icons/remove.svg"),
+                    RelativePathBuf::from("img/help.png"),
+                    RelativePathBuf::from("icons/add.svg"),
+                    RelativePathBuf::from("icons/remove.svg"),
                 ],
                 excluded: vec![],
                 modules: vec![
-                    PathBuf::from("ui/Button.tsx"),
-                    PathBuf::from("ui/Modal.tsx"),
-                    PathBuf::from("helpers.ts"),
-                    PathBuf::from("forms/Select.tsx"),
-                    PathBuf::from("forms/Input.tsx"),
-                    PathBuf::from("index.ts"),
+                    RelativePathBuf::from("ui/Button.tsx"),
+                    RelativePathBuf::from("ui/Modal.tsx"),
+                    RelativePathBuf::from("helpers.ts"),
+                    RelativePathBuf::from("forms/Select.tsx"),
+                    RelativePathBuf::from("forms/Input.tsx"),
+                    RelativePathBuf::from("index.ts"),
                 ],
                 tests: vec![
-                    PathBuf::from("ui/Modal_spec.tsx"),
-                    PathBuf::from("ui/Button.spec.tsx"),
-                    PathBuf::from("forms/Input.test.tsx"),
-                    PathBuf::from("forms/Select-test.tsx"),
-                    PathBuf::from("__tests__/helpers_test.ts")
+                    RelativePathBuf::from("ui/Modal_spec.tsx"),
+                    RelativePathBuf::from("ui/Button.spec.tsx"),
+                    RelativePathBuf::from("forms/Input.test.tsx"),
+                    RelativePathBuf::from("forms/Select-test.tsx"),
+                    RelativePathBuf::from("__tests__/helpers_test.ts")
                 ],
                 typescript: true
             }
@@ -85,20 +85,23 @@ exclude = ["**/*.tsx"]
         assert_eq!(
             sources.excluded,
             vec![
-                PathBuf::from("forms/Input.test.tsx"),
-                PathBuf::from("forms/Input.tsx"),
-                PathBuf::from("forms/Select-test.tsx"),
-                PathBuf::from("forms/Select.tsx"),
-                PathBuf::from("ui/Button.spec.tsx"),
-                PathBuf::from("ui/Button.tsx"),
-                PathBuf::from("ui/Modal.tsx"),
-                PathBuf::from("ui/Modal_spec.tsx"),
+                RelativePathBuf::from("forms/Input.test.tsx"),
+                RelativePathBuf::from("forms/Input.tsx"),
+                RelativePathBuf::from("forms/Select-test.tsx"),
+                RelativePathBuf::from("forms/Select.tsx"),
+                RelativePathBuf::from("ui/Button.spec.tsx"),
+                RelativePathBuf::from("ui/Button.tsx"),
+                RelativePathBuf::from("ui/Modal.tsx"),
+                RelativePathBuf::from("ui/Modal_spec.tsx"),
             ]
         );
 
         assert_eq!(
             sources.modules,
-            vec![PathBuf::from("helpers.ts"), PathBuf::from("index.ts")]
+            vec![
+                RelativePathBuf::from("helpers.ts"),
+                RelativePathBuf::from("index.ts")
+            ]
         );
     }
 
@@ -112,9 +115,12 @@ exclude = ["**/*.tsx"]
 
         assert_eq!(
             sources.excluded,
-            vec![PathBuf::from("types.d.mts"), PathBuf::from("types.d.ts")]
+            vec![
+                RelativePathBuf::from("types.d.mts"),
+                RelativePathBuf::from("types.d.ts")
+            ]
         );
 
-        assert_eq!(sources.modules, vec![PathBuf::from("index.ts")]);
+        assert_eq!(sources.modules, vec![RelativePathBuf::from("index.ts")]);
     }
 }

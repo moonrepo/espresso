@@ -5,7 +5,7 @@ mod manifest_loader {
     use super::*;
 
     #[test]
-    #[should_panic(expected = "Please add a [package] OR [workspace] section.")]
+    #[should_panic(expected = "add a [package] OR [workspace]")]
     fn errors_when_unable_to_detect() {
         let sandbox = create_empty_sandbox();
         sandbox.create_file("jpm.toml", "");

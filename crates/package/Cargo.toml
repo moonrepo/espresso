@@ -7,6 +7,7 @@ license = "MIT"
 [dependencies]
 jpm_manifest = { path = "../manifest" }
 miette = { workspace = true }
+relative-path = "1.8.0"
 starbase_styles = { workspace = true }
 starbase_utils = { workspace = true }
 thiserror = { workspace = true }

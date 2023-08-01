@@ -1458,6 +1458,7 @@ version = "0.1.0"
 dependencies = [
  "jpm_manifest",
  "miette 5.10.0",
+ "relative-path",
  "starbase_sandbox",
  "starbase_styles",
  "starbase_utils",

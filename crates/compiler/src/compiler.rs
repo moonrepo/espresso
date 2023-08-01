@@ -82,8 +82,8 @@ impl<'pkg> Compiler<'pkg> {
             .iter()
             .map(|asset_path| {
                 Asset::new(
-                    self.package.src_dir.join(asset_path),
-                    out_dir.join(asset_path),
+                    asset_path.to_path(&self.package.src_dir),
+                    asset_path.to_path(out_dir),
                     Arc::clone(&build_settings),
                 )
             })
@@ -99,13 +99,13 @@ impl<'pkg> Compiler<'pkg> {
         sources
             .modules
             .iter()
-            .map(|asset_path| {
+            .map(|module_path| {
                 // Always output as .mjs since we're ESM only
-                let mut out_file = out_dir.join(asset_path);
+                let mut out_file = module_path.to_path(out_dir);
                 out_file.set_extension("mjs");
 
                 Module::new(
-                    self.package.src_dir.join(asset_path),
+                    module_path.to_path(&self.package.src_dir),
                     out_file,
                     Arc::clone(&build_settings),
                 )
