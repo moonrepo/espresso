@@ -36,30 +36,35 @@ mod source_files {
     fn loads_files() {
         let sandbox = create_sandbox("components");
         let package = Package::new(sandbox.path()).unwrap();
+        let mut sources = package.load_source_files().unwrap();
+
+        sources.assets.sort();
+        sources.modules.sort();
+        sources.tests.sort();
 
         assert_eq!(
-            package.load_source_files().unwrap(),
+            sources,
             SourceFiles {
                 assets: vec![
-                    RelativePathBuf::from("img/help.png"),
                     RelativePathBuf::from("icons/add.svg"),
                     RelativePathBuf::from("icons/remove.svg"),
+                    RelativePathBuf::from("img/help.png"),
                 ],
                 excluded: vec![],
                 modules: vec![
+                    RelativePathBuf::from("forms/Input.tsx"),
+                    RelativePathBuf::from("forms/Select.tsx"),
+                    RelativePathBuf::from("helpers.ts"),
+                    RelativePathBuf::from("index.ts"),
                     RelativePathBuf::from("ui/Button.tsx"),
                     RelativePathBuf::from("ui/Modal.tsx"),
-                    RelativePathBuf::from("helpers.ts"),
-                    RelativePathBuf::from("forms/Select.tsx"),
-                    RelativePathBuf::from("forms/Input.tsx"),
-                    RelativePathBuf::from("index.ts"),
                 ],
                 tests: vec![
-                    RelativePathBuf::from("ui/Modal_spec.tsx"),
-                    RelativePathBuf::from("ui/Button.spec.tsx"),
+                    RelativePathBuf::from("__tests__/helpers_test.ts"),
                     RelativePathBuf::from("forms/Input.test.tsx"),
                     RelativePathBuf::from("forms/Select-test.tsx"),
-                    RelativePathBuf::from("__tests__/helpers_test.ts")
+                    RelativePathBuf::from("ui/Button.spec.tsx"),
+                    RelativePathBuf::from("ui/Modal_spec.tsx"),
                 ],
                 typescript: true
             }
