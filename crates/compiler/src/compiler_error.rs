@@ -5,7 +5,7 @@ use thiserror::Error;
 
 #[derive(Debug, Diagnostic, Error)]
 pub enum CompilerError {
-    #[diagnostic(code(compiler::asset::copy))]
+    #[diagnostic(code(compiler::asset::copy_failed))]
     #[error("Failed to copy asset {}.", .path.style(Style::Path))]
     AssetFailedCopy {
         path: PathBuf,
@@ -14,7 +14,7 @@ pub enum CompilerError {
         error: starbase_utils::fs::FsError,
     },
 
-    #[diagnostic(code(compiler::asset::optimize_png))]
+    #[diagnostic(code(compiler::asset::optimize_png_failed))]
     #[error("Failed to optimize asset {}.", .path.style(Style::Path))]
     AssetFailedPngOptimize {
         path: PathBuf,
@@ -22,7 +22,7 @@ pub enum CompilerError {
         error: oxipng::PngError,
     },
 
-    #[diagnostic(code(compiler::module::transform))]
+    #[diagnostic(code(compiler::module::transform_failed))]
     #[error("Failed to transform module {}.", .path.style(Style::Path))]
     ModuleTransformFailed {
         path: PathBuf,
@@ -30,7 +30,7 @@ pub enum CompilerError {
         error: anyhow::Error,
     },
 
-    #[diagnostic(code(compiler::module::write))]
+    #[diagnostic(code(compiler::module::write_failed))]
     #[error("Failed to create module {}.", .path.style(Style::Path))]
     ModuleWriteFailed {
         path: PathBuf,
