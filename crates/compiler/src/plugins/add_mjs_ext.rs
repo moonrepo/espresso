@@ -7,8 +7,13 @@ use swc_core::ecma::{
 pub struct AddMjsExtensionVisitor;
 
 fn add_ext(source: &mut Str) {
-    // ./, ../, etc
-    if source.value.starts_with('.')
+    // .
+    if source.value.eq(".") {
+        source.value = "./index.mjs".into();
+        source.raw = None;
+
+        // ./, ../
+    } else if source.value.starts_with('.')
         // Only append to those without extensions
         && PathBuf::from(source.value.to_string())
             .extension()

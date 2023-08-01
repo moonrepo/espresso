@@ -2,10 +2,13 @@ use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
 use crate::plugins::{AddMjsExtensionVisitor, DetectCjsVisitor};
 use jpm_common::EsTarget;
+use jpm_manifest::{BuildDecorators, PackageManifestBuild};
 use starbase_utils::fs;
 use std::path::PathBuf;
+use std::sync::Arc;
 use swc::config::{
-    CallerOptions, Config, IsModule, JscConfig, ModuleConfig, Options, TransformConfig,
+    CallerOptions, Config, DecoratorVersion, IsModule, JscConfig, ModuleConfig, Options,
+    TransformConfig,
 };
 use swc::{try_with_handler, Compiler as SwcCompiler, HandlerOpts};
 use swc_core::common::GLOBALS;
@@ -19,13 +22,30 @@ use swc_core::ecma::{
 use tracing::debug;
 
 pub struct Module {
+    pub build_settings: Arc<PackageManifestBuild>,
     pub out_path: PathBuf,
     pub src_path: PathBuf,
 }
 
 impl Module {
-    pub fn new(src_path: PathBuf, out_path: PathBuf) -> Self {
-        Self { out_path, src_path }
+    pub fn new(
+        src_path: PathBuf,
+        out_path: PathBuf,
+        build_settings: Arc<PackageManifestBuild>,
+    ) -> Self {
+        Self {
+            build_settings,
+            out_path,
+            src_path,
+        }
+    }
+
+    pub fn is_legacy_decorators(&self) -> bool {
+        self.build_settings
+            .decorators
+            .as_ref()
+            .is_some_and(|dec| dec == &BuildDecorators::Legacy)
+            || self.build_settings.decorators.is_some() && self.is_typescript()
     }
 
     pub fn is_typescript(&self) -> bool {
@@ -33,12 +53,20 @@ impl Module {
     }
 
     pub fn create_transform_options(&self, target: &EsTarget) -> Options {
+        let decorators = self.build_settings.decorators.as_ref();
+
         // TODO: react
         let transform = TransformConfig {
             const_modules: None,
-            decorator_metadata: false.into(),
-            decorator_version: None,
-            legacy_decorator: false.into(), // Wait for official spec
+            decorator_metadata: decorators.is_some().into(),
+            decorator_version: if self.is_legacy_decorators() {
+                Some(DecoratorVersion::V202112)
+            } else {
+                decorators.map(|dec| match dec {
+                    BuildDecorators::Legacy => DecoratorVersion::V202112,
+                })
+            },
+            legacy_decorator: self.is_legacy_decorators().into(),
             optimizer: None,
             use_define_for_class_fields: true.into(),
             ..TransformConfig::default()
@@ -54,7 +82,7 @@ impl Module {
             preserve_all_comments: true.into(),
             syntax: Some(if self.is_typescript() {
                 Syntax::Typescript(TsConfig {
-                    decorators: false,
+                    decorators: decorators.is_some(),
                     disallow_ambiguous_jsx_like: true,
                     dts: false,
                     tsx: true,
@@ -64,7 +92,7 @@ impl Module {
                 Syntax::Es(EsConfig {
                     allow_super_outside_method: false,
                     allow_return_outside_function: false,
-                    decorators: false,
+                    decorators: decorators.is_some(),
                     decorators_before_export: true,
                     export_default_from: true,
                     fn_bind: true,
@@ -114,22 +142,29 @@ impl Module {
                 error,
             })?;
 
-        let output = try_with_handler(compiler.cm.clone(), HandlerOpts::default(), |handler| {
-            GLOBALS.set(&Default::default(), || {
-                compiler.process_js_with_custom_pass(
-                    compiler
-                        .cm
-                        .new_source_file(self.src_path.clone().into(), input),
-                    None,
-                    handler,
-                    &self.create_transform_options(target),
-                    Default::default(),
-                    // |_| as_folder(chain!(DetectCjsVisitor, AddMjsExtensionVisitor)),
-                    |_| as_folder(DetectCjsVisitor),
-                    |_| as_folder(AddMjsExtensionVisitor),
-                )
-            })
-        })
+        let output = try_with_handler(
+            compiler.cm.clone(),
+            HandlerOpts {
+                skip_filename: true,
+                ..HandlerOpts::default()
+            },
+            |handler| {
+                GLOBALS.set(&Default::default(), || {
+                    compiler.process_js_with_custom_pass(
+                        compiler
+                            .cm
+                            .new_source_file(self.src_path.clone().into(), input),
+                        None,
+                        handler,
+                        &self.create_transform_options(target),
+                        Default::default(),
+                        // |_| as_folder(chain!(DetectCjsVisitor, AddMjsExtensionVisitor)),
+                        |_| as_folder(DetectCjsVisitor),
+                        |_| as_folder(AddMjsExtensionVisitor),
+                    )
+                })
+            },
+        )
         .map_err(|error| CompilerError::ModuleTransformFailed {
             path: self.src_path.clone(),
             error,

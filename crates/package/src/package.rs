@@ -9,6 +9,7 @@ pub struct Package {
     pub manifest: PackageManifest,
     pub root: PathBuf,
     pub src_dir: PathBuf,
+    pub tests_dir: PathBuf,
 }
 
 impl Package {
@@ -17,11 +18,20 @@ impl Package {
 
         debug!(root = ?root, "Loading package");
 
+        if !root.exists() {
+            return Err(PackageError::MissingPackage { path: root }.into());
+        }
+
         Ok(Package {
             manifest: ManifestLoader::load_package(&root)?,
             src_dir: root.join("src"),
+            tests_dir: root.join("tests"),
             root,
         })
+    }
+
+    pub fn name(&self) -> &str {
+        &self.manifest.package.name
     }
 
     pub fn load_source_files(&self) -> miette::Result<SourceFiles> {
@@ -29,7 +39,8 @@ impl Package {
 
         if !self.src_dir.exists() {
             return Err(PackageError::MissingSourceDir {
-                root: self.root.clone(),
+                name: self.name().to_owned(),
+                src_dir: self.src_dir.clone(),
             }
             .into());
         }
@@ -56,19 +67,19 @@ impl Package {
 
             // Filter out test files
             if SourceFiles::is_test_file(&rel_file) {
-                trace!(file = ?rel_file, "Filtering source file as it was detected as a test/spec file");
+                trace!(file = ?rel_file, "Filtering source file as it was detected as a test file");
 
                 sources.tests.push(rel_file);
                 continue;
             }
 
-            trace!(file = ?rel_file, "Using source file");
-
             match file.extension() {
                 Some(ext) if ext == "cjs" || ext == "cts" => {
-                    return Err(PackageError::NoCommonJS { file }.into());
+                    return Err(PackageError::NoCommonJS { path: file }.into());
                 }
                 Some(ext) if ext == "js" || ext == "jsx" || ext == "mjs" => {
+                    trace!(file = ?rel_file, "Using JavaScript file");
+
                     sources.modules.push(rel_file);
                 }
                 Some(ext) if ext == "ts" || ext == "tsx" || ext == "mts" => {
@@ -76,12 +87,15 @@ impl Package {
 
                     // Filter out declarations
                     if name.contains(".d") {
+                        trace!(file = ?rel_file, "Ignoring TypeScript declaration");
+
                         sources.excluded.push(rel_file);
                     } else {
-                        sources.modules.push(rel_file);
-                    }
+                        trace!(file = ?rel_file, "Using TypeScript file");
 
-                    sources.typescript = true;
+                        sources.modules.push(rel_file);
+                        sources.typescript = true;
+                    }
                 }
                 _ => {
                     sources.assets.push(rel_file);

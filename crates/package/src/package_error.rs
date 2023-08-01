@@ -5,18 +5,26 @@ use thiserror::Error;
 
 #[derive(Debug, Diagnostic, Error)]
 pub enum PackageError {
-    #[diagnostic(code(package::missing_src))]
+    #[diagnostic(code(package::missing))]
     #[error(
-        "No {} directory found in project {}.",
-        "src".style(Style::File),
-        .root.style(Style::Path),
+        "No package was found at {}.",
+        .path.style(Style::Path),
     )]
-    MissingSourceDir { root: PathBuf },
+    MissingPackage { path: PathBuf },
+
+    #[diagnostic(code(package::missing_src_dir))]
+    #[error(
+        "No {} directory found in package {}. Please create a directory at {}.",
+        "src".style(Style::File),
+        .name.style(Style::Id),
+        .src_dir.style(Style::Path),
+    )]
+    MissingSourceDir { name: String, src_dir: PathBuf },
 
     #[diagnostic(code(package::no_cjs))]
     #[error(
-        "CommonJS is not supported, please use ES modules instead. Found {} written in a CJS format.",
-        .file.style(Style::Path),
+        "CommonJS is not supported, please use ECMAScript modules instead. Found {} written in a CJS format.",
+        .path.style(Style::Path),
     )]
-    NoCommonJS { file: PathBuf },
+    NoCommonJS { path: PathBuf },
 }

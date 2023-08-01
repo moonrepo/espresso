@@ -3,6 +3,7 @@ import 'module';
 import './file';
 import './file.mjs';
 import 'styles.css';
+import '.';
 import icon from '../icons/add.svg';
 import image from './img/hero.png';
 
@@ -18,6 +19,7 @@ await import('../parent/file');
 // Exports
 export * from './file';
 export type * from './nested/types';
-export {} from '../parent/file.mjs';
+export { baz } from '../parent/file.mjs';
 export { foo, bar } from './file';
 export * as ns from './file/../weird/path';
+export { qux } from '.';

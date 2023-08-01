@@ -6,7 +6,7 @@ mod source_files {
     use super::*;
 
     #[test]
-    #[should_panic(expected = "No src directory found in project")]
+    #[should_panic(expected = "No src directory found in package no-sources.")]
     fn errors_no_src_dir() {
         let sandbox = create_sandbox("no-sources");
         let package = Package::new(sandbox.path()).unwrap();
@@ -100,5 +100,21 @@ exclude = ["**/*.tsx"]
             sources.modules,
             vec![PathBuf::from("helpers.ts"), PathBuf::from("index.ts")]
         );
+    }
+
+    #[test]
+    fn filters_typescript_declarations() {
+        let sandbox = create_sandbox("typescript-decls");
+        let package = Package::new(sandbox.path()).unwrap();
+        let mut sources = package.load_source_files().unwrap();
+
+        sources.excluded.sort();
+
+        assert_eq!(
+            sources.excluded,
+            vec![PathBuf::from("types.d.mts"), PathBuf::from("types.d.ts")]
+        );
+
+        assert_eq!(sources.modules, vec![PathBuf::from("index.ts")]);
     }
 }

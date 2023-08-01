@@ -31,4 +31,15 @@ mod target_output {
     test_target!(es2020, EsTarget::Es2020);
     test_target!(es2021, EsTarget::Es2021);
     test_target!(es2022, EsTarget::Es2022);
+
+    #[tokio::test]
+    async fn supports_legacy_decorators() {
+        let sandbox = create_sandbox("syntax-legacy-decorators");
+        let package = Package::new(sandbox.path()).unwrap();
+        let compiler = Compiler::new(&package).unwrap();
+        let out_dir = compiler.compile(EsTarget::Es2018).await.unwrap();
+
+        assert_snapshot!(read_file(out_dir.join("index.mjs")));
+        assert_snapshot!(read_file(out_dir.join("other.mjs")));
+    }
 }

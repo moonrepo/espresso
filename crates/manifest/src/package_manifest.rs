@@ -1,11 +1,20 @@
-use schematic::{validate, Config};
+use schematic::{derive_enum, validate, Config, ConfigEnum};
 use semver::{Version, VersionReq};
 use std::collections::HashMap;
 
 pub type ManifestDependencies = HashMap<String, VersionReq>;
 
+derive_enum!(
+    #[derive(ConfigEnum)]
+    pub enum BuildDecorators {
+        Legacy,
+    }
+);
+
 #[derive(Config, Clone, Debug, Eq, PartialEq)]
 pub struct PackageManifestBuild {
+    pub decorators: Option<BuildDecorators>,
+
     pub exclude: Vec<String>,
 
     #[setting(default = true)]

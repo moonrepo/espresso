@@ -23,6 +23,7 @@ name = "pkg"
             manifest,
             PackageManifest {
                 build: PackageManifestBuild {
+                    decorators: None,
                     exclude: vec![],
                     optimize_png: true,
                     optimize_svg: true,
@@ -65,6 +66,7 @@ optimizeSvg = false
             assert_eq!(
                 manifest.build,
                 PackageManifestBuild {
+                    decorators: None,
                     exclude: vec!["*.png".into()],
                     optimize_png: false,
                     optimize_svg: false,

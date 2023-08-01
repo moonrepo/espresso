@@ -1,8 +1,10 @@
 use crate::asset::Asset;
 use crate::module::Module;
 use jpm_common::EsTarget;
+use jpm_manifest::PackageManifestBuild;
 use jpm_package::{Package, SourceFiles};
 use miette::IntoDiagnostic;
+use starbase_utils::fs;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use swc::Compiler as SwcCompiler;
@@ -32,12 +34,16 @@ impl<'pkg> Compiler<'pkg> {
 
     pub async fn compile(&self, target: EsTarget) -> miette::Result<PathBuf> {
         let out_dir = self.package.root.join(".jpm").join(target.to_string());
+        let sources = self.package.load_source_files()?;
 
         debug!(out_dir = ?out_dir, target = target.to_string(), "Compiling package");
 
-        let sources = self.package.load_source_files()?;
-        let assets = self.create_assets(&sources, &out_dir);
-        let modules = self.create_modules(&sources, &out_dir);
+        let build_settings = Arc::new(self.package.manifest.build.clone());
+        let assets = self.create_assets(&sources, &out_dir, Arc::clone(&build_settings));
+        let modules = self.create_modules(&sources, &out_dir, Arc::clone(&build_settings));
+
+        // Delete previous build
+        fs::remove_dir_all(&out_dir)?;
 
         let mut futures: Vec<JoinHandle<miette::Result<()>>> = vec![];
         let compiler = self.compiler.clone();
@@ -65,9 +71,12 @@ impl<'pkg> Compiler<'pkg> {
         Ok(out_dir)
     }
 
-    pub fn create_assets(&self, sources: &SourceFiles, out_dir: &Path) -> Vec<Asset> {
-        let build_settings = Arc::new(self.package.manifest.build.clone());
-
+    pub fn create_assets(
+        &self,
+        sources: &SourceFiles,
+        out_dir: &Path,
+        build_settings: Arc<PackageManifestBuild>,
+    ) -> Vec<Asset> {
         sources
             .assets
             .iter()
@@ -81,7 +90,12 @@ impl<'pkg> Compiler<'pkg> {
             .collect::<Vec<_>>()
     }
 
-    pub fn create_modules(&self, sources: &SourceFiles, out_dir: &Path) -> Vec<Module> {
+    pub fn create_modules(
+        &self,
+        sources: &SourceFiles,
+        out_dir: &Path,
+        build_settings: Arc<PackageManifestBuild>,
+    ) -> Vec<Module> {
         sources
             .modules
             .iter()
@@ -90,7 +104,11 @@ impl<'pkg> Compiler<'pkg> {
                 let mut out_file = out_dir.join(asset_path);
                 out_file.set_extension("mjs");
 
-                Module::new(self.package.src_dir.join(asset_path), out_file)
+                Module::new(
+                    self.package.src_dir.join(asset_path),
+                    out_file,
+                    Arc::clone(&build_settings),
+                )
             })
             .collect::<Vec<_>>()
     }
