@@ -33,7 +33,7 @@ impl Package {
     }
 
     pub fn name(&self) -> &str {
-        &self.manifest.package.name
+        self.manifest.package.name.as_str()
     }
 
     pub fn load_source_files(&self) -> miette::Result<SourceFiles> {

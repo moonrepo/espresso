@@ -1,5 +1,5 @@
 use crate::common_settings::*;
-use crate::license_type::LicenseType;
+use jpm_common::{LicenseType, PackageName};
 use schematic::{derive_enum, validate, Config, ConfigEnum};
 use semver::Version;
 use url::Url;
@@ -27,7 +27,7 @@ pub struct PackageManifestBuild {
 #[derive(Config, Debug, Eq, PartialEq)]
 pub struct PackageManifestMetadata {
     #[setting(validate = validate::not_empty)]
-    pub name: String,
+    pub name: PackageName,
     pub version: Option<Version>,
 
     pub description: String,

@@ -10,7 +10,6 @@ miette = { workspace = true }
 schematic = { workspace = true }
 semver = { workspace = true }
 serde = { workspace = true }
-spdx = "0.10.2"
 starbase_styles = { workspace = true }
 starbase_utils = { workspace = true }
 thiserror = { workspace = true }

@@ -1,3 +1,4 @@
+use schematic::{SchemaType, Schematic};
 use serde::{Deserialize, Serialize};
 use spdx::Expression;
 use std::ops::Deref;
@@ -35,3 +36,9 @@ impl Deref for LicenseType {
 }
 
 impl Eq for LicenseType {}
+
+impl Schematic for LicenseType {
+    fn generate_schema() -> SchemaType {
+        SchemaType::string()
+    }
+}

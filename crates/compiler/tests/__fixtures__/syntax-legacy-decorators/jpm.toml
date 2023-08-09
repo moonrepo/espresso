@@ -1,5 +1,5 @@
 [package]
-name = "syntax-legacy-decorators"
+name = "ns/syntax-legacy-decorators"
 
 [build]
 decorators = "legacy"

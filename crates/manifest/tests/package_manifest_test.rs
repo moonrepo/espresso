@@ -1,7 +1,9 @@
+use jpm_common::*;
 use jpm_manifest::*;
 use semver::{Version, VersionReq};
 use starbase_sandbox::create_empty_sandbox;
 use std::collections::HashMap;
+use url::Url;
 
 mod package_manifest {
     use super::*;
@@ -13,7 +15,7 @@ mod package_manifest {
             "jpm.toml",
             r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 "#,
         );
 
@@ -35,7 +37,7 @@ name = "pkg"
                     target: EsTarget::Es2018,
                 },
                 package: PackageManifestMetadata {
-                    name: "pkg".into(),
+                    name: PackageName::parse("ns/pkg").unwrap(),
                     version: None,
                     description: String::new(),
                     keywords: vec![],
@@ -57,7 +59,7 @@ name = "pkg"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 
 [build]
 exclude = ["*.png"]
@@ -91,7 +93,7 @@ optimizeSvg = false
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 
 [dependencies]
 dep = "@1.2.3"
@@ -108,7 +110,7 @@ dep = "@1.2.3"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 
 [dependencies]
 a = "1.2.3"
@@ -149,8 +151,6 @@ z = "*"
     }
 
     mod package {
-        use url::Url;
-
         use super::*;
 
         #[test]
@@ -163,7 +163,7 @@ z = "*"
         }
 
         #[test]
-        #[should_panic(expected = "Failed to validate")]
+        #[should_panic(expected = "Package name must not be empty.")]
         fn errors_empty_name() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
@@ -184,7 +184,7 @@ name = ""
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 version = "1.2.3"
 description = "Does something."
 keywords = ["foo", "bar"]
@@ -198,7 +198,7 @@ publish = false
             assert_eq!(
                 manifest.package,
                 PackageManifestMetadata {
-                    name: "pkg".into(),
+                    name: PackageName::parse("ns/pkg").unwrap(),
                     version: Some(Version::parse("1.2.3").unwrap()),
                     description: "Does something.".into(),
                     keywords: vec!["foo".into(), "bar".into()],
@@ -216,7 +216,7 @@ publish = false
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 license = "MIT OR Apache-2.0"
 "#,
             );
@@ -237,7 +237,7 @@ license = "MIT OR Apache-2.0"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 license = "FAKE"
 "#,
             );
@@ -252,7 +252,7 @@ license = "FAKE"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 repository = "https://github.com/jpm/jpm"
 "#,
             );
@@ -273,7 +273,7 @@ repository = "https://github.com/jpm/jpm"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 repository = "invalid/url"
 "#,
             );
@@ -289,7 +289,7 @@ repository = "invalid/url"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 repository = "http://github.com/jpm/jpm"
 "#,
             );
@@ -304,7 +304,7 @@ repository = "http://github.com/jpm/jpm"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 homepage = "https://jpm.io"
 "#,
             );
@@ -324,7 +324,7 @@ homepage = "https://jpm.io"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 homepage = "http://jpm.io"
 "#,
             );
@@ -345,7 +345,7 @@ homepage = "http://jpm.io"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 homepage = "invalid/url"
 "#,
             );
@@ -360,7 +360,7 @@ homepage = "invalid/url"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 documentation = "https://jpm.io/docs"
 "#,
             );
@@ -380,7 +380,7 @@ documentation = "https://jpm.io/docs"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 documentation = "http://jpm.io/docs"
 "#,
             );
@@ -401,7 +401,7 @@ documentation = "http://jpm.io/docs"
                 "jpm.toml",
                 r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 documentation = "invalid/url"
 "#,
             );
