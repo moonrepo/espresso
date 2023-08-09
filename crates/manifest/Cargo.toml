@@ -7,6 +7,7 @@ license = "MIT"
 [dependencies]
 jpm_common = { path = "../common" }
 miette = { workspace = true }
+relative-path = { workspace = true }
 schematic = { workspace = true }
 semver = { workspace = true }
 serde = { workspace = true }
@@ -14,6 +15,7 @@ starbase_styles = { workspace = true }
 starbase_utils = { workspace = true }
 thiserror = { workspace = true }
 tracing = { workspace = true }
+url = { workspace = true }
 
 [dev-dependencies]
 starbase_sandbox = { workspace = true }

@@ -1,6 +1,9 @@
 use crate::common_settings::*;
+use jpm_common::{LicenseType, PackageName};
+use relative_path::RelativePathBuf;
 use schematic::{derive_enum, validate, Config, ConfigEnum};
 use semver::Version;
+use url::Url;
 
 derive_enum!(
     #[derive(ConfigEnum)]
@@ -13,7 +16,7 @@ derive_enum!(
 pub struct PackageManifestBuild {
     pub decorators: Option<PackageManifestBuildDecorators>,
 
-    pub exclude: Vec<String>,
+    pub exclude: Vec<RelativePathBuf>,
 
     #[setting(default = true)]
     pub optimize_png: bool,
@@ -25,11 +28,17 @@ pub struct PackageManifestBuild {
 #[derive(Config, Debug, Eq, PartialEq)]
 pub struct PackageManifestMetadata {
     #[setting(validate = validate::not_empty)]
-    pub name: String,
+    pub name: PackageName,
     pub version: Option<Version>,
+
     pub description: String,
     pub keywords: Vec<String>,
-    pub license: Option<String>,
+    pub license: Option<LicenseType>,
+
+    #[setting(validate = validate::url_secure)]
+    pub repository: Option<Url>,
+    pub homepage: Option<Url>,
+    pub documentation: Option<Url>,
 
     #[setting(default = true)]
     pub publish: bool,

@@ -1,3 +1,4 @@
+use jpm_common::PackageName;
 use jpm_manifest::*;
 use starbase_sandbox::create_empty_sandbox;
 
@@ -20,14 +21,14 @@ mod manifest_loader {
             "jpm.toml",
             r#"
 [package]
-name = "pkg"
+name = "ns/pkg"
 "#,
         );
 
         let manifest = ManifestLoader::load(sandbox.path().join(MANIFEST_FILE)).unwrap();
 
         if let Manifest::Package(package) = manifest {
-            assert_eq!(package.package.name, "pkg");
+            assert_eq!(package.package.name, PackageName::parse("ns/pkg").unwrap());
         } else {
             panic!();
         }

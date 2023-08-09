@@ -20,7 +20,7 @@ pub struct Compiler<'pkg> {
 impl<'pkg> Compiler<'pkg> {
     pub fn new(package: &Package) -> miette::Result<Compiler> {
         debug!(
-            package = &package.manifest.package.name,
+            package = package.name(),
             "Creating new compiler for package"
         );
 

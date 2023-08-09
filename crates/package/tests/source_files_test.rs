@@ -6,7 +6,7 @@ mod source_files {
     use super::*;
 
     #[test]
-    #[should_panic(expected = "No src directory found in package no-sources.")]
+    #[should_panic(expected = "No src directory found in package ns/no-sources.")]
     fn errors_no_src_dir() {
         let sandbox = create_sandbox("no-sources");
         let package = Package::new(sandbox.path()).unwrap();
