@@ -149,6 +149,8 @@ z = "*"
     }
 
     mod package {
+        use url::Url;
+
         use super::*;
 
         #[test]
@@ -237,6 +239,170 @@ license = "MIT OR Apache-2.0"
 [package]
 name = "pkg"
 license = "FAKE"
+"#,
+            );
+
+            ManifestLoader::load_package(sandbox.path()).unwrap();
+        }
+
+        #[test]
+        fn parses_repository() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+repository = "https://github.com/jpm/jpm"
+"#,
+            );
+
+            let manifest = ManifestLoader::load_package(sandbox.path()).unwrap();
+
+            assert_eq!(
+                manifest.package.repository,
+                Some(Url::parse("https://github.com/jpm/jpm").unwrap())
+            );
+        }
+
+        #[test]
+        #[should_panic(expected = "invalid value: string \"invalid/url\"")]
+        fn errors_invalid_repository() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+repository = "invalid/url"
+"#,
+            );
+
+            ManifestLoader::load_package(sandbox.path()).unwrap();
+        }
+
+        #[test]
+        #[should_panic(expected = "only secure URLs are allowed")]
+        fn errors_non_https_repository() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+repository = "http://github.com/jpm/jpm"
+"#,
+            );
+
+            ManifestLoader::load_package(sandbox.path()).unwrap();
+        }
+
+        #[test]
+        fn parses_homepage() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+homepage = "https://jpm.io"
+"#,
+            );
+
+            let manifest = ManifestLoader::load_package(sandbox.path()).unwrap();
+
+            assert_eq!(
+                manifest.package.homepage,
+                Some(Url::parse("https://jpm.io").unwrap())
+            );
+        }
+
+        #[test]
+        fn allows_http_homepage() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+homepage = "http://jpm.io"
+"#,
+            );
+
+            let manifest = ManifestLoader::load_package(sandbox.path()).unwrap();
+
+            assert_eq!(
+                manifest.package.homepage,
+                Some(Url::parse("http://jpm.io").unwrap())
+            );
+        }
+
+        #[test]
+        #[should_panic(expected = "invalid value: string \"invalid/url\"")]
+        fn errors_invalid_homepage() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+homepage = "invalid/url"
+"#,
+            );
+
+            ManifestLoader::load_package(sandbox.path()).unwrap();
+        }
+
+        #[test]
+        fn parses_documentation() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+documentation = "https://jpm.io/docs"
+"#,
+            );
+
+            let manifest = ManifestLoader::load_package(sandbox.path()).unwrap();
+
+            assert_eq!(
+                manifest.package.documentation,
+                Some(Url::parse("https://jpm.io/docs").unwrap())
+            );
+        }
+
+        #[test]
+        fn allows_http_documentation() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+documentation = "http://jpm.io/docs"
+"#,
+            );
+
+            let manifest = ManifestLoader::load_package(sandbox.path()).unwrap();
+
+            assert_eq!(
+                manifest.package.documentation,
+                Some(Url::parse("http://jpm.io/docs").unwrap())
+            );
+        }
+
+        #[test]
+        #[should_panic(expected = "invalid value: string \"invalid/url\"")]
+        fn errors_invalid_documentation() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+documentation = "invalid/url"
 "#,
             );
 
