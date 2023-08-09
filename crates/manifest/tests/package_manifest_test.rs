@@ -200,11 +200,47 @@ publish = false
                     version: Some(Version::parse("1.2.3").unwrap()),
                     description: "Does something.".into(),
                     keywords: vec!["foo".into(), "bar".into()],
-                    license: Some("MIT".into()),
+                    license: Some(LicenseType::parse("MIT").unwrap()),
                     publish: false,
                     ..PackageManifestMetadata::default()
                 }
             );
+        }
+
+        #[test]
+        fn parses_license() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+license = "MIT OR Apache-2.0"
+"#,
+            );
+
+            let manifest = ManifestLoader::load_package(sandbox.path()).unwrap();
+
+            assert_eq!(
+                manifest.package.license,
+                Some(LicenseType::parse("MIT OR Apache-2.0").unwrap())
+            );
+        }
+
+        #[test]
+        #[should_panic(expected = "unknown term")]
+        fn errors_invalid_license() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "pkg"
+license = "FAKE"
+"#,
+            );
+
+            ManifestLoader::load_package(sandbox.path()).unwrap();
         }
     }
 }

@@ -1,4 +1,5 @@
 use crate::common_settings::*;
+use crate::license_type::LicenseType;
 use schematic::{derive_enum, validate, Config, ConfigEnum};
 use semver::Version;
 use url::Url;
@@ -31,7 +32,9 @@ pub struct PackageManifestMetadata {
 
     pub description: String,
     pub keywords: Vec<String>,
-    pub license: Option<String>,
+    pub license: Option<LicenseType>,
+
+    #[setting(validate = validate::url_secure)]
     pub repository: Option<Url>,
     pub homepage: Option<Url>,
     pub documentation: Option<Url>,
