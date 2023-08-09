@@ -96,7 +96,7 @@ optimizeSvg = false
 name = "ns/pkg"
 
 [dependencies]
-dep = "@1.2.3"
+"ns/dep" = "@1.2.3"
 "#,
             );
 
@@ -113,18 +113,18 @@ dep = "@1.2.3"
 name = "ns/pkg"
 
 [dependencies]
-a = "1.2.3"
-b = "=1.2.3"
-c = "^1.2.3"
-d = "~1.2.3"
-e = ">1.2.3"
-f = ">=1.2.3"
-g = "< 1.2.3"
-h = "<= 1.2.3"
-i = "1.2.3-rc"
-j = "1.2.3-alpha.0"
-k = "^1.2, <3.4, >5.6"
-z = "*"
+"ns/a1" = "1.2.3"
+"ns/b1" = "=1.2.3"
+"ns/c1" = "^1.2.3"
+"ns/d1" = "~1.2.3"
+"ns/e1" = ">1.2.3"
+"ns/f1" = ">=1.2.3"
+"ns/g1" = "< 1.2.3"
+"ns/h1" = "<= 1.2.3"
+"ns/i1" = "1.2.3-rc"
+"ns/j1" = "1.2.3-alpha.0"
+"ns/k1" = "^1.2, <3.4, >5.6"
+"ns/z1" = "*"
 "#,
             );
 
@@ -133,18 +133,54 @@ z = "*"
             assert_eq!(
                 manifest.dependencies,
                 HashMap::from_iter([
-                    ("a".into(), VersionReq::parse("1.2.3").unwrap()),
-                    ("b".into(), VersionReq::parse("=1.2.3").unwrap()),
-                    ("c".into(), VersionReq::parse("^1.2.3").unwrap()),
-                    ("d".into(), VersionReq::parse("~1.2.3").unwrap()),
-                    ("e".into(), VersionReq::parse(">1.2.3").unwrap()),
-                    ("f".into(), VersionReq::parse(">=1.2.3").unwrap()),
-                    ("g".into(), VersionReq::parse("< 1.2.3").unwrap()),
-                    ("h".into(), VersionReq::parse("<= 1.2.3").unwrap()),
-                    ("i".into(), VersionReq::parse("1.2.3-rc").unwrap()),
-                    ("j".into(), VersionReq::parse("1.2.3-alpha.0").unwrap()),
-                    ("k".into(), VersionReq::parse("^1.2, <3.4, >5.6").unwrap()),
-                    ("z".into(), VersionReq::parse("*").unwrap()),
+                    (
+                        PackageName::parse("ns/a1").unwrap(),
+                        VersionReq::parse("1.2.3").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/b1").unwrap(),
+                        VersionReq::parse("=1.2.3").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/c1").unwrap(),
+                        VersionReq::parse("^1.2.3").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/d1").unwrap(),
+                        VersionReq::parse("~1.2.3").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/e1").unwrap(),
+                        VersionReq::parse(">1.2.3").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/f1").unwrap(),
+                        VersionReq::parse(">=1.2.3").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/g1").unwrap(),
+                        VersionReq::parse("< 1.2.3").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/h1").unwrap(),
+                        VersionReq::parse("<= 1.2.3").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/i1").unwrap(),
+                        VersionReq::parse("1.2.3-rc").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/j1").unwrap(),
+                        VersionReq::parse("1.2.3-alpha.0").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/k1").unwrap(),
+                        VersionReq::parse("^1.2, <3.4, >5.6").unwrap()
+                    ),
+                    (
+                        PackageName::parse("ns/z1").unwrap(),
+                        VersionReq::parse("*").unwrap()
+                    ),
                 ])
             );
         }

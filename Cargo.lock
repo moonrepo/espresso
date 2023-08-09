@@ -1448,6 +1448,7 @@ version = "0.1.0"
 dependencies = [
  "jpm_common",
  "miette 5.10.0",
+ "relative-path",
  "schematic",
  "semver 1.0.18",
  "serde",
@@ -2302,6 +2303,9 @@ name = "relative-path"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4bf2521270932c3c7bed1a59151222bd7643c79310f2916f01925e1e16255698"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "rend"

@@ -49,7 +49,7 @@ fn components(value: &str) -> (&str, &str) {
     (comps.next().unwrap(), comps.next().unwrap())
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(try_from = "String", into = "String")]
 pub struct PackageName(String);
 
@@ -120,6 +120,18 @@ impl Into<String> for PackageName {
 impl AsRef<str> for PackageName {
     fn as_ref(&self) -> &str {
         &self.0
+    }
+}
+
+impl AsRef<String> for PackageName {
+    fn as_ref(&self) -> &String {
+        &self.0
+    }
+}
+
+impl AsRef<PackageName> for PackageName {
+    fn as_ref(&self) -> &PackageName {
+        self
     }
 }
 

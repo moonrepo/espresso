@@ -6,6 +6,7 @@ members = ["crates/*"]
 clap = { version = "4.3.21", default-features = false, features = ["std"] }
 miette = "5.10.0"
 once_cell = "1.18.0"
+relative-path = { version = "1.8.0", features = ["serde"] }
 schematic = { version = "0.11.1", default-features = false, features = [
 	"toml",
 	"valid_url",

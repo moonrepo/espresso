@@ -7,6 +7,7 @@ license = "MIT"
 [dependencies]
 jpm_common = { path = "../common" }
 miette = { workspace = true }
+relative-path = { workspace = true }
 schematic = { workspace = true }
 semver = { workspace = true }
 serde = { workspace = true }
