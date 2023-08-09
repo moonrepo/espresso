@@ -40,7 +40,8 @@ name = "pkg"
                     description: String::new(),
                     keywords: vec![],
                     license: None,
-                    publish: true
+                    publish: true,
+                    ..PackageManifestMetadata::default()
                 }
             }
         );
@@ -200,7 +201,8 @@ publish = false
                     description: "Does something.".into(),
                     keywords: vec!["foo".into(), "bar".into()],
                     license: Some("MIT".into()),
-                    publish: false
+                    publish: false,
+                    ..PackageManifestMetadata::default()
                 }
             );
         }

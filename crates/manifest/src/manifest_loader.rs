@@ -9,8 +9,8 @@ use tracing::debug;
 pub const MANIFEST_FILE: &str = "jpm.toml";
 
 pub enum Manifest {
-    Package(PackageManifest),
-    Workspace(WorkspaceManifest),
+    Workspace(Box<WorkspaceManifest>),
+    Package(Box<PackageManifest>),
 }
 
 pub struct ManifestLoader;
@@ -43,15 +43,15 @@ impl ManifestLoader {
         // Schematic doesn't support loading different structs depending on the
         // content of the file, so we need to handle this manually.
         if content.contains("[package]") {
-            return Ok(Manifest::Package(Self::do_load_from_string::<
+            return Ok(Manifest::Package(Box::new(Self::do_load_from_string::<
                 PackageManifest,
-            >(content)?));
+            >(content)?)));
         }
 
         if content.contains("[workspace]") {
-            return Ok(Manifest::Workspace(Self::do_load_from_string::<
+            return Ok(Manifest::Workspace(Box::new(Self::do_load_from_string::<
                 WorkspaceManifest,
-            >(content)?));
+            >(content)?)));
         }
 
         Err(ManifestError::DetectionFailure { path }.into())

@@ -1450,6 +1450,7 @@ dependencies = [
  "starbase_utils",
  "thiserror",
  "tracing",
+ "url",
 ]
 
 [[package]]
@@ -4377,6 +4378,7 @@ dependencies = [
  "form_urlencoded",
  "idna",
  "percent-encoding",
+ "serde",
 ]
 
 [[package]]
