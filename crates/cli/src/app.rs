@@ -3,7 +3,7 @@ use jpm_common::EsTarget;
 
 pub const BIN_NAME: &str = if cfg!(windows) { "jpm.exe" } else { "jpm" };
 
-#[derive(Debug, Subcommand)]
+#[derive(Clone, Debug, Subcommand)]
 pub enum Commands {
     #[command(
         name = "build",
@@ -26,7 +26,7 @@ pub enum Commands {
     },
 }
 
-#[derive(Debug, Parser)]
+#[derive(Clone, Debug, Parser)]
 #[command(
     bin_name = BIN_NAME,
     name = "jpm",
@@ -38,7 +38,8 @@ pub enum Commands {
     next_line_help = false,
     rename_all = "camelCase"
 )]
-pub struct App {
+#[allow(clippy::upper_case_acronyms)]
+pub struct CLI {
     #[command(subcommand)]
     pub command: Commands,
 }

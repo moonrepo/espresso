@@ -1399,11 +1399,13 @@ dependencies = [
  "jpm_common",
  "jpm_compiler",
  "jpm_package",
+ "jpm_workspace",
  "miette 5.10.0",
  "mimalloc",
  "starbase",
  "starbase_styles",
  "tokio",
+ "tracing",
 ]
 
 [[package]]
@@ -1443,6 +1445,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "jpm_lockfile"
+version = "0.1.0"
+
+[[package]]
 name = "jpm_manifest"
 version = "0.1.0"
 dependencies = [
@@ -1468,6 +1474,20 @@ dependencies = [
  "miette 5.10.0",
  "relative-path",
  "starbase_sandbox",
+ "starbase_styles",
+ "starbase_utils",
+ "thiserror",
+ "tracing",
+]
+
+[[package]]
+name = "jpm_workspace"
+version = "0.1.0"
+dependencies = [
+ "jpm_lockfile",
+ "jpm_manifest",
+ "miette 5.10.0",
+ "starbase",
  "starbase_styles",
  "starbase_utils",
  "thiserror",

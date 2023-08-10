@@ -1,4 +1,4 @@
-use crate::manifest_loader::MANIFEST_FILE;
+use crate::manifest_loader::MANIFEST_NAME;
 use miette::Diagnostic;
 use starbase_styles::{Style, Stylize};
 use std::path::PathBuf;
@@ -18,7 +18,7 @@ pub enum ManifestError {
     #[diagnostic(code(manifest::missing_file))]
     #[error(
         "No {} manifest file found in {}.",
-        MANIFEST_FILE.style(Style::File),
+        MANIFEST_NAME.style(Style::File),
         .path.style(Style::Path),
     )]
     MissingFile { path: PathBuf },
