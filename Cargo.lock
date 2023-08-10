@@ -2544,9 +2544,9 @@ dependencies = [
 
 [[package]]
 name = "schematic"
-version = "0.11.1"
+version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "47119c16c048894c2003db42c9ec28cd502ba29155a813d46c68ea82f0847ec6"
+checksum = "c9a4dae95c5191faf0e295682fc79b05fdae0d7896e307ad462110ea218d4709"
 dependencies = [
  "garde",
  "indexmap 2.0.0",
@@ -2564,9 +2564,9 @@ dependencies = [
 
 [[package]]
 name = "schematic_macros"
-version = "0.11.1"
+version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d830e5344f49890b62354565ad355f77af511c298eadd70cfd96d7f077820252"
+checksum = "8c08b6bc89333f39160933804c3eeb3c458b42c5bd2895e0e5f051c4d5ac0551"
 dependencies = [
  "convert_case",
  "darling",
@@ -2577,9 +2577,13 @@ dependencies = [
 
 [[package]]
 name = "schematic_types"
-version = "0.4.1"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e76f3ad9eccc2a3f57dc0d27c20f04f8e3911b789f31eb2559c7a3597a10e6c"
+checksum = "a7f109b11cf481e14d14aedcc8a9525031280963b9280b4d537476d28949f7cc"
+dependencies = [
+ "relative-path",
+ "url",
+]
 
 [[package]]
 name = "scoped-tls"

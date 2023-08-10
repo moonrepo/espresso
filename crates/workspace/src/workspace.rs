@@ -32,6 +32,8 @@ impl Workspace {
             return Err(WorkspaceError::NoRootDetected)?;
         };
 
+        debug!(root = ?root, "Found a possible root!");
+
         Ok(Workspace {
             manifest: ManifestLoader::load(&root)?,
             root,
