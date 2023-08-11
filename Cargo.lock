@@ -1106,9 +1106,6 @@ name = "hashbrown"
 version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2c6201b9ff9fd90a5a3bac2e56a830d0caa509576f0e503818ee82c181b3437a"
-dependencies = [
- "ahash 0.8.3",
-]
 
 [[package]]
 name = "heck"
@@ -1493,7 +1490,7 @@ dependencies = [
  "jpm_package",
  "miette 5.10.0",
  "once_cell",
- "once_map",
+ "petgraph",
  "starbase",
  "starbase_styles",
  "starbase_utils",
@@ -1851,18 +1848,6 @@ name = "once_cell"
 version = "1.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"
-
-[[package]]
-name = "once_map"
-version = "0.4.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "169e72192bc84493725bfca5d47da4ee2abc8acf155586d8127eb17f022497f4"
-dependencies = [
- "ahash 0.8.3",
- "hashbrown 0.14.0",
- "parking_lot",
- "stable_deref_trait",
-]
 
 [[package]]
 name = "option-ext"

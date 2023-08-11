@@ -1,3 +1,4 @@
+use crate::package_graph::PackageGraph;
 use crate::workspace_error::WorkspaceError;
 use jpm_common::PackageName;
 use jpm_lockfile::LOCKFILE_NAME;
@@ -106,6 +107,17 @@ impl Workspace {
 
             Ok::<BTreeMap<PackageName, Package>, miette::Report>(packages)
         })
+    }
+
+    pub fn query_packages(&self) -> miette::Result<Vec<&Package>> {
+        let packages = self.load_packages()?;
+        let mut results = vec![];
+
+        for order in PackageGraph::new(packages).toposort()? {
+            results.push(packages.get(order).unwrap());
+        }
+
+        Ok(results)
     }
 }
 

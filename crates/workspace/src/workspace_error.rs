@@ -13,4 +13,11 @@ pub enum WorkspaceError {
         MANIFEST_NAME.style(Style::File),
     )]
     NoRootDetected,
+
+    #[diagnostic(code(workspace::package_graph::cycle_detected))]
+    #[error(
+        "Unable to continue, detected a dependency cycle for packages in the local workspace. The package {} was involved in the cycle.",
+        .0.style(Style::Id),
+    )]
+    PackageGraphCycle(String),
 }

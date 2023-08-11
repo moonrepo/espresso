@@ -1,2 +1,5 @@
 [package]
 name = "jpm-example/baz"
+
+[dependencies]
+"jpm-example/foo" = "*"
