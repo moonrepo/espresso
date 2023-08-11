@@ -1,2 +1,2 @@
-[package]
-name = "jpm/cli"
+[workspace]
+packages = ["packages/*"]

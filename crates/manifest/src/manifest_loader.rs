@@ -8,6 +8,7 @@ use tracing::debug;
 
 pub const MANIFEST_NAME: &str = "jpm.toml";
 
+#[derive(Debug)]
 pub enum Manifest {
     Workspace(Box<WorkspaceManifest>),
     Package(Box<PackageManifest>),

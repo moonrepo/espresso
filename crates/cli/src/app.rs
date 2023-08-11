@@ -27,6 +27,13 @@ pub enum Commands {
         rename_all = "camelCase"
     )]
     Build(BuildArgs),
+
+    #[command(
+        name = "debug",
+        about = "Debug jpm instance.",
+        rename_all = "camelCase"
+    )]
+    Debug,
 }
 
 #[derive(Clone, Debug, Parser)]

@@ -7,6 +7,7 @@ use starbase_utils::{fs, glob};
 use std::path::{Path, PathBuf};
 use tracing::{debug, trace};
 
+#[derive(Debug)]
 pub struct Package {
     pub manifest: PackageManifest,
     pub root: PathBuf,

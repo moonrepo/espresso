@@ -8,6 +8,7 @@ use starbase::Resource;
 use starbase_styles::color;
 use starbase_utils::{fs, glob};
 use std::collections::BTreeMap;
+use std::fmt;
 use std::path::{Path, PathBuf};
 use tracing::debug;
 
@@ -25,13 +26,17 @@ impl Workspace {
     pub fn load_from(working_dir: &Path) -> miette::Result<Workspace> {
         debug!(
             working_dir = ?working_dir,
+            lockfile = LOCKFILE_NAME,
             "Attempting to find workspace root by locating a lockfile",
         );
 
         let mut root = fs::find_upwards_root(LOCKFILE_NAME, working_dir);
 
         if root.is_none() {
-            debug!("No lockfile found, locating closest manifest instead");
+            debug!(
+                manifest = MANIFEST_NAME,
+                "No lockfile found, locating closest manifest instead"
+            );
 
             root = fs::find_upwards_root(MANIFEST_NAME, working_dir);
         }
@@ -53,7 +58,7 @@ impl Workspace {
         })
     }
 
-    pub fn load_packages(&self) -> miette::Result<()> {
+    pub fn load_packages(&self) -> miette::Result<&BTreeMap<PackageName, Package>> {
         self.packages.get_or_try_init(|| {
             let mut packages = BTreeMap::new();
 
@@ -100,8 +105,17 @@ impl Workspace {
             };
 
             Ok::<BTreeMap<PackageName, Package>, miette::Report>(packages)
-        })?;
+        })
+    }
+}
 
-        Ok(())
+impl fmt::Debug for Workspace {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Workspace")
+            .field("manifest", &self.manifest)
+            .field("monorepo", &self.monorepo)
+            .field("root", &self.root)
+            .field("working_dir", &self.working_dir)
+            .finish()
     }
 }

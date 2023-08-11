@@ -8,5 +8,7 @@ use starbase::system;
 pub fn run_command(cli: StateRef<CommandArgs>, workspace: ResourceRef<Workspace>) -> SystemResult {
     match &cli.command {
         Commands::Build(args) => commands::build(workspace, args).await?,
+
+        Commands::Debug => commands::debug(workspace).await?,
     };
 }
