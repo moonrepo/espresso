@@ -1,11 +1,14 @@
 use crate::app::Commands;
 use crate::commands;
-use crate::states::CommandArgs;
+use crate::states::RunningCommand;
 use jpm_workspace::Workspace;
 use starbase::system;
 
 #[system]
-pub fn run_command(cli: StateRef<CommandArgs>, workspace: ResourceRef<Workspace>) -> SystemResult {
+pub fn run_command(
+    cli: StateRef<RunningCommand>,
+    workspace: ResourceRef<Workspace>,
+) -> SystemResult {
     let global_args = cli.global_args();
 
     match &cli.command {

@@ -123,7 +123,15 @@ impl Workspace {
                 return Err(WorkspaceError::EitherPackageOrWorkspaceArg)?;
             }
 
-            selected_names.extend(select_by);
+            for name in select_by {
+                if !packages.contains_key(name) {
+                    return Err(WorkspaceError::UnknownPackage {
+                        name: name.to_owned(),
+                    })?;
+                }
+
+                selected_names.insert(name);
+            }
 
             // Select all packages
         } else if select_all {

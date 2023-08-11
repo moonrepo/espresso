@@ -51,9 +51,9 @@ impl<'ws> PackageGraph<'ws> {
 
                 Ok(names)
             }
-            Err(cycle) => Err(WorkspaceError::PackageGraphCycle(
-                self.graph.node_weight(cycle.node_id()).unwrap().to_string(),
-            ))?,
+            Err(cycle) => Err(WorkspaceError::PackageGraphCycle {
+                dep: (*self.graph.node_weight(cycle.node_id()).unwrap()).to_owned(),
+            })?,
         }
     }
 

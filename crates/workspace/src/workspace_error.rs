@@ -1,3 +1,4 @@
+use jpm_common::PackageName;
 use jpm_lockfile::LOCKFILE_NAME;
 use jpm_manifest::MANIFEST_NAME;
 use miette::Diagnostic;
@@ -33,7 +34,14 @@ pub enum WorkspaceError {
     #[diagnostic(code(workspace::package_graph::cycle_detected))]
     #[error(
         "Unable to continue, detected a dependency cycle for packages in the local workspace. The package {} was involved in the cycle.",
-        .0.style(Style::Id),
+        .dep.to_string().style(Style::Id),
     )]
-    PackageGraphCycle(String),
+    PackageGraphCycle { dep: PackageName },
+
+    #[diagnostic(code(workspace::package_graph::unknown_package))]
+    #[error(
+        "The package {} doesn't exist within the current workspace.",
+        .name.to_string().style(Style::Id),
+    )]
+    UnknownPackage { name: PackageName },
 }

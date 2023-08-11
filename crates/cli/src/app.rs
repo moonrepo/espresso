@@ -63,7 +63,7 @@ pub struct CLI {
         short = 'p',
         long,
         global = true,
-        help = "Focus a specific package.",
+        help = "Select a specific package. Can be specified multiple times.",
         help_heading = HEADING_FILTER,
         group = "package-filter"
     )]
@@ -73,7 +73,7 @@ pub struct CLI {
         short = 'w',
         long,
         global = true,
-        help = "Focus all packages in the workspace.",
+        help = "Select all packages in the workspace.",
         help_heading = HEADING_FILTER,
         group = "package-filter"
     )]
