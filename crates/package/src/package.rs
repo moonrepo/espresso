@@ -18,7 +18,7 @@ impl Package {
     pub fn new<P: AsRef<Path>>(root: P) -> miette::Result<Package> {
         let root = root.as_ref().to_path_buf();
 
-        debug!(root = ?root, "Loading package");
+        debug!(package_root = ?root, "Loading package from directory");
 
         if !root.exists() {
             return Err(PackageError::MissingPackage { path: root }.into());
@@ -37,7 +37,7 @@ impl Package {
     }
 
     pub fn load_source_files(&self) -> miette::Result<SourceFiles> {
-        debug!(src_dir = ?self.src_dir, "Loading source files");
+        debug!(package = self.name(), src_dir = ?self.src_dir, "Loading source files");
 
         if !self.src_dir.exists() {
             return Err(PackageError::MissingSourceDir {
@@ -62,7 +62,11 @@ impl Package {
 
             // Exclude files first
             if exclude.is_match(rel_file.as_str()) {
-                trace!(file = ?rel_file, "Excluding source file as it matches an exclude pattern");
+                trace!(
+                    package = self.name(),
+                    file = ?rel_file,
+                    "Excluding source file as it matches an exclude pattern",
+                );
 
                 sources.excluded.push(rel_file);
                 continue;
@@ -70,7 +74,11 @@ impl Package {
 
             // Filter out test files
             if SourceFiles::is_test_file(rel_file.as_ref()) {
-                trace!(file = ?rel_file, "Filtering source file as it was detected as a test file");
+                trace!(
+                    package = self.name(),
+                    file = ?rel_file,
+                    "Filtering source file as it was detected as a test file",
+                );
 
                 sources.tests.push(rel_file);
                 continue;
@@ -81,17 +89,29 @@ impl Package {
                     return Err(PackageError::NoCommonJS { path: file }.into());
                 }
                 Some(ext) if ext == "js" || ext == "jsx" || ext == "mjs" => {
-                    trace!(file = ?rel_file, "Using JavaScript file");
+                    trace!(
+                        package = self.name(),
+                        file = ?rel_file,
+                        "Using JavaScript file",
+                    );
 
                     sources.modules.push(rel_file);
                 }
                 Some(ext) if ext == "ts" || ext == "tsx" || ext == "mts" => {
                     if rel_file.as_str().contains(".d.") {
-                        trace!(file = ?rel_file, "Ignoring TypeScript declaration");
+                        trace!(
+                            package = self.name(),
+                            file = ?rel_file,
+                            "Ignoring TypeScript declaration",
+                        );
 
                         sources.excluded.push(rel_file);
                     } else {
-                        trace!(file = ?rel_file, "Using TypeScript file");
+                        trace!(
+                            package = self.name(),
+                            file = ?rel_file,
+                            "Using TypeScript file",
+                        );
 
                         sources.modules.push(rel_file);
                         sources.typescript = true;

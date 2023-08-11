@@ -5,9 +5,13 @@ edition = "2021"
 license = "MIT"
 
 [dependencies]
+jpm_common = { path = "../common" }
 jpm_lockfile = { path = "../lockfile" }
 jpm_manifest = { path = "../manifest" }
+jpm_package = { path = "../package" }
 miette = { workspace = true }
+once_cell = { workspace = true }
+once_map = { workspace = true }
 starbase = { workspace = true }
 starbase_styles = { workspace = true }
 starbase_utils = { workspace = true }
