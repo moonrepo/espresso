@@ -1,6 +1,7 @@
 use jpm_workspace::Workspace;
 use starbase::SystemResult;
 
+#[tracing::instrument(skip_all)]
 pub async fn debug(workspace: &Workspace) -> SystemResult {
     dbg!(workspace);
 
@@ -8,7 +9,7 @@ pub async fn debug(workspace: &Workspace) -> SystemResult {
     dbg!(workspace.load_packages()?);
 
     dbg!("QUERY PACKAGES");
-    dbg!(workspace.query_packages()?);
+    dbg!(workspace.query_packages(true, None)?);
 
     Ok(())
 }

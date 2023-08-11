@@ -8,7 +8,7 @@ use once_cell::sync::OnceCell;
 use starbase::Resource;
 use starbase_styles::color;
 use starbase_utils::{fs, glob};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashSet};
 use std::fmt;
 use std::path::{Path, PathBuf};
 use tracing::debug;
@@ -85,7 +85,7 @@ impl Workspace {
                 Manifest::Workspace(manifest) => {
                     debug!(
                         packages = ?manifest.workspace.packages,
-                        "Detected a multi package repository, locating packages with a manifest",
+                        "Detected a multi package repository (monorepo), locating packages with a manifest",
                     );
 
                     for package_root in glob::walk(&self.root, &manifest.workspace.packages)? {
@@ -98,7 +98,7 @@ impl Workspace {
                 // Single package repository
                 Manifest::Package(_) => {
                     debug!(
-                        "Detected a single package repository, using workspace root as package root"
+                        "Detected a single package repository (polyrepo), using workspace root as package root"
                     );
 
                     add_package(&self.root)?;
@@ -109,12 +109,53 @@ impl Workspace {
         })
     }
 
-    pub fn query_packages(&self) -> miette::Result<Vec<&Package>> {
+    pub fn query_packages(
+        &self,
+        select_all: bool,
+        select_by_names: Option<&Vec<PackageName>>,
+    ) -> miette::Result<Vec<&Package>> {
         let packages = self.load_packages()?;
+        let mut selected_names = HashSet::new();
+
+        // Select packages by name
+        if let Some(select_by) = select_by_names {
+            if select_all {
+                return Err(WorkspaceError::EitherPackageOrWorkspaceArg)?;
+            }
+
+            selected_names.extend(select_by);
+
+            // Select all packages
+        } else if select_all {
+            selected_names.extend(packages.keys());
+
+            // If a polyrepo, always use the root package if no filters provided
+        } else if let Manifest::Package(root_package) = &self.manifest {
+            selected_names.insert(&root_package.package.name);
+        }
+
+        if selected_names.is_empty() {
+            return Err(WorkspaceError::NoPackagesSelected)?;
+        }
+
+        // Sort the filtered packages topologically
         let mut results = vec![];
 
-        for order in PackageGraph::new(packages).toposort()? {
-            results.push(packages.get(order).unwrap());
+        for name in PackageGraph::new(packages).toposort()? {
+            if selected_names.contains(name) {
+                results.push(packages.get(name).unwrap());
+            }
+        }
+
+        if selected_names.len() != packages.len() {
+            debug!(
+                "Filtered to: {}",
+                selected_names
+                    .iter()
+                    .map(|n| color::id(n.as_str()))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            );
         }
 
         Ok(results)

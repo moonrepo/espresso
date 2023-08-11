@@ -1,15 +1,21 @@
 use clap::{Args, Parser, Subcommand};
-use jpm_common::EsTarget;
+use jpm_common::{EsTarget, PackageName};
 
 pub const BIN_NAME: &str = if cfg!(windows) { "jpm.exe" } else { "jpm" };
 
+static HEADING_FILTER: &str = "Package filtering";
+
+#[derive(Clone, Debug, Args)]
+pub struct GlobalArgs {
+    pub package: Option<Vec<PackageName>>,
+    pub workspace: bool,
+}
+
 #[derive(Clone, Debug, Args)]
 pub struct BuildArgs {
-    #[arg(help = "Package path, relative from the current working directory.")]
-    pub path: Option<String>,
-
     #[arg(
         value_enum,
+        short = 't',
         long,
         env = "JPM_TARGET",
         help = "ECMAScript target to transform source code to.",
@@ -52,4 +58,33 @@ pub enum Commands {
 pub struct CLI {
     #[command(subcommand)]
     pub command: Commands,
+
+    #[arg(
+        short = 'p',
+        long,
+        global = true,
+        help = "Focus a specific package.",
+        help_heading = HEADING_FILTER,
+        group = "package-filter"
+    )]
+    pub package: Option<Vec<PackageName>>,
+
+    #[arg(
+        short = 'w',
+        long,
+        global = true,
+        help = "Focus all packages in the workspace.",
+        help_heading = HEADING_FILTER,
+        group = "package-filter"
+    )]
+    pub workspace: bool,
+}
+
+impl CLI {
+    pub fn global_args(&self) -> GlobalArgs {
+        GlobalArgs {
+            package: self.package.clone(),
+            workspace: self.workspace,
+        }
+    }
 }
