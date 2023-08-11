@@ -5,10 +5,8 @@ use jpm_workspace::Workspace;
 use starbase::system;
 
 #[system]
-pub fn run_command(args: StateRef<CommandArgs>, workspace: ResourceRef<Workspace>) -> SystemResult {
-    let args = args.0.clone();
-
-    match args.command {
-        Commands::Build { path, target } => commands::build(workspace, path, target).await?,
+pub fn run_command(cli: StateRef<CommandArgs>, workspace: ResourceRef<Workspace>) -> SystemResult {
+    match &cli.command {
+        Commands::Build(args) => commands::build(workspace, args).await?,
     };
 }

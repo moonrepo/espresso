@@ -1,7 +1,22 @@
-use clap::{Parser, Subcommand};
+use clap::{Args, Parser, Subcommand};
 use jpm_common::EsTarget;
 
 pub const BIN_NAME: &str = if cfg!(windows) { "jpm.exe" } else { "jpm" };
+
+#[derive(Clone, Debug, Args)]
+pub struct BuildArgs {
+    #[arg(help = "Package path, relative from the current working directory.")]
+    pub path: Option<String>,
+
+    #[arg(
+        value_enum,
+        long,
+        env = "JPM_TARGET",
+        help = "ECMAScript target to transform source code to.",
+        default_value_t
+    )]
+    pub target: EsTarget,
+}
 
 #[derive(Clone, Debug, Subcommand)]
 pub enum Commands {
@@ -11,19 +26,7 @@ pub enum Commands {
         long_about = "Build a package by transforming source files (from the package's `src` directory) to the `.jpm/<target>` output directory.",
         rename_all = "camelCase"
     )]
-    Build {
-        #[arg(help = "Package path, relative from the current working directory.")]
-        path: Option<String>,
-
-        #[arg(
-            value_enum,
-            long,
-            env = "JPM_TARGET",
-            help = "ECMAScript target to transform source code to.",
-            default_value_t
-        )]
-        target: EsTarget,
-    },
+    Build(BuildArgs),
 }
 
 #[derive(Clone, Debug, Parser)]
