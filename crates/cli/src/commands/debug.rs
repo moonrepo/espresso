@@ -9,7 +9,7 @@ pub async fn debug(workspace: &Workspace) -> SystemResult {
     dbg!(workspace.load_packages()?);
 
     dbg!("QUERY PACKAGES");
-    dbg!(workspace.query_packages(true, None)?);
+    dbg!(workspace.select_packages(true, None)?);
 
     Ok(())
 }

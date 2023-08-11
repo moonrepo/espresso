@@ -11,7 +11,7 @@ pub async fn build(
     args: &BuildArgs,
     global_args: &GlobalArgs,
 ) -> SystemResult {
-    for package in workspace.query_packages(global_args.workspace, global_args.package.as_ref())? {
+    for package in workspace.select_packages(global_args.workspace, global_args.package.as_ref())? {
         start_checkpoint(format!("Building {}", color::id(package.name())));
 
         let out_dir = Compiler::new(package)?.compile(args.target).await?;

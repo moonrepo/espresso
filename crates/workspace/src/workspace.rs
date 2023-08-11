@@ -109,7 +109,7 @@ impl Workspace {
         })
     }
 
-    pub fn query_packages(
+    pub fn select_packages(
         &self,
         select_all: bool,
         select_by_names: Option<&Vec<PackageName>>,
