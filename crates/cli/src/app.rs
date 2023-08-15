@@ -1,5 +1,6 @@
 use clap::{Args, Parser, Subcommand};
 use jpm_common::{EsTarget, PackageName};
+use jpm_workspace::SelectQuery;
 
 pub const BIN_NAME: &str = if cfg!(windows) { "jpm.exe" } else { "jpm" };
 
@@ -7,8 +8,19 @@ static HEADING_FILTER: &str = "Package filtering";
 
 #[derive(Clone, Debug, Args)]
 pub struct GlobalArgs {
-    pub package: Option<Vec<PackageName>>,
+    pub filters: Option<Vec<String>>,
+    pub packages: Option<Vec<PackageName>>,
     pub workspace: bool,
+}
+
+impl GlobalArgs {
+    pub fn to_package_select_query(&self) -> SelectQuery {
+        SelectQuery {
+            all: self.workspace,
+            filters: self.filters.as_ref(),
+            names: self.packages.as_ref(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Args)]
@@ -60,10 +72,20 @@ pub struct CLI {
     pub command: Commands,
 
     #[arg(
+        short = 'f',
+        long,
+        global = true,
+        help = "Select packages by name using a filter glob. Can be specified multiple times.",
+        help_heading = HEADING_FILTER,
+        group = "package-filter"
+    )]
+    pub filter: Option<Vec<String>>,
+
+    #[arg(
         short = 'p',
         long,
         global = true,
-        help = "Select a specific package. Can be specified multiple times.",
+        help = "Select a specific package by name. Can be specified multiple times.",
         help_heading = HEADING_FILTER,
         group = "package-filter"
     )]
@@ -83,7 +105,8 @@ pub struct CLI {
 impl CLI {
     pub fn global_args(&self) -> GlobalArgs {
         GlobalArgs {
-            package: self.package.clone(),
+            filters: self.filter.clone(),
+            packages: self.package.clone(),
             workspace: self.workspace,
         }
     }

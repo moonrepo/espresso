@@ -11,8 +11,7 @@ pub async fn build(
     args: &BuildArgs,
     global_args: &GlobalArgs,
 ) -> SystemResult {
-    let packages =
-        workspace.select_packages(global_args.workspace, global_args.package.as_ref())?;
+    let packages = workspace.select_packages(global_args.to_package_select_query())?;
     let last_index = packages.len() - 1;
 
     for (index, package) in packages.iter().enumerate() {

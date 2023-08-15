@@ -7,19 +7,12 @@ use thiserror::Error;
 
 #[derive(Debug, Diagnostic, Error)]
 pub enum WorkspaceError {
-    #[diagnostic(code(workspace::package_graph::either_filters))]
-    #[error(
-        "The {} and {} arguments cannot be used together. Use one or the other.",
-        "--workspace".style(Style::Label),
-        "--package".style(Style::Label),
-    )]
-    EitherPackageOrWorkspaceArg,
-
     #[diagnostic(code(workspace::package_graph::none_selected))]
     #[error(
-        "No packages have been selected. Pass {} to select all packages in the workspace, or {} for each package to select.",
+        "No packages have been selected. Pass {} to select all packages in the workspace, {} for each package by name, or {} to filter by name.",
         "--workspace".style(Style::Label),
         "--package".style(Style::Label),
+        "--filter".style(Style::Label),
     )]
     NoPackagesSelected,
 

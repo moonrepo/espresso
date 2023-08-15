@@ -13,6 +13,13 @@ use std::fmt;
 use std::path::{Path, PathBuf};
 use tracing::debug;
 
+#[derive(Default)]
+pub struct SelectQuery<'app> {
+    pub all: bool,
+    pub filters: Option<&'app Vec<String>>,
+    pub names: Option<&'app Vec<PackageName>>,
+}
+
 #[derive(Resource)]
 pub struct Workspace {
     pub manifest: Manifest,
@@ -109,20 +116,26 @@ impl Workspace {
         })
     }
 
-    pub fn select_packages(
-        &self,
-        select_all: bool,
-        select_by_names: Option<&Vec<PackageName>>,
-    ) -> miette::Result<Vec<&Package>> {
+    pub fn select_packages(&self, query: SelectQuery) -> miette::Result<Vec<&Package>> {
         let packages = self.load_packages()?;
         let mut selected_names = HashSet::new();
 
-        // Select packages by name
-        if let Some(select_by) = select_by_names {
-            if select_all {
-                return Err(WorkspaceError::EitherPackageOrWorkspaceArg)?;
+        // If a polyrepo, always use the root package
+        if let Manifest::Package(root_package) = &self.manifest {
+            selected_names.insert(&root_package.package.name);
+
+        // Select packages with filters
+        } else if let Some(filters) = query.filters {
+            let globset = glob::GlobSet::new(filters)?;
+
+            for package_name in packages.keys() {
+                if globset.matches(package_name.as_str()) {
+                    selected_names.insert(package_name);
+                }
             }
 
+            // Select packages by name
+        } else if let Some(select_by) = query.names {
             for name in select_by {
                 if !packages.contains_key(name) {
                     return Err(WorkspaceError::UnknownPackage {
@@ -134,12 +147,8 @@ impl Workspace {
             }
 
             // Select all packages
-        } else if select_all {
+        } else if query.all {
             selected_names.extend(packages.keys());
-
-            // If a polyrepo, always use the root package if no filters provided
-        } else if let Manifest::Package(root_package) = &self.manifest {
-            selected_names.insert(&root_package.package.name);
         }
 
         if selected_names.is_empty() {
