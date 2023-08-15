@@ -1543,6 +1543,7 @@ dependencies = [
  "once_cell",
  "petgraph",
  "starbase",
+ "starbase_sandbox",
  "starbase_styles",
  "starbase_utils",
  "thiserror",
@@ -2995,9 +2996,9 @@ dependencies = [
 
 [[package]]
 name = "starbase_utils"
-version = "0.2.17"
+version = "0.2.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0bdab61b7ab5c4185c6aaa6f62464a62bd792b9979f6e48f2855e324dbe334f2"
+checksum = "1018714a63bfd48b31085fbf71f2c69b039b5cf0e140594ca8ff2088cbf697ca"
 dependencies = [
  "dirs",
  "miette 5.10.0",
