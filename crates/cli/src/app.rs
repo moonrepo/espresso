@@ -49,7 +49,8 @@ pub enum Commands {
     #[command(
         name = "debug",
         about = "Debug jpm instance.",
-        rename_all = "camelCase"
+        rename_all = "camelCase",
+        hide = true
     )]
     Debug,
 }
@@ -85,7 +86,7 @@ pub struct CLI {
         short = 'p',
         long,
         global = true,
-        help = "Select a specific package by name. Can be specified multiple times.",
+        help = "Select packages by name. Can be specified multiple times.",
         help_heading = HEADING_FILTER,
         group = "package-filter"
     )]

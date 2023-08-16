@@ -8,12 +8,12 @@ license = "MIT"
 jpm_common = { path = "../common" }
 jpm_manifest = { path = "../manifest" }
 jpm_package = { path = "../package" }
-anyhow = "1.0.72"
+anyhow = "1.0.74"
 futures = "0.3.28"
 miette = { workspace = true }
 oxipng = "8.0.0"
-swc = "0.264.46"
-swc_core = { version = "0.79.49", default-features = false, features = [
+swc = "0.264.56"
+swc_core = { version = "0.79.59", default-features = false, features = [
 	"common",
 	"ecma_ast",
 	"ecma_parser",

@@ -24,6 +24,6 @@ starbase_utils = { version = "0.2.18", default-features = false, features = [
 	"glob",
 ] }
 thiserror = "1.0.44"
-tokio = { version = "1.29.1", features = ["full", "tracing"] }
+tokio = { version = "1.31.0", features = ["full", "tracing"] }
 tracing = "0.1.37"
 url = { version = "2.4.0", features = ["serde"] }
