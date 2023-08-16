@@ -1,9 +1,9 @@
 use jpm_common::{EsTarget, PackageName};
 use schematic::{derive_enum, Config, ConfigEnum};
 use semver::VersionReq;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
-pub type ManifestDependencies = HashMap<PackageName, VersionReq>;
+pub type ManifestDependencies = BTreeMap<PackageName, VersionReq>;
 
 derive_enum!(
     #[derive(ConfigEnum, Default)]

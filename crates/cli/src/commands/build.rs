@@ -1,20 +1,28 @@
-use jpm_common::EsTarget;
+use crate::app::{BuildArgs, GlobalArgs};
+use crate::helpers::loop_packages;
 use jpm_compiler::Compiler;
-use jpm_package::Package;
+use jpm_workspace::Workspace;
 use starbase::SystemResult;
 use starbase_styles::color;
-use std::env;
 
-pub async fn build(path: Option<String>, target: EsTarget) -> SystemResult {
-    let cwd = env::current_dir().expect("Unable to get working directory!");
+#[tracing::instrument(skip_all)]
+pub async fn build(
+    workspace: &Workspace,
+    args: &BuildArgs,
+    global_args: &GlobalArgs,
+) -> SystemResult {
+    let packages = workspace.select_packages(global_args.to_package_select_query())?;
 
-    let package_root = cwd.join(path.unwrap_or(".".into()));
-    let package = Package::new(package_root)?;
+    loop_packages(packages, |package| async {
+        println!("Building target {}", color::symbol(args.target.to_string()));
 
-    let compiler = Compiler::new(&package)?;
-    let out_dir = compiler.compile(target).await?;
+        let out_dir = Compiler::new(package)?.compile(args.target).await?;
 
-    println!("Package successfully built to {}", color::path(out_dir));
+        println!("Built to {}", color::path(out_dir));
+
+        Ok(())
+    })
+    .await?;
 
     Ok(())
 }

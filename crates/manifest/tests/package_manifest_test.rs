@@ -2,7 +2,7 @@ use jpm_common::*;
 use jpm_manifest::*;
 use semver::{Version, VersionReq};
 use starbase_sandbox::create_empty_sandbox;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use url::Url;
 
 mod package_manifest {
@@ -30,8 +30,8 @@ name = "ns/pkg"
                     optimize_png: true,
                     optimize_svg: true,
                 },
-                dependencies: HashMap::new(),
-                dev_dependencies: HashMap::new(),
+                dependencies: BTreeMap::new(),
+                dev_dependencies: BTreeMap::new(),
                 install: ManifestInstall {
                     linker: ManifestInstallLinker::NodeModules,
                     target: EsTarget::Es2018,
@@ -132,7 +132,7 @@ name = "ns/pkg"
 
             assert_eq!(
                 manifest.dependencies,
-                HashMap::from_iter([
+                BTreeMap::from_iter([
                     (
                         PackageName::parse("ns/a1").unwrap(),
                         VersionReq::parse("1.2.3").unwrap()

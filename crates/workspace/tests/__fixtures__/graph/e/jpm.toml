@@ -1,0 +1,5 @@
+[package]
+name = "graph/ee"
+
+[dependencies]
+"graph/dd" = "*"

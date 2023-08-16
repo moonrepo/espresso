@@ -1,0 +1,5 @@
+[package]
+name = "graph/cc"
+
+[dependencies]
+"graph/aa" = "*"

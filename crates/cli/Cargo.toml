@@ -12,9 +12,11 @@ path = "src/main.rs"
 jpm_common = { path = "../common" }
 jpm_compiler = { path = "../compiler" }
 jpm_package = { path = "../package" }
+jpm_workspace = { path = "../workspace" }
 clap = { workspace = true, features = ["derive", "env", "wrap_help"] }
 miette = { workspace = true }
 mimalloc = { version = "0.1.37", default-features = false }
 starbase = { workspace = true }
 starbase_styles = { workspace = true }
 tokio = { workspace = true }
+tracing = { workspace = true }

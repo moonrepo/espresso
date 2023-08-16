@@ -11,7 +11,7 @@ mod manifest_loader {
         let sandbox = create_empty_sandbox();
         sandbox.create_file("jpm.toml", "");
 
-        ManifestLoader::load(sandbox.path().join(MANIFEST_FILE)).unwrap();
+        ManifestLoader::load(sandbox.path().join(MANIFEST_NAME)).unwrap();
     }
 
     #[test]
@@ -25,7 +25,7 @@ name = "ns/pkg"
 "#,
         );
 
-        let manifest = ManifestLoader::load(sandbox.path().join(MANIFEST_FILE)).unwrap();
+        let manifest = ManifestLoader::load(sandbox.path().join(MANIFEST_NAME)).unwrap();
 
         if let Manifest::Package(package) = manifest {
             assert_eq!(package.package.name, PackageName::parse("ns/pkg").unwrap());
@@ -45,7 +45,7 @@ packages = ["*"]
 "#,
         );
 
-        let manifest = ManifestLoader::load(sandbox.path().join(MANIFEST_FILE)).unwrap();
+        let manifest = ManifestLoader::load(sandbox.path().join(MANIFEST_NAME)).unwrap();
 
         if let Manifest::Workspace(workspace) = manifest {
             assert_eq!(workspace.workspace.packages, vec!["*".to_owned()]);

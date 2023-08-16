@@ -6,8 +6,9 @@ use starbase_utils::fs;
 use std::path::{Path, PathBuf};
 use tracing::debug;
 
-pub const MANIFEST_FILE: &str = "jpm.toml";
+pub const MANIFEST_NAME: &str = "jpm.toml";
 
+#[derive(Debug)]
 pub enum Manifest {
     Workspace(Box<WorkspaceManifest>),
     Package(Box<PackageManifest>),
@@ -17,10 +18,10 @@ pub struct ManifestLoader;
 
 impl ManifestLoader {
     pub fn resolve_path(path: &Path) -> miette::Result<PathBuf> {
-        let file_path = if path.ends_with(MANIFEST_FILE) {
+        let file_path = if path.ends_with(MANIFEST_NAME) {
             path.to_path_buf()
         } else {
-            path.join(MANIFEST_FILE)
+            path.join(MANIFEST_NAME)
         };
 
         if file_path.exists() {

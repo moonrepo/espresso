@@ -3,6 +3,8 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use schematic::{validate::HasLength, SchemaType, Schematic};
 use serde::{Deserialize, Serialize};
+use std::fmt::Display;
+use std::str::FromStr;
 use thiserror::Error;
 
 #[derive(Debug, Diagnostic, Error)]
@@ -100,6 +102,20 @@ impl PackageName {
 
     pub fn package(&self) -> &str {
         self.components().1
+    }
+}
+
+impl Display for PackageName {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.0)
+    }
+}
+
+impl FromStr for PackageName {
+    type Err = PackageNameError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        PackageName::parse(s)
     }
 }
 

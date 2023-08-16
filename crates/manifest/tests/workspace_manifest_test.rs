@@ -1,6 +1,6 @@
 use jpm_manifest::*;
 use starbase_sandbox::create_empty_sandbox;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 mod workspace_manifest {
     use super::*;
@@ -21,8 +21,8 @@ packages = ["*"]
         assert_eq!(
             manifest,
             WorkspaceManifest {
-                dependencies: HashMap::new(),
-                dev_dependencies: HashMap::new(),
+                dependencies: BTreeMap::new(),
+                dev_dependencies: BTreeMap::new(),
                 install: ManifestInstall {
                     linker: ManifestInstallLinker::NodeModules,
                     target: EsTarget::Es2018,
