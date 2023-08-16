@@ -36,7 +36,7 @@ impl<'ws> PackageGraph<'ws> {
             Ok(indices) => {
                 let names = indices
                     .into_iter()
-                    .rev()
+                    .rev() // From most depended on to least
                     .map(|i| *self.graph.node_weight(i).unwrap())
                     .collect::<Vec<_>>();
 
@@ -71,9 +71,16 @@ impl<'ws> PackageGraph<'ws> {
             return *index;
         }
 
-        let mut edges = vec![];
+        // Insert into the graph
+        trace!(package = name.as_str(), "Adding package to graph");
+
+        let index = self.graph.add_node(name);
+
+        self.indices.insert(name, index);
 
         // Loop through dependencies and find packages in the current workspace
+        let mut edges = vec![];
+
         let mut dependencies = BTreeMap::new();
         dependencies.extend(&package.manifest.dependencies);
         dependencies.extend(&package.manifest.dev_dependencies);
@@ -90,13 +97,7 @@ impl<'ws> PackageGraph<'ws> {
             }
         }
 
-        trace!(package = name.as_str(), "Adding package to graph");
-
-        // Insert into the graph
-        let index = self.graph.add_node(name);
-
-        self.indices.insert(name, index);
-
+        // Connect edges to the original index
         for edge in edges {
             self.graph.add_edge(index, edge, ());
         }

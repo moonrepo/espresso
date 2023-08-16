@@ -1,5 +1,5 @@
 use crate::app::{BuildArgs, GlobalArgs};
-use crate::helpers::start_checkpoint;
+use crate::helpers::loop_packages;
 use jpm_compiler::Compiler;
 use jpm_workspace::Workspace;
 use starbase::SystemResult;
@@ -12,19 +12,17 @@ pub async fn build(
     global_args: &GlobalArgs,
 ) -> SystemResult {
     let packages = workspace.select_packages(global_args.to_package_select_query())?;
-    let last_index = packages.len() - 1;
 
-    for (index, package) in packages.iter().enumerate() {
-        start_checkpoint(format!("Building {}", color::id(package.name())));
+    loop_packages(packages, |package| async {
+        println!("Building target {}", color::symbol(args.target.to_string()));
 
         let out_dir = Compiler::new(package)?.compile(args.target).await?;
 
-        println!("Package successfully built to {}", color::path(out_dir));
+        println!("Built to {}", color::path(out_dir));
 
-        if index != last_index {
-            println!();
-        }
-    }
+        Ok(())
+    })
+    .await?;
 
     Ok(())
 }
