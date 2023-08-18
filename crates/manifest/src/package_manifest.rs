@@ -1,25 +1,70 @@
 use crate::common_settings::*;
 use jpm_common::{LicenseType, PackageName};
 use relative_path::RelativePathBuf;
+use schematic::ValidateError;
 use schematic::{derive_enum, validate, Config, ConfigEnum};
 use semver::Version;
 use url::Url;
 
 derive_enum!(
     #[derive(ConfigEnum)]
-    pub enum PackageManifestBuildDecorators {
+    pub enum BuildDecorators {
         Legacy,
     }
 );
 
+derive_enum!(
+    #[serde(untagged, expecting = "a boolean or compression level between 0-6")]
+    pub enum BuildOptimizePng {
+        Enabled(bool),
+        Level(u8),
+    }
+);
+
+impl BuildOptimizePng {
+    pub fn get_level(&self) -> u8 {
+        match self {
+            Self::Enabled(_) => 2,
+            Self::Level(level) => *level,
+        }
+    }
+
+    pub fn is_enabled(&self) -> bool {
+        match self {
+            Self::Enabled(enabled) => *enabled,
+            Self::Level(level) => *level > 0,
+        }
+    }
+}
+
+impl Default for BuildOptimizePng {
+    fn default() -> Self {
+        Self::Enabled(true)
+    }
+}
+
+fn validate_png_level<D, C>(
+    value: &BuildOptimizePng,
+    _partial: &D,
+    _context: &C,
+) -> Result<(), ValidateError> {
+    if let BuildOptimizePng::Level(level) = value {
+        if *level > 6 {
+            return Err(ValidateError::new("compression level must be between 0-6"));
+        }
+    }
+
+    Ok(())
+}
+
 #[derive(Config, Clone, Debug, Eq, PartialEq)]
 pub struct PackageManifestBuild {
-    pub decorators: Option<PackageManifestBuildDecorators>,
+    pub decorators: Option<BuildDecorators>,
 
     pub exclude: Vec<RelativePathBuf>,
 
-    #[setting(default = true)]
-    pub optimize_png: bool,
+    #[setting(validate = validate_png_level)]
+    pub optimize_png: BuildOptimizePng,
 
     #[setting(default = true)]
     pub optimize_svg: bool,

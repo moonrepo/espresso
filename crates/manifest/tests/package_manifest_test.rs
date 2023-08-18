@@ -27,7 +27,7 @@ name = "ns/pkg"
                 build: PackageManifestBuild {
                     decorators: None,
                     exclude: vec![],
-                    optimize_png: true,
+                    optimize_png: BuildOptimizePng::Enabled(true),
                     optimize_svg: true,
                 },
                 dependencies: BTreeMap::new(),
@@ -75,10 +75,47 @@ optimizeSvg = false
                 PackageManifestBuild {
                     decorators: None,
                     exclude: vec!["*.png".into()],
-                    optimize_png: false,
+                    optimize_png: BuildOptimizePng::Enabled(false),
                     optimize_svg: false,
                 }
             );
+        }
+
+        #[test]
+        fn can_set_optimize_png_level() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "ns/pkg"
+
+[build]
+optimizePng = 6
+"#,
+            );
+
+            let manifest = ManifestLoader::load_package(sandbox.path()).unwrap();
+
+            assert_eq!(manifest.build.optimize_png, BuildOptimizePng::Level(6));
+        }
+
+        #[test]
+        #[should_panic(expected = "compression level must be between 0-6")]
+        fn errors_optimize_png_level_out_of_range() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                "jpm.toml",
+                r#"
+[package]
+name = "ns/pkg"
+
+[build]
+optimizePng = 10
+"#,
+            );
+
+            ManifestLoader::load_package(sandbox.path()).unwrap();
         }
     }
 

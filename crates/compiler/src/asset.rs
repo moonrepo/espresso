@@ -49,7 +49,7 @@ impl Asset {
         })?;
 
         // .png
-        if self.is_png() && self.build_settings.optimize_png {
+        if self.is_png() && self.build_settings.optimize_png.is_enabled() {
             bytes = self.optimize_png(&bytes)?;
         }
 
@@ -62,10 +62,12 @@ impl Asset {
     }
 
     fn optimize_png(&self, bytes: &[u8]) -> miette::Result<Vec<u8>> {
-        trace!(png = ?self.src_path, level = 2, "Optimizing png");
+        let level = self.build_settings.optimize_png.get_level();
+
+        trace!(png = ?self.src_path, level, "Optimizing png");
 
         Ok(
-            optimize_from_memory(bytes, &Options::from_preset(2)).map_err(|error| {
+            optimize_from_memory(bytes, &Options::from_preset(level)).map_err(|error| {
                 CompilerError::AssetFailedPngOptimize {
                     path: self.src_path.clone(),
                     error,
