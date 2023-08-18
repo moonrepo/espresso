@@ -101,6 +101,7 @@ impl Module {
                 })
             }),
             target: Some(match target {
+                EsTarget::Es2015 => EsVersion::Es2015,
                 EsTarget::Es2016 => EsVersion::Es2016,
                 EsTarget::Es2017 => EsVersion::Es2017,
                 EsTarget::Es2018 => EsVersion::Es2018,
@@ -108,7 +109,6 @@ impl Module {
                 EsTarget::Es2020 => EsVersion::Es2020,
                 EsTarget::Es2021 => EsVersion::Es2021,
                 EsTarget::Es2022 => EsVersion::Es2022,
-                _ => EsVersion::Es2015,
             }),
             transform: Some(transform).into(),
             ..JscConfig::default()
@@ -158,7 +158,6 @@ impl Module {
                         handler,
                         &self.create_transform_options(target),
                         Default::default(),
-                        // |_| as_folder(chain!(DetectCjsVisitor, AddMjsExtensionVisitor)),
                         |_| as_folder(DetectCjsVisitor),
                         |_| as_folder(AddMjsExtensionVisitor),
                     )
