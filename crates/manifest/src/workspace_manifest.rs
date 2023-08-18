@@ -3,12 +3,14 @@ use relative_path::RelativePathBuf;
 use schematic::{validate, Config};
 
 #[derive(Config, Debug, Eq, PartialEq)]
+#[config(rename_all = "kebab-case")]
 pub struct WorkspaceManifestMetadata {
     #[setting(validate = validate::not_empty)]
     pub packages: Vec<RelativePathBuf>,
 }
 
 #[derive(Config, Debug, Eq, PartialEq)]
+#[config(rename_all = "kebab-case")]
 pub struct WorkspaceManifest {
     /// Dependencies for all packages in the workspace.
     pub dependencies: ManifestDependencies,

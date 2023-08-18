@@ -14,6 +14,7 @@ derive_enum!(
 );
 
 #[derive(Config, Debug, Eq, PartialEq)]
+#[config(rename_all = "kebab-case")]
 pub struct ManifestInstall {
     pub linker: ManifestInstallLinker,
     pub target: EsTarget,

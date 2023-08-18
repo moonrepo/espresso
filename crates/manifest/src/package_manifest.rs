@@ -58,6 +58,7 @@ fn validate_png_level<D, C>(
 }
 
 #[derive(Config, Clone, Debug, Eq, PartialEq)]
+#[config(rename_all = "kebab-case")]
 pub struct PackageManifestBuild {
     pub decorators: Option<BuildDecorators>,
 
@@ -65,12 +66,10 @@ pub struct PackageManifestBuild {
 
     #[setting(validate = validate_png_level)]
     pub optimize_png: BuildOptimizePng,
-
-    #[setting(default = true)]
-    pub optimize_svg: bool,
 }
 
 #[derive(Config, Debug, Eq, PartialEq)]
+#[config(rename_all = "kebab-case")]
 pub struct PackageManifestMetadata {
     #[setting(validate = validate::not_empty)]
     pub name: PackageName,
@@ -90,6 +89,7 @@ pub struct PackageManifestMetadata {
 }
 
 #[derive(Config, Debug, Eq, PartialEq)]
+#[config(rename_all = "kebab-case")]
 pub struct PackageManifest {
     /// Controls how a package is built.
     #[setting(nested)]

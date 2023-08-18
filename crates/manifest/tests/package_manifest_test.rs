@@ -28,7 +28,7 @@ name = "ns/pkg"
                     decorators: None,
                     exclude: vec![],
                     optimize_png: BuildOptimizePng::Enabled(true),
-                    optimize_svg: true,
+                    // optimize_svg: true,
                 },
                 dependencies: BTreeMap::new(),
                 dev_dependencies: BTreeMap::new(),
@@ -63,8 +63,7 @@ name = "ns/pkg"
 
 [build]
 exclude = ["*.png"]
-optimizePng = false
-optimizeSvg = false
+optimize-png = false
 "#,
             );
 
@@ -76,7 +75,7 @@ optimizeSvg = false
                     decorators: None,
                     exclude: vec!["*.png".into()],
                     optimize_png: BuildOptimizePng::Enabled(false),
-                    optimize_svg: false,
+                    // optimize_svg: false,
                 }
             );
         }
@@ -91,7 +90,7 @@ optimizeSvg = false
 name = "ns/pkg"
 
 [build]
-optimizePng = 6
+optimize-png = 6
 "#,
             );
 
@@ -111,7 +110,7 @@ optimizePng = 6
 name = "ns/pkg"
 
 [build]
-optimizePng = 10
+optimize-png = 10
 "#,
             );
 
