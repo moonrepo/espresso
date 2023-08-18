@@ -2,7 +2,7 @@ use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
 use crate::plugins::{AddMjsExtensionVisitor, DetectCjsVisitor};
 use jpm_common::EsTarget;
-use jpm_manifest::{PackageManifestBuild, PackageManifestBuildDecorators};
+use jpm_manifest::{BuildDecorators, PackageManifestBuild};
 use starbase_utils::fs;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -44,7 +44,7 @@ impl Module {
         self.build_settings
             .decorators
             .as_ref()
-            .is_some_and(|dec| dec == &PackageManifestBuildDecorators::Legacy)
+            .is_some_and(|dec| dec == &BuildDecorators::Legacy)
             || self.build_settings.decorators.is_some() && self.is_typescript()
     }
 
@@ -63,7 +63,7 @@ impl Module {
                 Some(DecoratorVersion::V202112)
             } else {
                 decorators.map(|dec| match dec {
-                    PackageManifestBuildDecorators::Legacy => DecoratorVersion::V202112,
+                    BuildDecorators::Legacy => DecoratorVersion::V202112,
                 })
             },
             legacy_decorator: self.is_legacy_decorators().into(),
@@ -101,6 +101,7 @@ impl Module {
                 })
             }),
             target: Some(match target {
+                EsTarget::Es2015 => EsVersion::Es2015,
                 EsTarget::Es2016 => EsVersion::Es2016,
                 EsTarget::Es2017 => EsVersion::Es2017,
                 EsTarget::Es2018 => EsVersion::Es2018,
@@ -108,7 +109,6 @@ impl Module {
                 EsTarget::Es2020 => EsVersion::Es2020,
                 EsTarget::Es2021 => EsVersion::Es2021,
                 EsTarget::Es2022 => EsVersion::Es2022,
-                _ => EsVersion::Es2015,
             }),
             transform: Some(transform).into(),
             ..JscConfig::default()
@@ -158,7 +158,6 @@ impl Module {
                         handler,
                         &self.create_transform_options(target),
                         Default::default(),
-                        // |_| as_folder(chain!(DetectCjsVisitor, AddMjsExtensionVisitor)),
                         |_| as_folder(DetectCjsVisitor),
                         |_| as_folder(AddMjsExtensionVisitor),
                     )

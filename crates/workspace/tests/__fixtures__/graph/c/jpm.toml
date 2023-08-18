@@ -1,5 +1,5 @@
 [package]
 name = "graph/cc"
 
-[devDependencies]
+[dev-dependencies]
 "graph/ff" = "*"
