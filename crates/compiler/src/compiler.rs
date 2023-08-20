@@ -36,7 +36,11 @@ impl<'pkg> Compiler<'pkg> {
     }
 
     pub async fn compile(&self, target: EsTarget) -> miette::Result<PathBuf> {
+<<<<<<< HEAD
         let out_dir = self.package.root.join(".espm").join(target.to_string());
+=======
+        let out_dir = self.package.root.join(OUT_DIR).join(target.to_string());
+>>>>>>> a9c1891 (Polish.)
         let sources = self.package.load_source_files()?;
 
         debug!(
@@ -80,7 +84,7 @@ impl<'pkg> Compiler<'pkg> {
 
         // Generate TypeScript declarations
         if sources.typescript {
-            TsCompiler::new(&self.package, Arc::clone(&self.store))?
+            TsCompiler::new(self.package, Arc::clone(&self.store))?
                 .compile(target)
                 .await?;
         }

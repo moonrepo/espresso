@@ -18,7 +18,7 @@ pub async fn detect_javascript_runtime() -> miette::Result<String> {
         .await
         .is_ok()
         {
-            debug!(bin, "Found a JavaScript runtime");
+            debug!(runtime = bin, "Found a JavaScript runtime");
 
             return Ok(bin.into());
         }

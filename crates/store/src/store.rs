@@ -1,5 +1,6 @@
 use crate::storage_item::StorageItem;
 use crate::store_error::StoreError;
+use jpm_common::OUT_DIR;
 use starbase::Resource;
 use starbase_archive::Archiver;
 use starbase_utils::{dirs, fs};
@@ -30,7 +31,7 @@ impl Store {
 
         dirs::home_dir()
             .expect("Could not find a home directory!")
-            .join(".espm")
+            .join(OUT_DIR)
     }
 
     pub fn load() -> miette::Result<Self> {
@@ -58,6 +59,12 @@ impl Store {
     }
 
     pub async fn store_item(&self, url: &str, item: impl StorageItem) -> miette::Result<PathBuf> {
+        let output_dir = self.packages_dir.join(item.to_file_path());
+
+        if output_dir.exists() {
+            return Ok(output_dir);
+        }
+
         let mut locks = self.locks.write().await;
 
         // Create a lock for this item, so that we avoid multiple processes
