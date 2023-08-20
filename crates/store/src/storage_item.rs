@@ -3,20 +3,25 @@ use std::path::PathBuf;
 
 pub trait StorageItem {
     fn get_archive_ext(&self) -> &str;
+    fn get_archive_prefix(&self) -> Option<&str>;
     fn get_label(&self) -> &str;
     fn to_file_path(&self) -> PathBuf;
     fn to_file_prefix(&self) -> String;
 }
 
 pub struct PackageItem<'app> {
-    package: &'app PackageName,
-    target: &'app EsTarget,
-    version: &'app Version,
+    pub package: &'app PackageName,
+    pub target: &'app EsTarget,
+    pub version: &'app Version,
 }
 
 impl<'app> StorageItem for PackageItem<'app> {
     fn get_archive_ext(&self) -> &str {
         "tar.xz"
+    }
+
+    fn get_archive_prefix(&self) -> Option<&str> {
+        None
     }
 
     fn get_label(&self) -> &str {
@@ -43,12 +48,16 @@ impl<'app> StorageItem for PackageItem<'app> {
 }
 
 pub struct TypeScriptItem<'app> {
-    version: &'app Version,
+    pub version: &'app Version,
 }
 
 impl<'app> StorageItem for TypeScriptItem<'app> {
     fn get_archive_ext(&self) -> &str {
         "tar.gz" // What npm uses
+    }
+
+    fn get_archive_prefix(&self) -> Option<&str> {
+        Some("package")
     }
 
     fn get_label(&self) -> &str {

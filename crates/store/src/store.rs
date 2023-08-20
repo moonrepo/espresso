@@ -9,7 +9,7 @@ use std::io;
 use std::path::{Path, PathBuf};
 use tracing::debug;
 
-#[derive(Resource)]
+#[derive(Clone, Resource)]
 pub struct Store {
     pub bin_dir: PathBuf,
     pub cache_dir: PathBuf,
@@ -31,7 +31,10 @@ impl Store {
     }
 
     pub fn load() -> miette::Result<Self> {
-        let root = Self::detect_root();
+        Self::load_from(&Self::detect_root())
+    }
+
+    pub fn load_from(root: &Path) -> miette::Result<Self> {
         let bin_dir = root.join("bin");
         let cache_dir = root.join("cache");
         let packages_dir = root.join("packages");
@@ -46,14 +49,14 @@ impl Store {
             bin_dir,
             cache_dir,
             packages_dir,
-            root,
+            root: root.to_path_buf(),
         })
     }
 
     pub async fn download_archive(
         &self,
         url: &str,
-        item: impl StorageItem,
+        item: &impl StorageItem,
     ) -> miette::Result<PathBuf> {
         let archive_file = self.cache_dir.join(format!(
             "{}.{}",
@@ -121,10 +124,15 @@ impl Store {
         Ok(archive_file)
     }
 
+    pub async fn store_item(&self, url: &str, item: impl StorageItem) -> miette::Result<PathBuf> {
+        self.unpack_archive(&self.download_archive(url, &item).await?, &item)
+            .await
+    }
+
     pub async fn unpack_archive(
         &self,
         archive_file: &Path,
-        item: impl StorageItem,
+        item: &impl StorageItem,
     ) -> miette::Result<PathBuf> {
         let output_dir = self.packages_dir.join(item.to_file_path());
 

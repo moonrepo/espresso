@@ -3,7 +3,9 @@ mod utils;
 use espresso_common::EsTarget;
 use espresso_compiler::Compiler;
 use espresso_package::Package;
+use espresso_store::Store;
 use starbase_sandbox::{assert_snapshot, create_sandbox};
+use std::sync::Arc;
 use utils::read_file;
 
 macro_rules! test_target {
@@ -12,7 +14,11 @@ macro_rules! test_target {
         async fn $method() {
             let sandbox = create_sandbox("syntax");
             let package = Package::new(sandbox.path()).unwrap();
-            let compiler = Compiler::new(&package).unwrap();
+            let compiler = Compiler::new(
+                &package,
+                Arc::new(Store::load_from(sandbox.path()).unwrap()),
+            )
+            .unwrap();
             let out_dir = compiler.compile($target).await.unwrap();
 
             assert_snapshot!(read_file(out_dir.join("index.mjs")));
@@ -36,7 +42,11 @@ mod target_output {
     async fn supports_legacy_decorators() {
         let sandbox = create_sandbox("syntax-legacy-decorators");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(&package).unwrap();
+        let compiler = Compiler::new(
+            &package,
+            Arc::new(Store::load_from(sandbox.path()).unwrap()),
+        )
+        .unwrap();
         let out_dir = compiler.compile(EsTarget::Es2018).await.unwrap();
 
         assert_snapshot!(read_file(out_dir.join("index.mjs")));

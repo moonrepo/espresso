@@ -1,9 +1,12 @@
+use std::sync::Arc;
+
 use crate::app::GlobalArgs;
 use crate::helpers::loop_packages;
 use clap::Args;
 use espresso_common::EsTarget;
 use espresso_compiler::Compiler;
 use espresso_workspace::Workspace;
+use espresso_store::Store;
 use starbase::SystemResult;
 use starbase_styles::color;
 
@@ -23,6 +26,7 @@ pub struct BuildArgs {
 #[tracing::instrument(skip_all)]
 pub async fn build(
     workspace: &Workspace,
+    store: &Store,
     args: &BuildArgs,
     global_args: &GlobalArgs,
 ) -> SystemResult {
@@ -31,7 +35,9 @@ pub async fn build(
     loop_packages(packages, |package| async {
         println!("Building target {}", color::symbol(args.target.to_string()));
 
-        let out_dir = Compiler::new(package)?.compile(args.target).await?;
+        let out_dir = Compiler::new(package, Arc::new(store.to_owned()))?
+            .compile(args.target)
+            .await?;
 
         println!("Built to {}", color::path(out_dir));
 

@@ -8,6 +8,7 @@ license = "MIT"
 espresso_common = { path = "../common" }
 espresso_manifest = { path = "../manifest" }
 espresso_package = { path = "../package" }
+espresso_store = { path = "../store" }
 anyhow = "1.0.74"
 futures = "0.3.28"
 miette = { workspace = true }

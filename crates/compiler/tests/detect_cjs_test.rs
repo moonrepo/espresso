@@ -1,7 +1,9 @@
 use espresso_common::EsTarget;
 use espresso_compiler::{Compiler, CompilerError};
 use espresso_package::Package;
+use espresso_store::Store;
 use starbase_sandbox::create_empty_sandbox;
+use std::sync::Arc;
 
 macro_rules! test_cjs {
     ($content:literal) => {
@@ -10,7 +12,11 @@ macro_rules! test_cjs {
         sandbox.create_file("espm.toml", "[package]\nname = \"ns/detect-cjs\"");
 
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(&package).unwrap();
+        let compiler = Compiler::new(
+            &package,
+            Arc::new(Store::load_from(sandbox.path()).unwrap()),
+        )
+        .unwrap();
 
         if let Err(error) = compiler.compile(EsTarget::Es2015).await {
             match error.downcast::<CompilerError>().unwrap() {

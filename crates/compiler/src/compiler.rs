@@ -3,6 +3,7 @@ use crate::module::Module;
 use espresso_common::EsTarget;
 use espresso_manifest::PackageManifestBuild;
 use espresso_package::{Package, SourceFiles};
+use espresso_store::Store;
 use miette::IntoDiagnostic;
 use starbase_utils::fs;
 use std::path::{Path, PathBuf};
@@ -15,10 +16,11 @@ use tracing::debug;
 pub struct Compiler<'pkg> {
     compiler: Arc<SwcCompiler>,
     package: &'pkg Package,
+    store: Arc<Store>,
 }
 
 impl<'pkg> Compiler<'pkg> {
-    pub fn new(package: &Package) -> miette::Result<Compiler> {
+    pub fn new(package: &Package, store: Arc<Store>) -> miette::Result<Compiler> {
         debug!(
             package = package.name(),
             "Creating new compiler for package"
@@ -29,6 +31,7 @@ impl<'pkg> Compiler<'pkg> {
             compiler: Arc::new(SwcCompiler::new(Arc::new(SourceMap::new(
                 FilePathMapping::empty(),
             )))),
+            store,
         })
     }
 
@@ -48,6 +51,7 @@ impl<'pkg> Compiler<'pkg> {
         let mut futures: Vec<JoinHandle<miette::Result<()>>> = vec![];
         let compiler = self.compiler.clone();
 
+        // Copy assets
         futures.push(task::spawn(async {
             for asset in assets {
                 asset.copy()?;
@@ -56,6 +60,7 @@ impl<'pkg> Compiler<'pkg> {
             Ok(())
         }));
 
+        // Transform modules
         futures.push(task::spawn(async move {
             for module in modules {
                 module.transform(&compiler, &target).await?;
@@ -67,6 +72,8 @@ impl<'pkg> Compiler<'pkg> {
         for future in futures {
             future.await.into_diagnostic()??;
         }
+
+        // Generate TypeScript declarations
 
         Ok(out_dir)
     }

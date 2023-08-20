@@ -2,8 +2,10 @@ use espresso_common::EsTarget;
 use espresso_compiler::Compiler;
 use espresso_manifest::BuildOptimizePng;
 use espresso_package::Package;
+use espresso_store::Store;
 use starbase_sandbox::{create_sandbox, locate_fixture};
 use std::fs;
+use std::sync::Arc;
 
 mod compile_modules {
     use super::*;
@@ -12,7 +14,11 @@ mod compile_modules {
     async fn compiles_js_files_to_each_target() {
         let sandbox = create_sandbox("js-files");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(&package).unwrap();
+        let compiler = Compiler::new(
+            &package,
+            Arc::new(Store::load_from(sandbox.path()).unwrap()),
+        )
+        .unwrap();
 
         for target in [EsTarget::Es2015, EsTarget::Es2018, EsTarget::Es2022] {
             let out_dir = compiler.compile(target).await.unwrap();
@@ -40,7 +46,11 @@ mod compile_assets {
     async fn copies_non_js_files() {
         let sandbox = create_sandbox("assets");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(&package).unwrap();
+        let compiler = Compiler::new(
+            &package,
+            Arc::new(Store::load_from(sandbox.path()).unwrap()),
+        )
+        .unwrap();
         let out_dir = compiler.compile(EsTarget::Es2015).await.unwrap();
 
         assert!(out_dir.join("cat.png").exists());
@@ -51,7 +61,11 @@ mod compile_assets {
     async fn optimizes_png() {
         let sandbox = create_sandbox("assets");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(&package).unwrap();
+        let compiler = Compiler::new(
+            &package,
+            Arc::new(Store::load_from(sandbox.path()).unwrap()),
+        )
+        .unwrap();
         let out_dir = compiler.compile(EsTarget::Es2015).await.unwrap();
 
         assert_ne!(
@@ -70,12 +84,15 @@ mod compile_assets {
         package.manifest.build.optimize_png = BuildOptimizePng::Level(1);
 
         let base_size = fs::metadata(
-            Compiler::new(&package)
-                .unwrap()
-                .compile(EsTarget::Es2015)
-                .await
-                .unwrap()
-                .join("cat.png"),
+            Compiler::new(
+                &package,
+                Arc::new(Store::load_from(sandbox.path()).unwrap()),
+            )
+            .unwrap()
+            .compile(EsTarget::Es2015)
+            .await
+            .unwrap()
+            .join("cat.png"),
         )
         .unwrap()
         .len();
@@ -83,12 +100,15 @@ mod compile_assets {
         package.manifest.build.optimize_png = BuildOptimizePng::Level(6);
 
         let next_size = fs::metadata(
-            Compiler::new(&package)
-                .unwrap()
-                .compile(EsTarget::Es2020)
-                .await
-                .unwrap()
-                .join("cat.png"),
+            Compiler::new(
+                &package,
+                Arc::new(Store::load_from(sandbox.path()).unwrap()),
+            )
+            .unwrap()
+            .compile(EsTarget::Es2020)
+            .await
+            .unwrap()
+            .join("cat.png"),
         )
         .unwrap()
         .len();

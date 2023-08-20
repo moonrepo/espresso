@@ -41,10 +41,7 @@ impl Module {
     }
 
     pub fn is_legacy_decorators(&self) -> bool {
-        self.build_settings
-            .decorators
-            .as_ref()
-            .is_some_and(|dec| dec == &BuildDecorators::Legacy)
+        self.build_settings.is_legacy_decorators()
             || self.build_settings.decorators.is_some() && self.is_typescript()
     }
 
