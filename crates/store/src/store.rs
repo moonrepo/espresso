@@ -1,7 +1,9 @@
 use crate::storage_item::StorageItem;
 use crate::store_error::StoreError;
 use starbase_archive::Archiver;
+use starbase_utils::dirs;
 use starbase_utils::fs::{self, FsError};
+use std::env;
 use std::io;
 use std::path::{Path, PathBuf};
 use tracing::debug;
@@ -10,9 +12,38 @@ pub struct Store {
     pub bin_dir: PathBuf,
     pub cache_dir: PathBuf,
     pub packages_dir: PathBuf,
+    pub root: PathBuf,
 }
 
 impl Store {
+    pub fn detect_root() -> PathBuf {
+        if let Ok(root) = env::var("JPM_ROOT") {
+            return root.into();
+        }
+
+        dirs::home_dir()
+            .expect("Could not find a home directory!")
+            .join(".jpm")
+    }
+
+    pub fn load() -> miette::Result<Self> {
+        let root = Self::detect_root();
+        let bin_dir = root.join("bin");
+        let cache_dir = root.join("cache");
+        let packages_dir = root.join("packages");
+
+        fs::create_dir_all(&bin_dir)?;
+        fs::create_dir_all(&cache_dir)?;
+        fs::create_dir_all(&packages_dir)?;
+
+        Ok(Self {
+            bin_dir,
+            cache_dir,
+            packages_dir,
+            root,
+        })
+    }
+
     pub async fn download_archive(
         &self,
         url: &str,
