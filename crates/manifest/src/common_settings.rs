@@ -1,6 +1,5 @@
-use jpm_common::{EsTarget, PackageName};
+use jpm_common::{EsTarget, PackageName, VersionReq};
 use schematic::{derive_enum, Config, ConfigEnum};
-use semver::VersionReq;
 use std::collections::BTreeMap;
 
 pub type ManifestDependencies = BTreeMap<PackageName, VersionReq>;

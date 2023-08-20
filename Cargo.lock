@@ -1468,6 +1468,7 @@ dependencies = [
  "once_cell",
  "regex",
  "schematic",
+ "semver 1.0.18",
  "serde",
  "spdx",
  "thiserror",
@@ -1507,7 +1508,6 @@ dependencies = [
  "miette 5.10.0",
  "relative-path",
  "schematic",
- "semver 1.0.18",
  "serde",
  "starbase_sandbox",
  "starbase_styles",
@@ -1529,6 +1529,13 @@ dependencies = [
  "starbase_utils",
  "thiserror",
  "tracing",
+]
+
+[[package]]
+name = "jpm_store"
+version = "0.1.0"
+dependencies = [
+ "jpm_common",
 ]
 
 [[package]]

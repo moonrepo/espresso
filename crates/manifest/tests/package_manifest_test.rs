@@ -1,6 +1,5 @@
 use jpm_common::*;
 use jpm_manifest::*;
-use semver::{Version, VersionReq};
 use starbase_sandbox::create_empty_sandbox;
 use std::collections::BTreeMap;
 use url::Url;

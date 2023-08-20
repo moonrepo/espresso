@@ -1,0 +1,8 @@
+[package]
+name = "jpm_store"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+jpm_common = { path = "../common" }

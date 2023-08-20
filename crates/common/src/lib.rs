@@ -6,4 +6,5 @@ mod target;
 
 pub use license_type::*;
 pub use package_name::*;
+pub use semver::{Version, VersionReq};
 pub use target::*;
