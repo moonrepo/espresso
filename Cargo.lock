@@ -1536,6 +1536,12 @@ name = "jpm_store"
 version = "0.1.0"
 dependencies = [
  "jpm_common",
+ "miette 5.10.0",
+ "reqwest",
+ "starbase_styles",
+ "starbase_utils",
+ "thiserror",
+ "tracing",
 ]
 
 [[package]]
@@ -3001,9 +3007,9 @@ dependencies = [
 
 [[package]]
 name = "starbase_styles"
-version = "0.1.12"
+version = "0.1.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3e5c30719b6118d1946b56a506a164b5d2cee97f10148e86125f94093c727253"
+checksum = "bad293ee0bf20cc69aced802167871210db53994bb6dd4206d9cf48dd7517cd2"
 dependencies = [
  "dirs",
  "miette 5.10.0",

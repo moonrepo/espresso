@@ -1,6 +1,8 @@
 mod store;
+mod store_error;
 
 pub use store::*;
+pub use store_error::*;
 
 // .jpm/
 //  bin/
