@@ -1,5 +1,6 @@
+use crate::commands::BuildArgs;
 use clap::{Args, Parser, Subcommand};
-use jpm_common::{EsTarget, PackageName};
+use jpm_common::PackageName;
 use jpm_workspace::SelectQuery;
 
 pub const BIN_NAME: &str = if cfg!(windows) { "jpm.exe" } else { "jpm" };
@@ -21,19 +22,6 @@ impl GlobalArgs {
             names: self.packages.as_ref(),
         }
     }
-}
-
-#[derive(Clone, Debug, Args)]
-pub struct BuildArgs {
-    #[arg(
-        value_enum,
-        short = 't',
-        long,
-        env = "JPM_TARGET",
-        help = "ECMAScript target to transform source code to.",
-        default_value_t
-    )]
-    pub target: EsTarget,
 }
 
 #[derive(Clone, Debug, Subcommand)]

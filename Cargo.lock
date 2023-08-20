@@ -881,9 +881,9 @@ checksum = "0ce7134b9999ecaf8bcd65542e436736ef32ddca1b3e06094cb6ec5755203b80"
 
 [[package]]
 name = "flate2"
-version = "1.0.26"
+version = "1.0.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3b9429470923de8e8cbd4d2dc513535400b4b3fef0319fb5c4e1f520a7bef743"
+checksum = "c6c98ee8095e9d1dcbf2fcc6d95acccb90d1c81db1e44725c6a984b1dbdfb010"
 dependencies = [
  "crc32fast",
  "miniz_oxide",
@@ -1450,6 +1450,7 @@ dependencies = [
  "jpm_common",
  "jpm_compiler",
  "jpm_package",
+ "jpm_store",
  "jpm_workspace",
  "miette 5.10.0",
  "mimalloc",
@@ -1468,6 +1469,7 @@ dependencies = [
  "once_cell",
  "regex",
  "schematic",
+ "semver 1.0.18",
  "serde",
  "spdx",
  "thiserror",
@@ -1507,7 +1509,6 @@ dependencies = [
  "miette 5.10.0",
  "relative-path",
  "schematic",
- "semver 1.0.18",
  "serde",
  "starbase_sandbox",
  "starbase_styles",
@@ -1525,6 +1526,21 @@ dependencies = [
  "miette 5.10.0",
  "relative-path",
  "starbase_sandbox",
+ "starbase_styles",
+ "starbase_utils",
+ "thiserror",
+ "tracing",
+]
+
+[[package]]
+name = "jpm_store"
+version = "0.1.0"
+dependencies = [
+ "jpm_common",
+ "miette 5.10.0",
+ "reqwest",
+ "starbase",
+ "starbase_archive",
  "starbase_styles",
  "starbase_utils",
  "thiserror",
@@ -1649,6 +1665,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "718e8fae447df0c7e1ba7f5189829e63fd536945c8988d61444c19039f16b670"
 dependencies = [
  "hashbrown 0.13.2",
+]
+
+[[package]]
+name = "lzma-sys"
+version = "0.1.20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5fda04ab3764e6cde78b9974eec4f779acaba7c4e84b36eca3cf77c581b85d27"
+dependencies = [
+ "cc",
+ "libc",
+ "pkg-config",
 ]
 
 [[package]]
@@ -2055,6 +2082,12 @@ name = "pin-utils"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
+
+[[package]]
+name = "pkg-config"
+version = "0.3.27"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "26072860ba924cbfa98ea39c8c19b4dd6a4a25423dbdf219c1eca91aa0cf6964"
 
 [[package]]
 name = "pmutil"
@@ -2932,9 +2965,9 @@ dependencies = [
 
 [[package]]
 name = "starbase"
-version = "0.2.0"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00aec49705ca0a52f3a07957ae38352d5ed080c95cdd22757cfdabf6ab9c6c68"
+checksum = "5d50cebb3999d006a422348a983f20d0d0f1b4687d6c13294965aa0aa89b1a46"
 dependencies = [
  "async-trait",
  "chrono",
@@ -2953,6 +2986,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "starbase_archive"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "12bb40d408fb474e6d0092eba4fa977aa40c85885931c62219bb12d512e515e8"
+dependencies = [
+ "flate2",
+ "miette 5.10.0",
+ "rustc-hash",
+ "starbase_styles",
+ "starbase_utils",
+ "tar",
+ "thiserror",
+ "tracing",
+ "xz2",
+]
+
+[[package]]
 name = "starbase_events"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2966,9 +3016,9 @@ dependencies = [
 
 [[package]]
 name = "starbase_macros"
-version = "0.2.0"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aaca08ddab0c9a6b02afa7a6a9cf745fb004004b3644e7165e0e126abeae73d1"
+checksum = "0ef480c59ed0d7b02bf3c3328a738370bc2b65f46dd2737342396d0cde9ca403"
 dependencies = [
  "darling",
  "proc-macro2",
@@ -2994,9 +3044,9 @@ dependencies = [
 
 [[package]]
 name = "starbase_styles"
-version = "0.1.12"
+version = "0.1.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3e5c30719b6118d1946b56a506a164b5d2cee97f10148e86125f94093c727253"
+checksum = "bad293ee0bf20cc69aced802167871210db53994bb6dd4206d9cf48dd7517cd2"
 dependencies = [
  "dirs",
  "miette 5.10.0",
@@ -3964,6 +4014,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 
 [[package]]
+name = "tar"
+version = "0.4.40"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b16afcea1f22891c49a00c751c7b63b2233284064f11a200fc624137c51e2ddb"
+dependencies = [
+ "filetime",
+ "libc",
+ "xattr",
+]
+
+[[package]]
 name = "tempfile"
 version = "3.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4815,6 +4876,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "05f360fc0b24296329c78fda852a1e9ae82de9cf7b27dae4b7f62f118f77b9ed"
 dependencies = [
  "tap",
+]
+
+[[package]]
+name = "xattr"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4686009f71ff3e5c4dbcf1a282d0a44db3f021ba69350cd42086b3e5f1c6985"
+dependencies = [
+ "libc",
+]
+
+[[package]]
+name = "xz2"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "388c44dc09d76f1536602ead6d325eb532f5c122f17782bd57fb47baeeb767e2"
+dependencies = [
+ "lzma-sys",
 ]
 
 [[package]]

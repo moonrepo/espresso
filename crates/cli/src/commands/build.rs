@@ -1,9 +1,24 @@
-use crate::app::{BuildArgs, GlobalArgs};
+use crate::app::GlobalArgs;
 use crate::helpers::loop_packages;
+use clap::Args;
+use jpm_common::EsTarget;
 use jpm_compiler::Compiler;
 use jpm_workspace::Workspace;
 use starbase::SystemResult;
 use starbase_styles::color;
+
+#[derive(Args, Clone, Debug)]
+pub struct BuildArgs {
+    #[arg(
+        value_enum,
+        short = 't',
+        long,
+        env = "JPM_TARGET",
+        help = "ECMAScript target to transform source code to.",
+        default_value_t
+    )]
+    pub target: EsTarget,
+}
 
 #[tracing::instrument(skip_all)]
 pub async fn build(

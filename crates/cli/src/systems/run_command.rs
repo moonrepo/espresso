@@ -4,7 +4,7 @@ use crate::states::RunningCommand;
 use jpm_workspace::Workspace;
 use starbase::system;
 
-#[system]
+#[system(instrument = false)]
 pub fn run_command(
     cli: StateRef<RunningCommand>,
     workspace: ResourceRef<Workspace>,

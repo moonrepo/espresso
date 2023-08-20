@@ -34,6 +34,7 @@ async fn main() -> MainResult {
     let mut app = App::new();
     app.set_state(RunningCommand(args));
     app.startup(systems::detect_workspace);
+    app.startup(systems::load_store);
     app.execute(systems::run_command);
     app.run().await?;
 

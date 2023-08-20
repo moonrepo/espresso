@@ -1,5 +1,5 @@
 [package]
-name = "jpm_manifest"
+name = "jpm_store"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
@@ -7,14 +7,10 @@ license = "MIT"
 [dependencies]
 jpm_common = { path = "../common" }
 miette = { workspace = true }
-relative-path = { workspace = true }
-schematic = { workspace = true }
-serde = { workspace = true }
+reqwest = { workspace = true }
+starbase = { workspace = true }
+starbase_archive = { workspace = true, features = ["tar-gz", "tar-xz"] }
 starbase_styles = { workspace = true }
 starbase_utils = { workspace = true }
 thiserror = { workspace = true }
 tracing = { workspace = true }
-url = { workspace = true }
-
-[dev-dependencies]
-starbase_sandbox = { workspace = true }
