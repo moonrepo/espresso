@@ -24,7 +24,7 @@ starbase = "0.2.3"
 starbase_archive = { version = "0.2.0", default-features = false }
 starbase_sandbox = { version = "0.1.8" }
 starbase_styles = "0.1.13"
-starbase_utils = { version = "0.2.10", default-features = false, features = [
+starbase_utils = { version = "0.2.19", default-features = false, features = [
 	"glob",
 ] }
 thiserror = "1.0.44"

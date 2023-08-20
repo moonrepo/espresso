@@ -2,10 +2,8 @@ use crate::storage_item::StorageItem;
 use crate::store_error::StoreError;
 use starbase::Resource;
 use starbase_archive::Archiver;
-use starbase_utils::dirs;
-use starbase_utils::fs::{self, FsError};
+use starbase_utils::{dirs, fs};
 use std::env;
-use std::io;
 use std::path::{Path, PathBuf};
 use tracing::debug;
 
@@ -66,15 +64,15 @@ impl Store {
 
         debug!(
             item = item.get_label(),
-            archive_url = ?url,
-            cache_file = ?archive_file,
+            source_url = ?url,
+            archive_file = ?archive_file,
             "Downloading package archive",
         );
 
         if archive_file.exists() {
             debug!(
                 item = item.get_label(),
-                cache_file = ?archive_file,
+                archive_file = ?archive_file,
                 "Package archive already exists in local cache, skipping download"
             );
 
@@ -101,23 +99,16 @@ impl Store {
             .into());
         }
 
-        let mut contents = io::Cursor::new(
-            response
-                .bytes()
-                .await
-                .map_err(|error| StoreError::Http { error })?,
-        );
+        let contents = response
+            .bytes()
+            .await
+            .map_err(|error| StoreError::Http { error })?;
 
-        let mut file = fs::create_file(&archive_file)?;
-
-        io::copy(&mut contents, &mut file).map_err(|error| FsError::Create {
-            path: archive_file.to_path_buf(),
-            error,
-        })?;
+        fs::write_file_with_lock(&archive_file, contents)?;
 
         debug!(
             item = item.get_label(),
-            cache_file = ?archive_file,
+            archive_file = ?archive_file,
             "Downloaded package archive",
         );
 
@@ -147,7 +138,13 @@ impl Store {
             return Ok(output_dir);
         }
 
-        Archiver::new(&output_dir, archive_file).unpack_from_ext()?;
+        let mut archive = Archiver::new(&output_dir, archive_file);
+
+        if let Some(prefix) = item.get_archive_prefix() {
+            archive.set_prefix(prefix);
+        }
+
+        archive.unpack_from_ext()?;
 
         debug!(
             item = item.get_label(),

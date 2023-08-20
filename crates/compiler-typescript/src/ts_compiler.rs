@@ -52,11 +52,7 @@ impl<'pkg> TsCompiler<'pkg> {
     }
 
     pub fn create_tsconfig(&self, target: EsTarget, tsconfig_file: PathBuf) -> miette::Result<()> {
-        let target_string = target.to_string();
-
         let mut json = include_str!("../templates/tsconfig.json").to_string();
-        json = json.replace("{{ root_dir }}", "../src");
-        json = json.replace("{{ out_dir }}", &target_string);
 
         json = json.replace(
             "{{ decorators }}",
@@ -79,7 +75,7 @@ impl<'pkg> TsCompiler<'pkg> {
         );
 
         // https://www.typescriptlang.org/tsconfig#target
-        json = json.replace("{{ target }}", &target_string);
+        json = json.replace("{{ target }}", &target.to_string());
 
         fs::write_file(tsconfig_file, json)?;
 

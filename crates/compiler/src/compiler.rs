@@ -74,6 +74,11 @@ impl<'pkg> Compiler<'pkg> {
         }
 
         // Generate TypeScript declarations
+        if sources.typescript {
+            TsCompiler::new(&self.package, Arc::clone(&self.store))?
+                .compile(target)
+                .await?;
+        }
 
         Ok(out_dir)
     }

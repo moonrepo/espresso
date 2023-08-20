@@ -1050,6 +1050,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "fs4"
+version = "0.6.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2eeb4ed9e12f43b7fa0baae3f9cdda28352770132ef2e09a23760c29cae8bd47"
+dependencies = [
+ "rustix 0.38.4",
+ "windows-sys 0.48.0",
+]
+
+[[package]]
 name = "funty"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3056,11 +3066,12 @@ dependencies = [
 
 [[package]]
 name = "starbase_utils"
-version = "0.2.18"
+version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1018714a63bfd48b31085fbf71f2c69b039b5cf0e140594ca8ff2088cbf697ca"
+checksum = "2d3838378ebcb7a591ff5ffdd286f9bff94662b223ed50fa879eee72cdb430e4"
 dependencies = [
  "dirs",
+ "fs4",
  "miette 5.10.0",
  "once_cell",
  "relative-path",

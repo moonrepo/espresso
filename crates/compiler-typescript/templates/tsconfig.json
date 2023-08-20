@@ -22,19 +22,19 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-		"outDir": "{{ out_dir }}",
+		"outDir": "./{{ target }}",
 		"paths": {},
     "pretty": true,
     "removeComments": false,
 		"resolvePackageJsonExports": false,
 		"resolvePackageJsonImports": false,
     "resolveJsonModule": true,
-		"rootDir": "{{ root_dir }}",
+		"rootDir": "../src",
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true,
     "target": "{{ target }}",
     "verbatimModuleSyntax": true
   },
-	"include": ["**/*"]
+	"include": ["../src/**/*"]
 }
