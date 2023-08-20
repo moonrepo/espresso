@@ -1,6 +1,8 @@
+mod storage_item;
 mod store;
 mod store_error;
 
+pub use storage_item::*;
 pub use store::*;
 pub use store_error::*;
 
@@ -13,5 +15,6 @@ pub use store_error::*;
 //      package/
 //        v1.2.3/
 //          es2015/
-//  typescript/
-//    v5.1.0/
+//    __npm__/
+//      typescript/
+//        v5.1.0/
