@@ -23,7 +23,7 @@ impl<'pkg> Compiler<'pkg> {
     pub fn new(package: &Package, store: Arc<Store>) -> miette::Result<Compiler> {
         debug!(
             package = package.name(),
-            "Creating new compiler for package"
+            "Creating JavaScript compiler for package"
         );
 
         Ok(Compiler {
@@ -39,7 +39,12 @@ impl<'pkg> Compiler<'pkg> {
         let out_dir = self.package.root.join(".espm").join(target.to_string());
         let sources = self.package.load_source_files()?;
 
-        debug!(out_dir = ?out_dir, target = target.to_string(), "Compiling package");
+        debug!(
+            package = self.package.name(),
+            out_dir = ?out_dir,
+            target = target.to_string(),
+            "Compiling package",
+        );
 
         let build_settings = Arc::new(self.package.manifest.build.clone());
         let assets = self.create_assets(&sources, &out_dir, Arc::clone(&build_settings));

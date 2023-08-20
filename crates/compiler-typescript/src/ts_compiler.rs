@@ -30,15 +30,14 @@ impl<'pkg> TsCompiler<'pkg> {
         let tsconfig_name = format!("tsconfig.{}.json", target.to_string());
         let tsconfig_file = self.package.root.join(".jpm").join(&tsconfig_name);
 
-        debug!(
-            package = self.package.name(),
-            "Generating TypeScript declarations"
-        );
+        debug!(package = self.package.name(), "Generating declarations");
 
         self.create_tsconfig(target, tsconfig_file)?;
 
         let js_runtime = detect_javascript_runtime().await?;
         let tsc_bin = self.load_typescript_binary().await?;
+
+        debug!(package = self.package.name(), "Executing `tsc` binary");
 
         let mut command = Command::new(js_runtime);
         command
