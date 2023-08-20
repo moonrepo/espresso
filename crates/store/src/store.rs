@@ -1,5 +1,6 @@
 use crate::storage_item::StorageItem;
 use crate::store_error::StoreError;
+use starbase::Resource;
 use starbase_archive::Archiver;
 use starbase_utils::dirs;
 use starbase_utils::fs::{self, FsError};
@@ -8,6 +9,7 @@ use std::io;
 use std::path::{Path, PathBuf};
 use tracing::debug;
 
+#[derive(Resource)]
 pub struct Store {
     pub bin_dir: PathBuf,
     pub cache_dir: PathBuf,
@@ -17,6 +19,8 @@ pub struct Store {
 
 impl Store {
     pub fn detect_root() -> PathBuf {
+        debug!("Attempting to find store root");
+
         if let Ok(root) = env::var("JPM_ROOT") {
             return root.into();
         }
@@ -31,6 +35,8 @@ impl Store {
         let bin_dir = root.join("bin");
         let cache_dir = root.join("cache");
         let packages_dir = root.join("packages");
+
+        debug!(store = ?root, "Creating store");
 
         fs::create_dir_all(&bin_dir)?;
         fs::create_dir_all(&cache_dir)?;

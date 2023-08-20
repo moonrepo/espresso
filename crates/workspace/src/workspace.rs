@@ -9,6 +9,7 @@ use starbase::Resource;
 use starbase_styles::color;
 use starbase_utils::{fs, glob};
 use std::collections::{BTreeMap, HashSet};
+use std::env;
 use std::fmt;
 use std::path::{Path, PathBuf};
 use tracing::debug;
@@ -31,6 +32,13 @@ pub struct Workspace {
 }
 
 impl Workspace {
+    pub fn load() -> miette::Result<Workspace> {
+        let working_dir =
+            env::current_dir().expect("Unable to determine current working directory!");
+
+        Self::load_from(&working_dir)
+    }
+
     pub fn load_from(working_dir: &Path) -> miette::Result<Workspace> {
         debug!(
             working_dir = ?working_dir,
@@ -53,7 +61,7 @@ impl Workspace {
             return Err(WorkspaceError::NoRootDetected)?;
         };
 
-        debug!(root = ?root, "Found a possible root!");
+        debug!(workspace = ?root, "Creating workspace");
 
         let manifest = ManifestLoader::load(&root)?;
 

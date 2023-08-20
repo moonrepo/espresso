@@ -1450,6 +1450,7 @@ dependencies = [
  "jpm_common",
  "jpm_compiler",
  "jpm_package",
+ "jpm_store",
  "jpm_workspace",
  "miette 5.10.0",
  "mimalloc",
@@ -1538,6 +1539,7 @@ dependencies = [
  "jpm_common",
  "miette 5.10.0",
  "reqwest",
+ "starbase",
  "starbase_archive",
  "starbase_styles",
  "starbase_utils",
@@ -2963,9 +2965,9 @@ dependencies = [
 
 [[package]]
 name = "starbase"
-version = "0.2.0"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00aec49705ca0a52f3a07957ae38352d5ed080c95cdd22757cfdabf6ab9c6c68"
+checksum = "5d50cebb3999d006a422348a983f20d0d0f1b4687d6c13294965aa0aa89b1a46"
 dependencies = [
  "async-trait",
  "chrono",
@@ -3014,9 +3016,9 @@ dependencies = [
 
 [[package]]
 name = "starbase_macros"
-version = "0.2.0"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aaca08ddab0c9a6b02afa7a6a9cf745fb004004b3644e7165e0e126abeae73d1"
+checksum = "0ef480c59ed0d7b02bf3c3328a738370bc2b65f46dd2737342396d0cde9ca403"
 dependencies = [
  "darling",
  "proc-macro2",
