@@ -1,8 +1,9 @@
 use crate::storage_item::StorageItem;
 use crate::store_error::StoreError;
+use starbase_archive::Archiver;
 use starbase_utils::fs::{self, FsError};
 use std::io;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tracing::debug;
 
 pub struct Store {
@@ -17,22 +18,22 @@ impl Store {
         url: &str,
         item: impl StorageItem,
     ) -> miette::Result<PathBuf> {
-        let filename = format!("{}.{}", item.to_file_prefix(), item.get_archive_ext());
+        let archive_file = self.cache_dir.join(format!(
+            "{}.{}",
+            item.to_file_prefix(),
+            item.get_archive_ext()
+        ));
 
-        self.download_archive_with_name(url, &filename).await
-    }
-
-    pub async fn download_archive_with_name(
-        &self,
-        url: &str,
-        filename: &str,
-    ) -> miette::Result<PathBuf> {
-        let archive_file = self.cache_dir.join(filename);
-
-        debug!(url = ?url, cache_file = ?archive_file, "Downloading package archive");
+        debug!(
+            item = item.get_label(),
+            archive_url = ?url,
+            cache_file = ?archive_file,
+            "Downloading package archive",
+        );
 
         if archive_file.exists() {
             debug!(
+                item = item.get_label(),
                 cache_file = ?archive_file,
                 "Package archive already exists in local cache, skipping download"
             );
@@ -74,8 +75,41 @@ impl Store {
             error,
         })?;
 
-        debug!(cache_file = ?archive_file, "Downloaded package archive");
+        debug!(
+            item = item.get_label(),
+            cache_file = ?archive_file,
+            "Downloaded package archive",
+        );
 
         Ok(archive_file)
+    }
+
+    pub async fn unpack_archive(
+        &self,
+        archive_file: &Path,
+        item: impl StorageItem,
+    ) -> miette::Result<PathBuf> {
+        let output_dir = self.packages_dir.join(item.to_file_path());
+
+        debug!(
+            item = item.get_label(),
+            archive_file = ?archive_file,
+            output_dir = ?output_dir,
+            "Unpacking package archive",
+        );
+
+        if output_dir.exists() {
+            return Ok(output_dir);
+        }
+
+        Archiver::new(&output_dir, archive_file).unpack_from_ext()?;
+
+        debug!(
+            item = item.get_label(),
+            output_dir = ?output_dir,
+            "Unpacked package archive",
+        );
+
+        Ok(output_dir)
     }
 }

@@ -2,7 +2,8 @@ use jpm_common::{EsTarget, PackageName, Version};
 use std::path::PathBuf;
 
 pub trait StorageItem {
-    fn get_archive_ext(&self) -> String;
+    fn get_archive_ext(&self) -> &str;
+    fn get_label(&self) -> &str;
     fn to_file_path(&self) -> PathBuf;
     fn to_file_prefix(&self) -> String;
 }
@@ -14,8 +15,12 @@ pub struct PackageItem<'app> {
 }
 
 impl<'app> StorageItem for PackageItem<'app> {
-    fn get_archive_ext(&self) -> String {
-        "tar.xz".into()
+    fn get_archive_ext(&self) -> &str {
+        "tar.xz"
+    }
+
+    fn get_label(&self) -> &str {
+        self.package.as_str()
     }
 
     fn to_file_path(&self) -> PathBuf {
@@ -42,8 +47,12 @@ pub struct TypeScriptItem<'app> {
 }
 
 impl<'app> StorageItem for TypeScriptItem<'app> {
-    fn get_archive_ext(&self) -> String {
-        "tar.gz".into() // What npm uses
+    fn get_archive_ext(&self) -> &str {
+        "tar.gz" // What npm uses
+    }
+
+    fn get_label(&self) -> &str {
+        "typescript"
     }
 
     fn to_file_path(&self) -> PathBuf {
