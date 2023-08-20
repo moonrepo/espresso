@@ -1,3 +1,4 @@
+use crate::helpers::detect_javascript_runtime;
 use jpm_common::{EsTarget, Version};
 use jpm_package::Package;
 use jpm_store::{Store, TypeScriptItem};
@@ -29,9 +30,14 @@ impl<'pkg> TsCompiler<'pkg> {
         let tsconfig_name = format!("tsconfig.{}.json", target.to_string());
         let tsconfig_file = self.package.root.join(".jpm").join(&tsconfig_name);
 
+        debug!(
+            package = self.package.name(),
+            "Generating TypeScript declarations"
+        );
+
         self.create_tsconfig(target, tsconfig_file)?;
 
-        let js_runtime = self.detect_javascript_runtime().await?;
+        let js_runtime = detect_javascript_runtime().await?;
         let tsc_bin = self.load_typescript_binary().await?;
 
         let mut command = Command::new(js_runtime);
@@ -77,13 +83,15 @@ impl<'pkg> TsCompiler<'pkg> {
         // https://www.typescriptlang.org/tsconfig#target
         json = json.replace("{{ target }}", &target.to_string());
 
-        fs::write_file(tsconfig_file, json)?;
+        fs::write_file(&tsconfig_file, json)?;
+
+        debug!(
+            package = self.package.name(),
+            tsconfig = ?tsconfig_file,
+            "Created tsconfig.json"
+        );
 
         Ok(())
-    }
-
-    pub async fn detect_javascript_runtime(&self) -> miette::Result<String> {
-        Ok("node".into())
     }
 
     pub async fn load_typescript_binary(&self) -> miette::Result<PathBuf> {
