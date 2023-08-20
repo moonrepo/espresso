@@ -1,6 +1,7 @@
 use crate::asset::Asset;
+use crate::declarations::Declarations;
 use crate::module::Module;
-use espresso_common::EsTarget;
+use espresso_common::{EsTarget, OUT_DIR};
 use espresso_manifest::PackageManifestBuild;
 use espresso_package::{Package, SourceFiles};
 use espresso_store::Store;
@@ -36,18 +37,13 @@ impl<'pkg> Compiler<'pkg> {
     }
 
     pub async fn compile(&self, target: EsTarget) -> miette::Result<PathBuf> {
-<<<<<<< HEAD
-        let out_dir = self.package.root.join(".espm").join(target.to_string());
-=======
         let out_dir = self.package.root.join(OUT_DIR).join(target.to_string());
->>>>>>> a9c1891 (Polish.)
         let sources = self.package.load_source_files()?;
 
         debug!(
-            package = self.package.name(),
             out_dir = ?out_dir,
             target = target.to_string(),
-            "Compiling package",
+            "Compiling package source directory",
         );
 
         let build_settings = Arc::new(self.package.manifest.build.clone());
@@ -78,15 +74,23 @@ impl<'pkg> Compiler<'pkg> {
             Ok(())
         }));
 
-        for future in futures {
-            future.await.into_diagnostic()??;
-        }
-
         // Generate TypeScript declarations
         if sources.typescript {
-            TsCompiler::new(self.package, Arc::clone(&self.store))?
-                .compile(target)
-                .await?;
+            let declarations = Declarations::new(
+                self.package.root.clone(),
+                Arc::clone(&build_settings),
+                Arc::clone(&self.store),
+            );
+
+            futures.push(task::spawn(async move {
+                declarations.generate(&target).await?;
+
+                Ok(())
+            }));
+        }
+
+        for future in futures {
+            future.await.into_diagnostic()??;
         }
 
         Ok(out_dir)

@@ -10,6 +10,7 @@ espresso_manifest = { path = "../manifest" }
 espresso_package = { path = "../package" }
 espresso_store = { path = "../store" }
 anyhow = "1.0.74"
+cached = { workspace = true }
 futures = "0.3.28"
 miette = { workspace = true }
 oxipng = "8.0.0"

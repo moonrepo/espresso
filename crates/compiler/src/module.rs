@@ -21,6 +21,7 @@ use swc_core::ecma::{
 // use swc_visit::chain;
 use tracing::debug;
 
+/// Represents a single module file, either JavaScript or TypeScript.
 pub struct Module {
     pub build_settings: Arc<PackageManifestBuild>,
     pub out_path: PathBuf,

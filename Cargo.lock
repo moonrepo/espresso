@@ -955,9 +955,11 @@ name = "espresso_compiler"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "cached",
  "espresso_common",
  "espresso_manifest",
  "espresso_package",
+ "espresso_store",
  "futures",
  "miette 5.10.0",
  "oxipng",
@@ -1019,6 +1021,7 @@ dependencies = [
  "starbase_styles",
  "starbase_utils",
  "thiserror",
+ "tokio",
  "tracing",
 ]
 

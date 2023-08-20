@@ -1,6 +1,7 @@
 mod asset;
 mod compiler;
 mod compiler_error;
+mod declarations;
 mod helpers;
 mod module;
 mod plugins;

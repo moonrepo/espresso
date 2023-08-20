@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-		"allowArbitraryExtensions": true,
-		"allowImportingTsExtensions": true,
+    "allowArbitraryExtensions": true,
+    "allowImportingTsExtensions": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-		"declaration": true,
-		"declarationMap": false,
-		"emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": false,
+    "emitDeclarationOnly": true,
     "esModuleInterop": true,
-		"experimentalDecorators": {{ decorators }},
+    "experimentalDecorators": {{ decorators }},
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": [
@@ -22,19 +22,19 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-		"outDir": "./{{ target }}",
-		"paths": {},
+    "outDir": "./{{ target }}",
+    "paths": {},
     "pretty": true,
     "removeComments": false,
-		"resolvePackageJsonExports": false,
-		"resolvePackageJsonImports": false,
+    "resolvePackageJsonExports": false,
+    "resolvePackageJsonImports": false,
     "resolveJsonModule": true,
-		"rootDir": "../src",
+    "rootDir": "../src",
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true,
     "target": "{{ target }}",
     "verbatimModuleSyntax": true
   },
-	"include": ["../src/**/*"]
+  "include": ["../src/**/*"]
 }

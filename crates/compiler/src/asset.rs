@@ -7,6 +7,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tracing::{debug, trace};
 
+/// Represents a single asset file (png, svg, etc).
 pub struct Asset {
     pub build_settings: Arc<PackageManifestBuild>,
     pub out_path: PathBuf,
