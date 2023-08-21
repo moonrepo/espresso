@@ -1,4 +1,4 @@
-use jpm_workspace::Workspace;
+use espresso_workspace::Workspace;
 use starbase::system;
 
 #[system]

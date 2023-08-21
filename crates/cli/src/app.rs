@@ -1,9 +1,9 @@
 use crate::commands::BuildArgs;
 use clap::{Args, Parser, Subcommand};
-use jpm_common::PackageName;
-use jpm_workspace::SelectQuery;
+use espresso_common::PackageName;
+use espresso_workspace::SelectQuery;
 
-pub const BIN_NAME: &str = if cfg!(windows) { "jpm.exe" } else { "jpm" };
+pub const BIN_NAME: &str = if cfg!(windows) { "espm.exe" } else { "espm" };
 
 static HEADING_FILTER: &str = "Package filtering";
 
@@ -29,14 +29,14 @@ pub enum Commands {
     #[command(
         name = "build",
         about = "Build a package.",
-        long_about = "Build a package by transforming source files (from the package's `src` directory) to the `.jpm/<target>` output directory.",
+        long_about = "Build a package by transforming source files (from the package's `src` directory) to the `.espm/<target>` output directory.",
         rename_all = "camelCase"
     )]
     Build(BuildArgs),
 
     #[command(
         name = "debug",
-        about = "Debug jpm instance.",
+        about = "Debug Espresso instance.",
         rename_all = "camelCase",
         hide = true
     )]
@@ -46,7 +46,7 @@ pub enum Commands {
 #[derive(Clone, Debug, Parser)]
 #[command(
     bin_name = BIN_NAME,
-    name = "jpm",
+    name = "Espresso",
     about = "Next-generation JavaScript package and dependency manager.",
     version,
     disable_colored_help = true,

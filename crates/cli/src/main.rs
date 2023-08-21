@@ -24,10 +24,15 @@ async fn main() -> MainResult {
     let args = CLI::parse();
 
     App::setup_tracing_with_options(TracingOptions {
-        filter_modules: vec!["jpm".into(), "schematic".into(), "starbase".into()],
+        filter_modules: vec![
+            "espm".into(),
+            "espresso".into(),
+            "schematic".into(),
+            "starbase".into(),
+        ],
         // log_env: "STARBASE_LOG".into(),
-        log_env: "JPM_LOG".into(),
-        test_env: "JPM_TEST".into(),
+        log_env: "espresso_LOG".into(),
+        test_env: "espresso_TEST".into(),
         ..TracingOptions::default()
     });
 

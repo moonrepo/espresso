@@ -1,9 +1,9 @@
 use crate::package_graph::PackageGraph;
 use crate::workspace_error::WorkspaceError;
-use jpm_common::PackageName;
-use jpm_lockfile::LOCKFILE_NAME;
-use jpm_manifest::{Manifest, ManifestLoader, MANIFEST_NAME};
-use jpm_package::Package;
+use espresso_common::PackageName;
+use espresso_lockfile::LOCKFILE_NAME;
+use espresso_manifest::{Manifest, ManifestLoader, MANIFEST_NAME};
+use espresso_package::Package;
 use once_cell::sync::OnceCell;
 use starbase::Resource;
 use starbase_styles::color;

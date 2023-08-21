@@ -1,0 +1,5 @@
+[package]
+name = "espm-example/foo"
+
+[dependencies]
+"espm-example/bar" = "*"

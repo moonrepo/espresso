@@ -1,4 +1,4 @@
-use jpm_package::*;
+use espresso_package::*;
 use starbase_sandbox::create_empty_sandbox;
 
 mod package {

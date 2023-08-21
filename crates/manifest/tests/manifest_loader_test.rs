@@ -1,5 +1,5 @@
-use jpm_common::PackageName;
-use jpm_manifest::*;
+use espresso_common::PackageName;
+use espresso_manifest::*;
 use starbase_sandbox::create_empty_sandbox;
 
 mod manifest_loader {
@@ -9,7 +9,7 @@ mod manifest_loader {
     #[should_panic(expected = "add a [package] OR [workspace]")]
     fn errors_when_unable_to_detect() {
         let sandbox = create_empty_sandbox();
-        sandbox.create_file("jpm.toml", "");
+        sandbox.create_file("espm.toml", "");
 
         ManifestLoader::load(sandbox.path().join(MANIFEST_NAME)).unwrap();
     }
@@ -18,7 +18,7 @@ mod manifest_loader {
     fn loads_package() {
         let sandbox = create_empty_sandbox();
         sandbox.create_file(
-            "jpm.toml",
+            "espm.toml",
             r#"
 [package]
 name = "ns/pkg"
@@ -38,7 +38,7 @@ name = "ns/pkg"
     fn loads_workspace() {
         let sandbox = create_empty_sandbox();
         sandbox.create_file(
-            "jpm.toml",
+            "espm.toml",
             r#"
 [workspace]
 packages = ["*"]

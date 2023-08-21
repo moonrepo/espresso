@@ -6,7 +6,7 @@ pub use storage_item::*;
 pub use store::*;
 pub use store_error::*;
 
-// .jpm/
+// .espm/
 //  bin/
 //  cache/
 //    namespace_package_v1.2.3_es2015.tar.xz

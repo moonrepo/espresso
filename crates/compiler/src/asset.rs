@@ -1,6 +1,6 @@
 use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
-use jpm_manifest::PackageManifestBuild;
+use espresso_manifest::PackageManifestBuild;
 use oxipng::{optimize_from_memory, Options};
 use starbase_utils::fs;
 use std::path::PathBuf;

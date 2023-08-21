@@ -1,4 +1,4 @@
-use jpm_package::*;
+use espresso_package::*;
 use relative_path::RelativePathBuf;
 use starbase_sandbox::create_sandbox;
 
@@ -75,7 +75,7 @@ mod source_files {
     fn can_exclude_files() {
         let sandbox = create_sandbox("components");
         sandbox.append_file(
-            "jpm.toml",
+            "espm.toml",
             r#"
 [build]
 exclude = ["**/*.tsx"]

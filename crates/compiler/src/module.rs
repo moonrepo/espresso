@@ -1,8 +1,8 @@
 use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
 use crate::plugins::{AddMjsExtensionVisitor, DetectCjsVisitor};
-use jpm_common::EsTarget;
-use jpm_manifest::{BuildDecorators, PackageManifestBuild};
+use espresso_common::EsTarget;
+use espresso_manifest::{BuildDecorators, PackageManifestBuild};
 use starbase_utils::fs;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -123,7 +123,9 @@ impl Module {
                 module: Some(ModuleConfig::Es6),
                 ..Config::default()
             },
-            caller: Some(CallerOptions { name: "jpm".into() }),
+            caller: Some(CallerOptions {
+                name: "espm".into(),
+            }),
             env_name: "production".into(),
             filename: fs::file_name(&self.src_path),
             output_path: Some(self.out_path.clone()),

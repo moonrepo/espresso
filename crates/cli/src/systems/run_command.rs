@@ -1,7 +1,7 @@
 use crate::app::Commands;
 use crate::commands;
 use crate::states::RunningCommand;
-use jpm_workspace::Workspace;
+use espresso_workspace::Workspace;
 use starbase::system;
 
 #[system(instrument = false)]

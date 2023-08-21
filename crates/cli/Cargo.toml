@@ -1,19 +1,19 @@
 [package]
-name = "jpm_cli"
+name = "espresso_cli"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 
 [[bin]]
-name = "jpm"
+name = "espm"
 path = "src/main.rs"
 
 [dependencies]
-jpm_common = { path = "../common" }
-jpm_compiler = { path = "../compiler" }
-jpm_package = { path = "../package" }
-jpm_store = { path = "../store" }
-jpm_workspace = { path = "../workspace" }
+espresso_common = { path = "../common" }
+espresso_compiler = { path = "../compiler" }
+espresso_package = { path = "../package" }
+espresso_store = { path = "../store" }
+espresso_workspace = { path = "../workspace" }
 clap = { workspace = true, features = ["derive", "env", "wrap_help"] }
 miette = { workspace = true }
 mimalloc = { version = "0.1.37", default-features = false }

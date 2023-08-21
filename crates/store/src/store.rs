@@ -21,13 +21,13 @@ impl Store {
     pub fn detect_root() -> PathBuf {
         debug!("Attempting to find store root");
 
-        if let Ok(root) = env::var("JPM_ROOT") {
+        if let Ok(root) = env::var("espresso_ROOT") {
             return root.into();
         }
 
         dirs::home_dir()
             .expect("Could not find a home directory!")
-            .join(".jpm")
+            .join(".espm")
     }
 
     pub fn load() -> miette::Result<Self> {

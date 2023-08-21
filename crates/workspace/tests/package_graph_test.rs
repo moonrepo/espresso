@@ -1,4 +1,4 @@
-use jpm_workspace::{PackageGraph, Workspace};
+use espresso_workspace::{PackageGraph, Workspace};
 use starbase_sandbox::create_sandbox;
 
 mod package_graph {

@@ -1,4 +1,4 @@
-use jpm_store::Store;
+use espresso_store::Store;
 use starbase::system;
 
 #[system]

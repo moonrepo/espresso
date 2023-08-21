@@ -1,11 +1,11 @@
 [package]
-name = "jpm_package"
+name = "espresso_package"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 
 [dependencies]
-jpm_manifest = { path = "../manifest" }
+espresso_manifest = { path = "../manifest" }
 miette = { workspace = true }
 relative-path = { workspace = true }
 starbase_styles = { workspace = true }

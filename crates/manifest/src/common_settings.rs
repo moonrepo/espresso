@@ -1,4 +1,4 @@
-use jpm_common::{EsTarget, PackageName, VersionReq};
+use espresso_common::{EsTarget, PackageName, VersionReq};
 use schematic::{derive_enum, Config, ConfigEnum};
 use std::collections::BTreeMap;
 

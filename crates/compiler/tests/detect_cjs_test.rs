@@ -1,13 +1,13 @@
-use jpm_common::EsTarget;
-use jpm_compiler::{Compiler, CompilerError};
-use jpm_package::Package;
+use espresso_common::EsTarget;
+use espresso_compiler::{Compiler, CompilerError};
+use espresso_package::Package;
 use starbase_sandbox::create_empty_sandbox;
 
 macro_rules! test_cjs {
     ($content:literal) => {
         let sandbox = create_empty_sandbox();
         sandbox.create_file("src/index.js", $content);
-        sandbox.create_file("jpm.toml", "[package]\nname = \"ns/detect-cjs\"");
+        sandbox.create_file("espm.toml", "[package]\nname = \"ns/detect-cjs\"");
 
         let package = Package::new(sandbox.path()).unwrap();
         let compiler = Compiler::new(&package).unwrap();

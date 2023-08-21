@@ -1,7 +1,7 @@
-use jpm_common::EsTarget;
-use jpm_compiler::Compiler;
-use jpm_manifest::BuildOptimizePng;
-use jpm_package::Package;
+use espresso_common::EsTarget;
+use espresso_compiler::Compiler;
+use espresso_manifest::BuildOptimizePng;
+use espresso_package::Package;
 use starbase_sandbox::{create_sandbox, locate_fixture};
 use std::fs;
 
@@ -19,7 +19,7 @@ mod compile_modules {
 
             assert_eq!(
                 out_dir,
-                sandbox.path().join(".jpm").join(target.to_string())
+                sandbox.path().join(".espm").join(target.to_string())
             );
 
             assert!(out_dir.join("index.mjs").exists());
@@ -27,8 +27,8 @@ mod compile_modules {
         }
 
         assert_ne!(
-            fs::read_to_string(sandbox.path().join(".jpm/es2015/helpers.mjs")).unwrap(),
-            fs::read_to_string(sandbox.path().join(".jpm/es2022/helpers.mjs")).unwrap()
+            fs::read_to_string(sandbox.path().join(".espm/es2015/helpers.mjs")).unwrap(),
+            fs::read_to_string(sandbox.path().join(".espm/es2022/helpers.mjs")).unwrap()
         );
     }
 }
