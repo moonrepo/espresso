@@ -31,8 +31,8 @@ async fn main() -> MainResult {
             "starbase".into(),
         ],
         // log_env: "STARBASE_LOG".into(),
-        log_env: "espresso_LOG".into(),
-        test_env: "espresso_TEST".into(),
+        log_env: "ESPM_LOG".into(),
+        test_env: "ESPM_TEST".into(),
         ..TracingOptions::default()
     });
 
