@@ -55,7 +55,6 @@ function _define_property(obj, key, value) {
     }
     return obj;
 }
-var _obj;
 var _private = new WeakMap();
 export class ClassName {
     method() {
@@ -97,13 +96,12 @@ const [d, e, f] = [
     2,
     3
 ];
-var _ref, _ref1;
-const nullable = (_ref1 = (_ref = 1) !== null && _ref !== void 0 ? _ref : 2) !== null && _ref1 !== void 0 ? _ref1 : 3;
-const optional = ((_obj = obj) === null || _obj === void 0 ? void 0 : _obj.a) || 0;
+const nullable = 1 ?? 2 ?? 3;
+const optional = obj?.a || 0;
 let assign = 0;
 assign || (assign = a);
 assign && (assign = b);
-assign !== null && assign !== void 0 ? assign : assign = b; // Note: Can't test React because we don't have node modules!
+assign ?? (assign = b); // Note: Can't test React because we don't have node modules!
  // export function Component() {
  // 	return <div />;
  // }

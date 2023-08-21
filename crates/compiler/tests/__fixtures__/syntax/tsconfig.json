@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"noEmit": true,
+		"module": "esnext",
+		"rootDir": "src",
+		"target": "esnext",
+		"verbatimModuleSyntax": true
+	},
+	"include": ["src/**/*"]
+}

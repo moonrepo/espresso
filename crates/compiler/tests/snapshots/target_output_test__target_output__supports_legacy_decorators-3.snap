@@ -1,6 +1,6 @@
 ---
 source: crates/compiler/tests/target_output_test.rs
-expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
+expression: "read_file(out_dir.join(\"../tsconfig.es2018.json\"))"
 ---
 {
   "compilerOptions": {
@@ -12,12 +12,12 @@ expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
     "declarationMap": false,
     "emitDeclarationOnly": true,
     "esModuleInterop": true,
-    "experimentalDecorators": false,
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": [
       "dom",
-      "es2019",
+      "es2018",
     ],
     "module": "es2015",
     "moduleResolution": "nodenext",
@@ -26,7 +26,7 @@ expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": false,
-    "outDir": "./es2019",
+    "outDir": "./es2018",
     "paths": {},
     "pretty": true,
     "removeComments": true,
@@ -37,7 +37,7 @@ expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true,
-    "target": "es2019",
+    "target": "es2018",
     "verbatimModuleSyntax": true
   },
   "include": ["../src/**/*"]

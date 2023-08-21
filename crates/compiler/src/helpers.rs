@@ -1,5 +1,7 @@
 use crate::compiler_error::CompilerError;
 use cached::proc_macro::cached;
+use starbase_utils::string_vec;
+use std::env;
 use std::path::Path;
 use tokio::process::Command;
 use tracing::debug;
@@ -8,17 +10,23 @@ use tracing::debug;
 pub async fn detect_javascript_runtime() -> miette::Result<String> {
     debug!("Detecting a JavaScript runtime");
 
-    for bin in ["node", "bun"] {
-        if Command::new(if cfg!(windows) {
+    let lookup = if let Ok(bin) = env::var("ESPM_JS_RUNTIME") {
+        vec![bin]
+    } else {
+        string_vec!["node", "bun"]
+    };
+
+    for bin in &lookup {
+        let result = Command::new(if cfg!(windows) {
             "Get-Command"
         } else {
             "which"
         })
         .arg(bin)
         .output()
-        .await
-        .is_ok()
-        {
+        .await;
+
+        if result.is_ok() {
             debug!(runtime = bin, "Found a JavaScript runtime");
 
             return Ok(bin.into());

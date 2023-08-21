@@ -6,6 +6,7 @@ use espresso_manifest::PackageManifestBuild;
 use espresso_package::{Package, SourceFiles};
 use espresso_store::Store;
 use miette::IntoDiagnostic;
+use starbase_styles::color;
 use starbase_utils::fs;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
@@ -22,10 +23,7 @@ pub struct Compiler<'pkg> {
 
 impl<'pkg> Compiler<'pkg> {
     pub fn new(package: &Package, store: Arc<Store>) -> miette::Result<Compiler> {
-        debug!(
-            package = package.name(),
-            "Creating JavaScript compiler for package"
-        );
+        debug!(package = package.name(), "Creating compiler");
 
         Ok(Compiler {
             package,
@@ -43,7 +41,8 @@ impl<'pkg> Compiler<'pkg> {
         debug!(
             out_dir = ?out_dir,
             target = target.to_string(),
-            "Compiling package source directory",
+            "Compiling package {}",
+            color::id(self.package.name()),
         );
 
         let build_settings = Arc::new(self.package.manifest.build.clone());
@@ -92,6 +91,13 @@ impl<'pkg> Compiler<'pkg> {
         for future in futures {
             future.await.into_diagnostic()??;
         }
+
+        debug!(
+            out_dir = ?out_dir,
+            target = target.to_string(),
+            "Compiled package {}",
+            color::id(self.package.name()),
+        );
 
         Ok(out_dir)
     }

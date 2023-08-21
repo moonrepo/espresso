@@ -33,15 +33,11 @@ impl Declarations {
     }
 
     pub async fn generate(&self, target: &EsTarget) -> miette::Result<()> {
-        let tsconfig_name = format!("tsconfig.{}.json", target.to_string());
-        let tsconfig_file = self.package_root.join(OUT_DIR).join(&tsconfig_name);
+        debug!("Generating TypeScript declarations");
 
-        debug!(tsconfig = ?tsconfig_file, "Generating TypeScript declarations");
-
-        self.create_tsconfig(target, &tsconfig_file)?;
-
-        let js_runtime = detect_javascript_runtime().await?;
+        let tsconfig_file = self.create_tsconfig(target)?;
         let tsc_bin = self.load_typescript_binary().await?;
+        let js_runtime = detect_javascript_runtime().await?;
 
         debug!(
             tsconfig = ?tsconfig_file,
@@ -54,7 +50,7 @@ impl Declarations {
         Command::new(js_runtime)
             .arg(tsc_bin)
             .arg("--project")
-            .arg(format!("./{}/{}", OUT_DIR, tsconfig_name))
+            .arg(tsconfig_file.strip_prefix(&self.package_root).unwrap())
             .current_dir(&self.package_root)
             .spawn()
             .into_diagnostic()?
@@ -62,14 +58,32 @@ impl Declarations {
             .await
             .into_diagnostic()?;
 
+        debug!(
+            tsconfig = ?tsconfig_file,
+            "Executed {} binary",
+            color::shell("tsc"),
+        );
+
+        debug!("Generated TypeScript declarations");
+
         Ok(())
     }
 
-    pub fn create_tsconfig(
-        &self,
-        target: &EsTarget,
-        tsconfig_file: &PathBuf,
-    ) -> miette::Result<()> {
+    pub fn create_tsconfig(&self, target: &EsTarget) -> miette::Result<PathBuf> {
+        let tsconfig_name = format!("tsconfig.{}.json", target);
+        let tsconfig_file = self.package_root.join(&tsconfig_name);
+
+        if tsconfig_file.exists() {
+            debug!(
+                tsconfig = ?tsconfig_file,
+                "A local tsconfig.json exists, using it instead of creating a new one"
+            );
+
+            return Ok(tsconfig_file);
+        }
+
+        let tsconfig_file = self.package_root.join(OUT_DIR).join(&tsconfig_name);
+
         debug!(
             tsconfig = ?tsconfig_file,
             "Creating tsconfig.json"
@@ -100,9 +114,9 @@ impl Declarations {
         // https://www.typescriptlang.org/tsconfig#target
         json = json.replace("{{ target }}", &target.to_string());
 
-        fs::write_file(tsconfig_file, json)?;
+        fs::write_file(&tsconfig_file, json)?;
 
-        Ok(())
+        Ok(tsconfig_file)
     }
 
     pub async fn load_typescript_binary(&self) -> miette::Result<PathBuf> {

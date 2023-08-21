@@ -39,7 +39,7 @@ pub enum CompilerError {
         error: starbase_utils::fs::FsError,
     },
 
-    #[diagnostic(code(compiler::javascript::no_runtime))]
-    #[error("Failed to detect a JavaScript runtime. Unable to generate TypeScript declarations!")]
+    #[diagnostic(code(compiler::no_javascript_runtime))]
+    #[error("Failed to detect a JavaScript runtime. Please install Node or Bun.")]
     NoRuntime,
 }

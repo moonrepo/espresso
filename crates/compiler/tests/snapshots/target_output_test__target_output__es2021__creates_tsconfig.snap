@@ -17,16 +17,16 @@ expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
     "isolatedModules": true,
     "lib": [
       "dom",
-      "es2019",
+      "es2021",
     ],
-    "module": "es2015",
+    "module": "es2020",
     "moduleResolution": "nodenext",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": false,
-    "outDir": "./es2019",
+    "outDir": "./es2021",
     "paths": {},
     "pretty": true,
     "removeComments": true,
@@ -37,7 +37,7 @@ expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true,
-    "target": "es2019",
+    "target": "es2021",
     "verbatimModuleSyntax": true
   },
   "include": ["../src/**/*"]

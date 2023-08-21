@@ -64,5 +64,6 @@ mod target_output {
 
         assert_snapshot!(read_file(out_dir.join("index.mjs")));
         assert_snapshot!(read_file(out_dir.join("other.mjs")));
+        assert_snapshot!(read_file(out_dir.join("../tsconfig.es2018.json")));
     }
 }
