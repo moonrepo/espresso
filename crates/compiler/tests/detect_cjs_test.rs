@@ -1,6 +1,6 @@
-use jpm_common::EsTarget;
-use jpm_compiler::{Compiler, CompilerError};
-use jpm_package::Package;
+use espresso_common::EsTarget;
+use espresso_compiler::{Compiler, CompilerError};
+use espresso_package::Package;
 use starbase_sandbox::create_empty_sandbox;
 
 macro_rules! test_cjs {

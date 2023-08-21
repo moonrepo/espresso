@@ -1,5 +1,5 @@
-use jpm_common::*;
-use jpm_manifest::*;
+use espresso_common::*;
+use espresso_manifest::*;
 use starbase_sandbox::create_empty_sandbox;
 use std::collections::BTreeMap;
 use url::Url;

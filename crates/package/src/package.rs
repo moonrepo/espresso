@@ -1,6 +1,6 @@
 use crate::package_error::PackageError;
 use crate::source_files::SourceFiles;
-use jpm_manifest::{ManifestLoader, PackageManifest};
+use espresso_manifest::{ManifestLoader, PackageManifest};
 use miette::IntoDiagnostic;
 use relative_path::RelativePathBuf;
 use starbase_utils::{fs, glob};

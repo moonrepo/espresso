@@ -1,5 +1,5 @@
 use crate::common_settings::*;
-use jpm_common::{LicenseType, PackageName, Version};
+use espresso_common::{LicenseType, PackageName, Version};
 use relative_path::RelativePathBuf;
 use schematic::ValidateError;
 use schematic::{derive_enum, validate, Config, ConfigEnum};

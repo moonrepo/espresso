@@ -1,4 +1,4 @@
-use jpm_package::Package;
+use espresso_package::Package;
 use starbase_styles::color::{create_style, Color, OwoStyle};
 use std::future::Future;
 

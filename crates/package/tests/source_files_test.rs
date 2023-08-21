@@ -1,4 +1,4 @@
-use jpm_package::*;
+use espresso_package::*;
 use relative_path::RelativePathBuf;
 use starbase_sandbox::create_sandbox;
 

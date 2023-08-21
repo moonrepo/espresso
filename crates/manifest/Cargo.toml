@@ -1,11 +1,11 @@
 [package]
-name = "jpm_manifest"
+name = "espresso_manifest"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 
 [dependencies]
-jpm_common = { path = "../common" }
+espresso_common = { path = "../common" }
 miette = { workspace = true }
 relative-path = { workspace = true }
 schematic = { workspace = true }

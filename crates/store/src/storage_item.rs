@@ -1,4 +1,4 @@
-use jpm_common::{EsTarget, PackageName, Version};
+use espresso_common::{EsTarget, PackageName, Version};
 use std::path::PathBuf;
 
 pub trait StorageItem {

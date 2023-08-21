@@ -1,4 +1,4 @@
-use jpm_common::PackageName;
+use espresso_common::PackageName;
 
 mod package_name {
     use super::*;

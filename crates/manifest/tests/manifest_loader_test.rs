@@ -1,5 +1,5 @@
-use jpm_common::PackageName;
-use jpm_manifest::*;
+use espresso_common::PackageName;
+use espresso_manifest::*;
 use starbase_sandbox::create_empty_sandbox;
 
 mod manifest_loader {

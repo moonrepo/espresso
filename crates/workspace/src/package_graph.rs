@@ -1,6 +1,6 @@
 use crate::workspace_error::WorkspaceError;
-use jpm_common::PackageName;
-use jpm_package::Package;
+use espresso_common::PackageName;
+use espresso_package::Package;
 use petgraph::algo::toposort;
 use petgraph::stable_graph::{NodeIndex, StableDiGraph};
 use starbase_styles::color;

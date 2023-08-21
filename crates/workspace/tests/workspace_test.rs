@@ -1,5 +1,5 @@
-use jpm_common::PackageName;
-use jpm_workspace::{SelectQuery, Workspace};
+use espresso_common::PackageName;
+use espresso_workspace::{SelectQuery, Workspace};
 use starbase_sandbox::{create_empty_sandbox, create_sandbox};
 
 mod workspace {

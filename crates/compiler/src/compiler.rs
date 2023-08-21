@@ -1,8 +1,8 @@
 use crate::asset::Asset;
 use crate::module::Module;
-use jpm_common::EsTarget;
-use jpm_manifest::PackageManifestBuild;
-use jpm_package::{Package, SourceFiles};
+use espresso_common::EsTarget;
+use espresso_manifest::PackageManifestBuild;
+use espresso_package::{Package, SourceFiles};
 use miette::IntoDiagnostic;
 use starbase_utils::fs;
 use std::path::{Path, PathBuf};

@@ -1,13 +1,13 @@
 [package]
-name = "jpm_compiler"
+name = "espresso_compiler"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 
 [dependencies]
-jpm_common = { path = "../common" }
-jpm_manifest = { path = "../manifest" }
-jpm_package = { path = "../package" }
+espresso_common = { path = "../common" }
+espresso_manifest = { path = "../manifest" }
+espresso_package = { path = "../package" }
 anyhow = "1.0.74"
 futures = "0.3.28"
 miette = { workspace = true }

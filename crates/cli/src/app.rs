@@ -1,7 +1,7 @@
 use crate::commands::BuildArgs;
 use clap::{Args, Parser, Subcommand};
-use jpm_common::PackageName;
-use jpm_workspace::SelectQuery;
+use espresso_common::PackageName;
+use espresso_workspace::SelectQuery;
 
 pub const BIN_NAME: &str = if cfg!(windows) { "jpm.exe" } else { "jpm" };
 

@@ -1,9 +1,9 @@
 use crate::app::GlobalArgs;
 use crate::helpers::loop_packages;
 use clap::Args;
-use jpm_common::EsTarget;
-use jpm_compiler::Compiler;
-use jpm_workspace::Workspace;
+use espresso_common::EsTarget;
+use espresso_compiler::Compiler;
+use espresso_workspace::Workspace;
 use starbase::SystemResult;
 use starbase_styles::color;
 
@@ -13,7 +13,7 @@ pub struct BuildArgs {
         value_enum,
         short = 't',
         long,
-        env = "JPM_TARGET",
+        env = "espresso_TARGET",
         help = "ECMAScript target to transform source code to.",
         default_value_t
     )]

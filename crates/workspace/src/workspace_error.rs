@@ -1,6 +1,6 @@
-use jpm_common::PackageName;
-use jpm_lockfile::LOCKFILE_NAME;
-use jpm_manifest::MANIFEST_NAME;
+use espresso_common::PackageName;
+use espresso_lockfile::LOCKFILE_NAME;
+use espresso_manifest::MANIFEST_NAME;
 use miette::Diagnostic;
 use starbase_styles::{Style, Stylize};
 use thiserror::Error;

@@ -847,6 +847,130 @@ dependencies = [
 ]
 
 [[package]]
+name = "espresso_cli"
+version = "0.1.0"
+dependencies = [
+ "clap 4.3.21",
+ "espresso_common",
+ "espresso_compiler",
+ "espresso_package",
+ "espresso_store",
+ "espresso_workspace",
+ "miette 5.10.0",
+ "mimalloc",
+ "starbase",
+ "starbase_styles",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "espresso_common"
+version = "0.1.0"
+dependencies = [
+ "clap 4.3.21",
+ "miette 5.10.0",
+ "once_cell",
+ "regex",
+ "schematic",
+ "semver 1.0.18",
+ "serde",
+ "spdx",
+ "thiserror",
+]
+
+[[package]]
+name = "espresso_compiler"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "espresso_common",
+ "espresso_manifest",
+ "espresso_package",
+ "futures",
+ "miette 5.10.0",
+ "oxipng",
+ "starbase_sandbox",
+ "starbase_styles",
+ "starbase_utils",
+ "swc",
+ "swc_core",
+ "swc_visit",
+ "thiserror",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "espresso_lockfile"
+version = "0.1.0"
+
+[[package]]
+name = "espresso_manifest"
+version = "0.1.0"
+dependencies = [
+ "espresso_common",
+ "miette 5.10.0",
+ "relative-path",
+ "schematic",
+ "serde",
+ "starbase_sandbox",
+ "starbase_styles",
+ "starbase_utils",
+ "thiserror",
+ "tracing",
+ "url",
+]
+
+[[package]]
+name = "espresso_package"
+version = "0.1.0"
+dependencies = [
+ "espresso_manifest",
+ "miette 5.10.0",
+ "relative-path",
+ "starbase_sandbox",
+ "starbase_styles",
+ "starbase_utils",
+ "thiserror",
+ "tracing",
+]
+
+[[package]]
+name = "espresso_store"
+version = "0.1.0"
+dependencies = [
+ "espresso_common",
+ "miette 5.10.0",
+ "reqwest",
+ "starbase",
+ "starbase_archive",
+ "starbase_styles",
+ "starbase_utils",
+ "thiserror",
+ "tracing",
+]
+
+[[package]]
+name = "espresso_workspace"
+version = "0.1.0"
+dependencies = [
+ "espresso_common",
+ "espresso_lockfile",
+ "espresso_manifest",
+ "espresso_package",
+ "miette 5.10.0",
+ "once_cell",
+ "petgraph",
+ "starbase",
+ "starbase_sandbox",
+ "starbase_styles",
+ "starbase_utils",
+ "thiserror",
+ "tracing",
+]
+
+[[package]]
 name = "fastrand"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1441,130 +1565,6 @@ name = "joinery"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72167d68f5fce3b8655487b8038691a3c9984ee769590f93f2a631f4ad64e4f5"
-
-[[package]]
-name = "jpm_cli"
-version = "0.1.0"
-dependencies = [
- "clap 4.3.21",
- "jpm_common",
- "jpm_compiler",
- "jpm_package",
- "jpm_store",
- "jpm_workspace",
- "miette 5.10.0",
- "mimalloc",
- "starbase",
- "starbase_styles",
- "tokio",
- "tracing",
-]
-
-[[package]]
-name = "jpm_common"
-version = "0.1.0"
-dependencies = [
- "clap 4.3.21",
- "miette 5.10.0",
- "once_cell",
- "regex",
- "schematic",
- "semver 1.0.18",
- "serde",
- "spdx",
- "thiserror",
-]
-
-[[package]]
-name = "jpm_compiler"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "futures",
- "jpm_common",
- "jpm_manifest",
- "jpm_package",
- "miette 5.10.0",
- "oxipng",
- "starbase_sandbox",
- "starbase_styles",
- "starbase_utils",
- "swc",
- "swc_core",
- "swc_visit",
- "thiserror",
- "tokio",
- "tracing",
-]
-
-[[package]]
-name = "jpm_lockfile"
-version = "0.1.0"
-
-[[package]]
-name = "jpm_manifest"
-version = "0.1.0"
-dependencies = [
- "jpm_common",
- "miette 5.10.0",
- "relative-path",
- "schematic",
- "serde",
- "starbase_sandbox",
- "starbase_styles",
- "starbase_utils",
- "thiserror",
- "tracing",
- "url",
-]
-
-[[package]]
-name = "jpm_package"
-version = "0.1.0"
-dependencies = [
- "jpm_manifest",
- "miette 5.10.0",
- "relative-path",
- "starbase_sandbox",
- "starbase_styles",
- "starbase_utils",
- "thiserror",
- "tracing",
-]
-
-[[package]]
-name = "jpm_store"
-version = "0.1.0"
-dependencies = [
- "jpm_common",
- "miette 5.10.0",
- "reqwest",
- "starbase",
- "starbase_archive",
- "starbase_styles",
- "starbase_utils",
- "thiserror",
- "tracing",
-]
-
-[[package]]
-name = "jpm_workspace"
-version = "0.1.0"
-dependencies = [
- "jpm_common",
- "jpm_lockfile",
- "jpm_manifest",
- "jpm_package",
- "miette 5.10.0",
- "once_cell",
- "petgraph",
- "starbase",
- "starbase_sandbox",
- "starbase_styles",
- "starbase_utils",
- "thiserror",
- "tracing",
-]
 
 [[package]]
 name = "js-sys"

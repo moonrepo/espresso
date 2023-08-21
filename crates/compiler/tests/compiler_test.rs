@@ -1,7 +1,7 @@
-use jpm_common::EsTarget;
-use jpm_compiler::Compiler;
-use jpm_manifest::BuildOptimizePng;
-use jpm_package::Package;
+use espresso_common::EsTarget;
+use espresso_compiler::Compiler;
+use espresso_manifest::BuildOptimizePng;
+use espresso_package::Package;
 use starbase_sandbox::{create_sandbox, locate_fixture};
 use std::fs;
 

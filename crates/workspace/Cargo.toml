@@ -1,14 +1,14 @@
 [package]
-name = "jpm_workspace"
+name = "espresso_workspace"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 
 [dependencies]
-jpm_common = { path = "../common" }
-jpm_lockfile = { path = "../lockfile" }
-jpm_manifest = { path = "../manifest" }
-jpm_package = { path = "../package" }
+espresso_common = { path = "../common" }
+espresso_lockfile = { path = "../lockfile" }
+espresso_manifest = { path = "../manifest" }
+espresso_package = { path = "../package" }
 miette = { workspace = true }
 once_cell = { workspace = true }
 petgraph = { workspace = true }
