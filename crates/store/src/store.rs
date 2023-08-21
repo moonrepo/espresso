@@ -1,6 +1,6 @@
 use crate::storage_item::StorageItem;
 use crate::store_error::StoreError;
-use jpm_common::OUT_DIR;
+use espresso_common::OUT_DIR;
 use starbase::Resource;
 use starbase_archive::Archiver;
 use starbase_utils::{dirs, fs};

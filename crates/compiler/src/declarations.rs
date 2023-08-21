@@ -1,7 +1,7 @@
 use crate::helpers::detect_javascript_runtime;
-use jpm_common::{EsTarget, Version, OUT_DIR};
-use jpm_manifest::PackageManifestBuild;
-use jpm_store::{Store, TypeScriptItem};
+use espresso_common::{EsTarget, Version, OUT_DIR};
+use espresso_manifest::PackageManifestBuild;
+use espresso_store::{Store, TypeScriptItem};
 use miette::IntoDiagnostic;
 use starbase_styles::color;
 use starbase_utils::fs;
