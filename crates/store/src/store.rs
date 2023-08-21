@@ -8,7 +8,7 @@ use std::collections::HashMap;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use tokio::sync::{Mutex, RwLock};
+use tokio::sync::Mutex;
 use tracing::debug;
 
 #[derive(Clone, Resource)]
@@ -18,14 +18,14 @@ pub struct Store {
     pub packages_dir: PathBuf,
     pub root: PathBuf,
 
-    locks: Arc<RwLock<HashMap<String, Arc<Mutex<()>>>>>,
+    locks: Arc<Mutex<HashMap<String, Arc<Mutex<()>>>>>,
 }
 
 impl Store {
     pub fn detect_root() -> PathBuf {
         debug!("Attempting to find store root");
 
-        if let Ok(root) = env::var("espresso_ROOT") {
+        if let Ok(root) = env::var("ESPM_ROOT") {
             return root.into();
         }
 
@@ -35,10 +35,11 @@ impl Store {
     }
 
     pub fn load() -> miette::Result<Self> {
-        Self::load_from(&Self::detect_root())
+        Self::load_from(Self::detect_root())
     }
 
-    pub fn load_from(root: &Path) -> miette::Result<Self> {
+    pub fn load_from<P: AsRef<Path>>(root: P) -> miette::Result<Self> {
+        let root = root.as_ref();
         let bin_dir = root.join("bin");
         let cache_dir = root.join("cache");
         let packages_dir = root.join("packages");
@@ -54,7 +55,7 @@ impl Store {
             cache_dir,
             packages_dir,
             root: root.to_path_buf(),
-            locks: Arc::new(RwLock::new(HashMap::new())),
+            locks: Arc::new(Mutex::new(HashMap::new())),
         })
     }
 
@@ -65,7 +66,7 @@ impl Store {
             return Ok(output_dir);
         }
 
-        let mut locks = self.locks.write().await;
+        let mut locks = self.locks.lock().await;
 
         // Create a lock for this item, so that we avoid multiple processes
         // all attempting to download and unpack the same archive!

@@ -3,8 +3,8 @@ use crate::helpers::loop_packages;
 use clap::Args;
 use espresso_common::EsTarget;
 use espresso_compiler::Compiler;
-use espresso_workspace::Workspace;
 use espresso_store::Store;
+use espresso_workspace::Workspace;
 use starbase::SystemResult;
 use starbase_styles::color;
 use std::sync::Arc;
@@ -15,7 +15,7 @@ pub struct BuildArgs {
         value_enum,
         short = 't',
         long,
-        env = "espresso_TARGET",
+        env = "ESPM_TARGET",
         help = "ECMAScript target to transform source code to.",
         default_value_t
     )]
