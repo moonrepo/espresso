@@ -19,7 +19,7 @@ mod compile_modules {
 
             assert_eq!(
                 out_dir,
-                sandbox.path().join(".jpm").join(target.to_string())
+                sandbox.path().join(".espm").join(target.to_string())
             );
 
             assert!(out_dir.join("index.mjs").exists());
@@ -27,8 +27,8 @@ mod compile_modules {
         }
 
         assert_ne!(
-            fs::read_to_string(sandbox.path().join(".jpm/es2015/helpers.mjs")).unwrap(),
-            fs::read_to_string(sandbox.path().join(".jpm/es2022/helpers.mjs")).unwrap()
+            fs::read_to_string(sandbox.path().join(".espm/es2015/helpers.mjs")).unwrap(),
+            fs::read_to_string(sandbox.path().join(".espm/es2022/helpers.mjs")).unwrap()
         );
     }
 }

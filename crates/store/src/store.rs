@@ -27,7 +27,7 @@ impl Store {
 
         dirs::home_dir()
             .expect("Could not find a home directory!")
-            .join(".jpm")
+            .join(".espm")
     }
 
     pub fn load() -> miette::Result<Self> {

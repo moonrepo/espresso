@@ -33,7 +33,7 @@ impl<'pkg> Compiler<'pkg> {
     }
 
     pub async fn compile(&self, target: EsTarget) -> miette::Result<PathBuf> {
-        let out_dir = self.package.root.join(".jpm").join(target.to_string());
+        let out_dir = self.package.root.join(".espm").join(target.to_string());
         let sources = self.package.load_source_files()?;
 
         debug!(out_dir = ?out_dir, target = target.to_string(), "Compiling package");

@@ -5,7 +5,7 @@ edition = "2021"
 license = "MIT"
 
 [[bin]]
-name = "jpm"
+name = "espm"
 path = "src/main.rs"
 
 [dependencies]

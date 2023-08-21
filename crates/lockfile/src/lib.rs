@@ -1,1 +1,1 @@
-pub static LOCKFILE_NAME: &str = "jpm.lock";
+pub static LOCKFILE_NAME: &str = "espm.lock";

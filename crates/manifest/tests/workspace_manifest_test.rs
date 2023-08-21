@@ -9,7 +9,7 @@ mod workspace_manifest {
     fn loads_defaults() {
         let sandbox = create_empty_sandbox();
         sandbox.create_file(
-            "jpm.toml",
+            "espm.toml",
             r#"
 [workspace]
 packages = ["*"]
@@ -42,7 +42,7 @@ packages = ["*"]
         fn errors_invalid_format() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "jpm.toml",
+                "espm.toml",
                 r#"
 [workspace]
 packages = ["*"]
@@ -59,7 +59,7 @@ target = "esnext"
         fn can_set_fields() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "jpm.toml",
+                "espm.toml",
                 r#"
 [workspace]
 packages = ["*"]
@@ -89,7 +89,7 @@ target = "es2022"
         #[should_panic(expected = "Failed to validate")]
         fn errors_missing_packages() {
             let sandbox = create_empty_sandbox();
-            sandbox.create_file("jpm.toml", "");
+            sandbox.create_file("espm.toml", "");
 
             ManifestLoader::load_workspace(sandbox.path()).unwrap();
         }
@@ -99,7 +99,7 @@ target = "es2022"
         fn errors_empty_packages() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "jpm.toml",
+                "espm.toml",
                 r#"
 [workspace]
 packages = []

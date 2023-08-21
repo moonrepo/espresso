@@ -1,5 +1,5 @@
 [package]
-name = "jpm-example/baz"
+name = "espm-example/baz"
 
 [dependencies]
-"jpm-example/foo" = "*"
+"espm-example/foo" = "*"

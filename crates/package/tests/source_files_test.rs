@@ -75,7 +75,7 @@ mod source_files {
     fn can_exclude_files() {
         let sandbox = create_sandbox("components");
         sandbox.append_file(
-            "jpm.toml",
+            "espm.toml",
             r#"
 [build]
 exclude = ["**/*.tsx"]
