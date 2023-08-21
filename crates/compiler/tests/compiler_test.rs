@@ -1,3 +1,5 @@
+mod utils;
+
 use espresso_common::EsTarget;
 use espresso_compiler::Compiler;
 use espresso_manifest::BuildOptimizePng;
@@ -6,6 +8,7 @@ use espresso_store::Store;
 use starbase_sandbox::{create_sandbox, locate_fixture};
 use std::fs;
 use std::sync::Arc;
+use utils::create_compiler;
 
 mod compile_modules {
     use super::*;
@@ -14,11 +17,7 @@ mod compile_modules {
     async fn compiles_js_files_to_each_target() {
         let sandbox = create_sandbox("js-files");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(
-            &package,
-            Arc::new(Store::load_from(sandbox.path()).unwrap()),
-        )
-        .unwrap();
+        let compiler = create_compiler(sandbox.path(), &package);
 
         for target in [EsTarget::Es2015, EsTarget::Es2018, EsTarget::Es2022] {
             let out_dir = compiler.compile(target).await.unwrap();
