@@ -123,7 +123,9 @@ impl Module {
                 module: Some(ModuleConfig::Es6),
                 ..Config::default()
             },
-            caller: Some(CallerOptions { name: "espm".into() }),
+            caller: Some(CallerOptions {
+                name: "espm".into(),
+            }),
             env_name: "production".into(),
             filename: fs::file_name(&self.src_path),
             output_path: Some(self.out_path.clone()),
