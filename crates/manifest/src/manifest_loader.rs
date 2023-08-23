@@ -6,7 +6,7 @@ use starbase_utils::fs;
 use std::path::{Path, PathBuf};
 use tracing::debug;
 
-pub const MANIFEST_NAME: &str = "espm.toml";
+pub const MANIFEST_NAME: &str = "esp.toml";
 
 #[derive(Debug)]
 pub enum Manifest {

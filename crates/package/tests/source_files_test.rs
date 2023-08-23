@@ -1,3 +1,4 @@
+use espresso_manifest::MANIFEST_NAME;
 use espresso_package::*;
 use relative_path::RelativePathBuf;
 use starbase_sandbox::create_sandbox;
@@ -75,7 +76,7 @@ mod source_files {
     fn can_exclude_files() {
         let sandbox = create_sandbox("components");
         sandbox.append_file(
-            "espm.toml",
+            MANIFEST_NAME,
             r#"
 [build]
 exclude = ["**/*.tsx"]
