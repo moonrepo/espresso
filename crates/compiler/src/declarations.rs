@@ -40,7 +40,7 @@ impl Declarations {
 
         let tsconfig_file = self.create_tsconfig(target)?;
         let tsc_bin = self.load_typescript_binary().await?;
-        let js_runtime = detect_javascript_runtime().await?;
+        let js_runtime = detect_javascript_runtime()?;
 
         debug!(
             tsconfig = ?tsconfig_file,

@@ -3,22 +3,19 @@ use cached::proc_macro::cached;
 use starbase_utils::string_vec;
 use std::env;
 use std::path::Path;
-use tokio::process::Command;
 use tracing::debug;
 
 pub const OUT_DIR: &str = ".espm";
 
 #[cfg(windows)]
-pub async fn command_exists(name: &str) -> bool {
+pub fn command_exists(name: &str) -> bool {
     let path = env::var("PATH").expect("Missing PATH!");
     let pathext = env::var("PATHEXT").expect("Missing PATHEXT!");
     let exts = pathext.split(';').collect::<Vec<_>>();
 
     for path in env::split_paths(&path) {
         for ext in &exts {
-            let command = path.join(format!("{name}{ext}"));
-
-            if command.exists() {
+            if path.join(format!("{name}{ext}")).exists() {
                 return true;
             }
         }
@@ -28,12 +25,20 @@ pub async fn command_exists(name: &str) -> bool {
 }
 
 #[cfg(not(windows))]
-pub async fn command_exists(name: &str) -> bool {
-    Command::new("which").arg(name).output().await.is_ok()
+pub fn command_exists(name: &str) -> bool {
+    let path = env::var("PATH").expect("Missing PATH!");
+
+    for path in env::split_paths(&path) {
+        if path.join(name).exists() {
+            return true;
+        }
+    }
+
+    false
 }
 
 #[cached(result = true)]
-pub async fn detect_javascript_runtime() -> miette::Result<String> {
+pub fn detect_javascript_runtime() -> miette::Result<String> {
     debug!("Detecting a JavaScript runtime");
 
     let lookup = if let Ok(bin) = env::var("ESPM_JS_RUNTIME") {
@@ -43,7 +48,7 @@ pub async fn detect_javascript_runtime() -> miette::Result<String> {
     };
 
     for bin in &lookup {
-        if command_exists(bin).await {
+        if command_exists(bin) {
             debug!(runtime = bin, "Found a JavaScript runtime");
 
             return Ok(bin.into());
