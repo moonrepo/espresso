@@ -21,3 +21,6 @@ starbase = { workspace = true }
 starbase_styles = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
+
+[dev-dependencies]
+starbase_sandbox = { workspace = true }

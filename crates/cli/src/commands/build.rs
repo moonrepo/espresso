@@ -39,6 +39,8 @@ pub async fn build(
             .compile(args.target)
             .await?;
 
+        package.copy_info_files(&out_dir)?;
+
         println!("Built to {}", color::path(out_dir));
 
         Ok(())

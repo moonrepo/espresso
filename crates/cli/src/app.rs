@@ -29,17 +29,11 @@ pub enum Commands {
     #[command(
         name = "build",
         about = "Build a package.",
-        long_about = "Build a package by transforming source files (from the package's `src` directory) to the `.espm/<target>` output directory.",
-        rename_all = "camelCase"
+        long_about = "Build a package by transforming source files (from the package's `src` directory) to the `.espm/<target>` output directory."
     )]
     Build(BuildArgs),
 
-    #[command(
-        name = "debug",
-        about = "Debug Espresso instance.",
-        rename_all = "camelCase",
-        hide = true
-    )]
+    #[command(name = "debug", about = "Debug Espresso instance.", hide = true)]
     Debug,
 }
 
@@ -53,7 +47,6 @@ pub enum Commands {
     disable_help_subcommand = true,
     propagate_version = true,
     next_line_help = false,
-    rename_all = "camelCase"
 )]
 #[allow(clippy::upper_case_acronyms)]
 pub struct CLI {
