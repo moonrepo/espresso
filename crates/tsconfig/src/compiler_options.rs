@@ -4,11 +4,11 @@ use std::collections::BTreeMap;
 #[derive(Config)]
 #[config(allow_unknown_fields, rename_all = "camelCase")]
 pub struct CompilerOptions {
-    pub allow_js: Option<bool>,
-
     pub allow_arbitrary_extensions: Option<bool>,
 
     pub allow_importing_ts_extensions: Option<bool>,
+
+    pub allow_js: Option<bool>,
 
     pub allow_synthetic_default_imports: Option<bool>,
 
@@ -30,11 +30,11 @@ pub struct CompilerOptions {
 
     pub custom_conditions: Option<Vec<String>>,
 
+    pub declaration: Option<bool>,
+
     pub declaration_dir: Option<String>,
 
     pub declaration_map: Option<bool>,
-
-    pub declaration: Option<bool>,
 
     pub diagnostics: Option<bool>,
 

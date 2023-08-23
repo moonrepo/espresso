@@ -2,9 +2,12 @@ use crate::helpers::{detect_javascript_runtime, OUT_DIR};
 use espresso_common::{EsTarget, Version};
 use espresso_manifest::PackageManifestBuild;
 use espresso_store::{Store, TypeScriptItem};
+use espresso_tsconfig::{
+    Module, ModuleResolution, PartialCompilerOptions, PartialTsConfig, Target as TsTarget,
+};
 use miette::IntoDiagnostic;
 use starbase_styles::color;
-use starbase_utils::{fs, glob};
+use starbase_utils::{fs, glob, json};
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::process::Command;
@@ -101,32 +104,7 @@ impl Declarations {
             "Creating tsconfig.json"
         );
 
-        let mut json = include_str!("../templates/tsconfig.json").to_string();
-
-        json = json.replace(
-            "{{ decorators }}",
-            if self.build_settings.decorators.is_some() {
-                "true"
-            } else {
-                "false"
-            },
-        );
-
-        // https://www.typescriptlang.org/tsconfig#module
-        json = json.replace(
-            "{{ module }}",
-            match target {
-                EsTarget::Es2020 => "es2020",
-                EsTarget::Es2021 => "es2020",
-                EsTarget::Es2022 => "es2022",
-                _ => "es2015",
-            },
-        );
-
-        // https://www.typescriptlang.org/tsconfig#target
-        json = json.replace("{{ target }}", &target.to_string());
-
-        fs::write_file(&tsconfig_file, json)?;
+        json::write_file(&tsconfig_file, &self.create_default_tsconfig(target), true)?;
 
         Ok(tsconfig_file)
     }
@@ -142,5 +120,58 @@ impl Declarations {
             .await?;
 
         Ok(store_dir.join("lib/tsc.js"))
+    }
+
+    fn create_default_tsconfig(&self, target: &EsTarget) -> PartialTsConfig {
+        PartialTsConfig {
+            compiler_options: Some(PartialCompilerOptions {
+                allow_arbitrary_extensions: Some(true),
+                allow_importing_ts_extensions: Some(true),
+                allow_js: Some(true),
+                allow_synthetic_default_imports: Some(true),
+                declaration: Some(true),
+                // TODO: Enable once we have source maps
+                declaration_map: Some(false),
+                emit_declaration_only: Some(true),
+                es_module_interop: Some(true),
+                experimental_decorators: Some(self.build_settings.decorators.is_some()),
+                force_consistent_casing_in_file_names: Some(true),
+                isolated_modules: Some(true),
+                lib: Some(vec!["dom".into(), target.to_string()]),
+                module: Some(match target {
+                    EsTarget::Es2020 => Module::Es2020,
+                    EsTarget::Es2021 => Module::Es2020,
+                    EsTarget::Es2022 => Module::Es2022,
+                    _ => Module::Es2015,
+                }),
+                module_resolution: Some(ModuleResolution::Nodenext),
+                no_emit_on_error: Some(true),
+                out_dir: Some(format!("./{target}")),
+                pretty: Some(true),
+                remove_comments: Some(true),
+                resolve_json_module: Some(true),
+                // Don't allow these because we don't use package.json
+                resolve_package_json_exports: Some(false),
+                resolve_package_json_imports: Some(false),
+                root_dir: Some("../src".into()),
+                skip_lib_check: Some(true),
+                // TODO: Enable once we have source maps
+                source_map: Some(false),
+                strict: Some(true),
+                target: Some(match target {
+                    EsTarget::Es2015 => TsTarget::Es2015,
+                    EsTarget::Es2016 => TsTarget::Es2016,
+                    EsTarget::Es2017 => TsTarget::Es2017,
+                    EsTarget::Es2018 => TsTarget::Es2018,
+                    EsTarget::Es2019 => TsTarget::Es2019,
+                    EsTarget::Es2020 => TsTarget::Es2020,
+                    EsTarget::Es2021 => TsTarget::Es2021,
+                    EsTarget::Es2022 => TsTarget::Es2022,
+                }),
+                ..Default::default()
+            }),
+            include: Some(vec!["../src/**/*".into()]),
+            ..Default::default()
+        }
     }
 }

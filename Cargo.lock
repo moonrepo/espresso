@@ -961,6 +961,7 @@ dependencies = [
  "espresso_manifest",
  "espresso_package",
  "espresso_store",
+ "espresso_tsconfig",
  "futures",
  "miette 5.10.0",
  "oxipng",
@@ -1676,6 +1677,12 @@ checksum = "c5f195fe497f702db0f318b07fdd68edb16955aed830df8363d837542f8f935a"
 dependencies = [
  "wasm-bindgen",
 ]
+
+[[package]]
+name = "json_comments"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "41ee439ee368ba4a77ac70d04f14015415af8600d6c894dc1f11bd79758c57d5"
 
 [[package]]
 name = "jsonc-parser"
@@ -2861,9 +2868,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.103"
+version = "1.0.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d03b412469450d4404fe8499a268edd7f8b79fecb074b0d812ad64ca21f4031b"
+checksum = "693151e1ac27563d6dbcec9dee9fbd5da8539b20fa14ad3752b2e6d363ace360"
 dependencies = [
  "itoa",
  "ryu",
@@ -3164,9 +3171,13 @@ checksum = "465ca58c4b63cd1b36ac839c4e09d36e7979bda4d005f40adfcc14e50c2aeec8"
 dependencies = [
  "dirs",
  "fs4",
+ "json_comments",
  "miette 5.10.0",
  "once_cell",
+ "regex",
  "relative-path",
+ "serde",
+ "serde_json",
  "starbase_styles",
  "thiserror",
  "tracing",
@@ -3306,9 +3317,9 @@ dependencies = [
 
 [[package]]
 name = "swc"
-version = "0.264.63"
+version = "0.264.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c2a586ee2ff113b7d564acf26b13b4f333073465b218010451affba51c948c7"
+checksum = "0fee6c18bbb249c0da247b61d5b296592e2e52adff4b142f4414d4d470f404b6"
 dependencies = [
  "anyhow",
  "base64 0.13.1",
@@ -3442,9 +3453,9 @@ dependencies = [
 
 [[package]]
 name = "swc_core"
-version = "0.79.69"
+version = "0.79.70"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95ea29439951e901830abe7130593c1ae24cde7b3853baccff08d8e55d0b2002"
+checksum = "258d7c9b2e013a2dbf945f5016f2211d7d3797eadc53f54ec1df74520730ae11"
 dependencies = [
  "once_cell",
  "swc_atoms",
@@ -3568,9 +3579,9 @@ dependencies = [
 
 [[package]]
 name = "swc_ecma_minifier"
-version = "0.184.54"
+version = "0.184.55"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f0b465a78424031c883250908bc5815c0dea15c13bcafbfeb6a1fbd00053bdc"
+checksum = "a0cd594c7a09aa4b360d2340a2a2e7dbccfaee77f64d547b07a94f21b9096620"
 dependencies = [
  "arrayvec",
  "indexmap 1.9.3",
