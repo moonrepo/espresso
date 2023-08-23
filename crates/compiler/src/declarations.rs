@@ -190,7 +190,7 @@ impl Declarations {
 
         let options = tsconfig
             .compiler_options
-            .get_or_insert_with(|| PartialCompilerOptions::default());
+            .get_or_insert_with(PartialCompilerOptions::default);
 
         options.declaration = Some(true);
         options.declaration_dir = None;
@@ -275,7 +275,7 @@ impl Declarations {
 
         let options = tsconfig
             .compiler_options
-            .get_or_insert_with(|| PartialCompilerOptions::default());
+            .get_or_insert_with(PartialCompilerOptions::default);
 
         if let Some(base_url) = options.base_url.take() {
             options.base_url = Some(cd_parent(base_url));
