@@ -3,9 +3,9 @@ mod utils;
 use espresso_common::EsTarget;
 use espresso_manifest::BuildOptimizePng;
 use espresso_package::Package;
-use starbase_sandbox::{create_sandbox, locate_fixture};
+use starbase_sandbox::{assert_snapshot, create_sandbox, locate_fixture};
 use std::fs;
-use utils::create_compiler;
+use utils::*;
 
 mod compile_modules {
     use super::*;
@@ -128,5 +128,56 @@ mod compile_declarations {
         assert!(!out_dir.join("../tsconfig.es2018.json").exists());
         assert!(!out_dir.join("index.d.mts").exists());
         assert!(!out_dir.join("helpers.d.mts").exists());
+    }
+
+    #[tokio::test]
+    async fn can_use_a_custom_tsconfig() {
+        let sandbox = create_sandbox("ts-files");
+        let package = Package::new(sandbox.path()).unwrap();
+
+        sandbox.create_file(
+            "tsconfig.espm.json",
+            r#"{
+    "compilerOptions": {
+        "strict": false,
+    }
+}"#,
+        );
+
+        let compiler = create_compiler(sandbox.path(), &package);
+        let out_dir = compiler.compile(EsTarget::Es2022).await.unwrap();
+
+        assert_snapshot!(read_file(out_dir.join("../tsconfig.es2022.json")));
+    }
+
+    #[tokio::test]
+    async fn remaps_custom_tsconfig_paths() {
+        let sandbox = create_sandbox("ts-files");
+        let package = Package::new(sandbox.path()).unwrap();
+
+        sandbox.create_file(
+            "tsconfig.espm.json",
+            r#"{
+    "exclude": ["src/*.test.*", "tests/**/*"],
+    "extends": ["../../tsconfig.options.json", "npm-package/tsconfig.json"],
+    "compilerOptions": {
+        "baseUrl": "src",
+        "rootDirs": [".", "../types"],
+        "paths": {
+            "~": ["src/index.ts", "./src/*"]
+        }
+    },
+    "references": [
+        {
+            "path": "../../common"
+        }
+    ]
+}"#,
+        );
+
+        let compiler = create_compiler(sandbox.path(), &package);
+        let out_dir = compiler.compile(EsTarget::Es2022).await.unwrap();
+
+        assert_snapshot!(read_file(out_dir.join("../tsconfig.es2022.json")));
     }
 }
