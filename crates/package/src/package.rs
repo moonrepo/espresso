@@ -37,6 +37,28 @@ impl Package {
         self.manifest.package.name.as_str()
     }
 
+    pub fn copy_info_files(&self, out_dir: &Path) -> miette::Result<()> {
+        let mut files = vec![];
+
+        if let Some(file) = self.locate_changelog() {
+            files.push(file);
+        }
+
+        if let Some(file) = self.locate_license() {
+            files.push(file);
+        }
+
+        if let Some(file) = self.locate_readme() {
+            files.push(file);
+        }
+
+        for file in files {
+            fs::copy_file(&file, out_dir.join(fs::file_name(&file)))?;
+        }
+
+        Ok(())
+    }
+
     pub fn load_source_files(&self) -> miette::Result<SourceFiles> {
         debug!(package = self.name(), src_dir = ?self.src_dir, "Loading source files");
 
@@ -125,5 +147,40 @@ impl Package {
         }
 
         Ok(sources)
+    }
+
+    pub fn locate_changelog(&self) -> Option<PathBuf> {
+        self.locate_file_in_root(&["CHANGELOG", "HISTORY"])
+    }
+
+    pub fn locate_license(&self) -> Option<PathBuf> {
+        self.locate_file_in_root(&["LICENSE"])
+    }
+
+    pub fn locate_readme(&self) -> Option<PathBuf> {
+        self.locate_file_in_root(&["README", "ABOUT"])
+    }
+
+    fn locate_file_in_root(&self, lookups: &[&str]) -> Option<PathBuf> {
+        let mut files = vec![];
+
+        for lookup in lookups {
+            files.push(format!("{lookup}.md"));
+            files.push(lookup.to_string());
+
+            let lookup = lookup.to_lowercase();
+            files.push(format!("{lookup}.md"));
+            files.push(lookup.to_string());
+        }
+
+        for file in files {
+            let path = self.root.join(file);
+
+            if path.exists() {
+                return Some(path);
+            }
+        }
+
+        None
     }
 }
