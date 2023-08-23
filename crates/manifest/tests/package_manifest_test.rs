@@ -11,7 +11,7 @@ mod package_manifest {
     fn loads_defaults() {
         let sandbox = create_empty_sandbox();
         sandbox.create_file(
-            "espm.toml",
+            MANIFEST_NAME,
             r#"
 [package]
 name = "ns/pkg"
@@ -55,7 +55,7 @@ name = "ns/pkg"
         fn can_set_fields() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -83,7 +83,7 @@ optimize-png = false
         fn can_set_optimize_png_level() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -103,7 +103,7 @@ optimize-png = 6
         fn errors_optimize_png_level_out_of_range() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -125,7 +125,7 @@ optimize-png = 10
         fn errors_invalid_req() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -142,7 +142,7 @@ name = "ns/pkg"
         fn supports_all_req_formats() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -228,7 +228,7 @@ name = "ns/pkg"
         #[should_panic(expected = "Failed to validate")]
         fn errors_missing_name() {
             let sandbox = create_empty_sandbox();
-            sandbox.create_file("espm.toml", "");
+            sandbox.create_file(MANIFEST_NAME, "");
 
             ManifestLoader::load_package(sandbox.path()).unwrap();
         }
@@ -238,7 +238,7 @@ name = "ns/pkg"
         fn errors_empty_name() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = ""
@@ -252,7 +252,7 @@ name = ""
         fn can_set_fields() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -284,7 +284,7 @@ publish = false
         fn parses_license() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -305,7 +305,7 @@ license = "MIT OR Apache-2.0"
         fn errors_invalid_license() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -320,7 +320,7 @@ license = "FAKE"
         fn parses_repository() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -341,7 +341,7 @@ repository = "https://github.com/espm/espm"
         fn errors_invalid_repository() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -357,7 +357,7 @@ repository = "invalid/url"
         fn errors_non_https_repository() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -372,7 +372,7 @@ repository = "http://github.com/espm/espm"
         fn parses_homepage() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -392,7 +392,7 @@ homepage = "https://espm.io"
         fn allows_http_homepage() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -413,7 +413,7 @@ homepage = "http://espm.io"
         fn errors_invalid_homepage() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -428,7 +428,7 @@ homepage = "invalid/url"
         fn parses_documentation() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -448,7 +448,7 @@ documentation = "https://espm.io/docs"
         fn allows_http_documentation() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"
@@ -469,7 +469,7 @@ documentation = "http://espm.io/docs"
         fn errors_invalid_documentation() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
-                "espm.toml",
+                MANIFEST_NAME,
                 r#"
 [package]
 name = "ns/pkg"

@@ -2,6 +2,7 @@ mod utils;
 
 use espresso_common::EsTarget;
 use espresso_compiler::CompilerError;
+use espresso_manifest::MANIFEST_NAME;
 use espresso_package::Package;
 use starbase_sandbox::create_empty_sandbox;
 use utils::create_compiler;
@@ -10,7 +11,7 @@ macro_rules! test_cjs {
     ($content:literal) => {
         let sandbox = create_empty_sandbox();
         sandbox.create_file("src/index.js", $content);
-        sandbox.create_file("espm.toml", "[package]\nname = \"ns/detect-cjs\"");
+        sandbox.create_file(MANIFEST_NAME, "[package]\nname = \"ns/detect-cjs\"");
 
         let package = Package::new(sandbox.path()).unwrap();
         let compiler = create_compiler(sandbox.path(), &package);

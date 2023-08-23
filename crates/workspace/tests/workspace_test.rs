@@ -1,4 +1,6 @@
 use espresso_common::PackageName;
+use espresso_lockfile::LOCKFILE_NAME;
+use espresso_manifest::MANIFEST_NAME;
 use espresso_workspace::{SelectQuery, Workspace};
 use starbase_sandbox::{create_empty_sandbox, create_sandbox};
 
@@ -16,9 +18,12 @@ mod workspace {
     #[test]
     fn finds_root_via_lockfile() {
         let sandbox = create_empty_sandbox();
-        sandbox.create_file("espm.lock", "{}");
-        sandbox.create_file("espm.toml", "[package]\nname = \"ns/root\"");
-        sandbox.create_file("some/nested/espm.toml", "[package]\nname = \"ns/branch\"");
+        sandbox.create_file(LOCKFILE_NAME, "{}");
+        sandbox.create_file(MANIFEST_NAME, "[package]\nname = \"ns/root\"");
+        sandbox.create_file(
+            format!("some/nested/{}", MANIFEST_NAME).as_str(),
+            "[package]\nname = \"ns/branch\"",
+        );
 
         let workspace = Workspace::load_from(&sandbox.path().join("some/nested/path")).unwrap();
 
@@ -28,7 +33,7 @@ mod workspace {
     #[test]
     fn finds_root_via_manifest() {
         let sandbox = create_empty_sandbox();
-        sandbox.create_file("espm.toml", "[package]\nname = \"ns/test\"");
+        sandbox.create_file(MANIFEST_NAME, "[package]\nname = \"ns/test\"");
 
         let workspace = Workspace::load_from(&sandbox.path().join("some/nested/path")).unwrap();
 
