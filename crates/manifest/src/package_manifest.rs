@@ -67,6 +67,14 @@ pub struct PackageManifestBuild {
     pub optimize_png: BuildOptimizePng,
 }
 
+impl PackageManifestBuild {
+    pub fn is_legacy_decorators(&self) -> bool {
+        self.decorators
+            .as_ref()
+            .is_some_and(|dec| dec == &BuildDecorators::Legacy)
+    }
+}
+
 #[derive(Config, Debug, Eq, PartialEq)]
 #[config(rename_all = "kebab-case")]
 pub struct PackageManifestMetadata {

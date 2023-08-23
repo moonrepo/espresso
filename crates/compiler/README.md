@@ -5,3 +5,11 @@
 - Transforms to specific ESM targets (es2018, es2022, etc).
 - ESM only source code. Will error when encountering CJS syntax.
 - Appends `.mjs` to all import/export paths when transforming.
+- Generates TypeScript declarations according to target.
+
+## To Do
+
+- Source maps.
+- TypeScript:
+  - Project references / `--build` support
+  - Inherit `libs` from source project

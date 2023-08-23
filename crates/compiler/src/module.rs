@@ -21,6 +21,7 @@ use swc_core::ecma::{
 // use swc_visit::chain;
 use tracing::debug;
 
+/// Represents a single module file, either JavaScript or TypeScript.
 pub struct Module {
     pub build_settings: Arc<PackageManifestBuild>,
     pub out_path: PathBuf,
@@ -41,10 +42,7 @@ impl Module {
     }
 
     pub fn is_legacy_decorators(&self) -> bool {
-        self.build_settings
-            .decorators
-            .as_ref()
-            .is_some_and(|dec| dec == &BuildDecorators::Legacy)
+        self.build_settings.is_legacy_decorators()
             || self.build_settings.decorators.is_some() && self.is_typescript()
     }
 

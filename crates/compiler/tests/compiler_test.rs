@@ -1,9 +1,11 @@
+mod utils;
+
 use espresso_common::EsTarget;
-use espresso_compiler::Compiler;
 use espresso_manifest::BuildOptimizePng;
 use espresso_package::Package;
 use starbase_sandbox::{create_sandbox, locate_fixture};
 use std::fs;
+use utils::create_compiler;
 
 mod compile_modules {
     use super::*;
@@ -12,7 +14,7 @@ mod compile_modules {
     async fn compiles_js_files_to_each_target() {
         let sandbox = create_sandbox("js-files");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(&package).unwrap();
+        let compiler = create_compiler(sandbox.path(), &package);
 
         for target in [EsTarget::Es2015, EsTarget::Es2018, EsTarget::Es2022] {
             let out_dir = compiler.compile(target).await.unwrap();
@@ -40,7 +42,7 @@ mod compile_assets {
     async fn copies_non_js_files() {
         let sandbox = create_sandbox("assets");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(&package).unwrap();
+        let compiler = create_compiler(sandbox.path(), &package);
         let out_dir = compiler.compile(EsTarget::Es2015).await.unwrap();
 
         assert!(out_dir.join("cat.png").exists());
@@ -51,7 +53,7 @@ mod compile_assets {
     async fn optimizes_png() {
         let sandbox = create_sandbox("assets");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(&package).unwrap();
+        let compiler = create_compiler(sandbox.path(), &package);
         let out_dir = compiler.compile(EsTarget::Es2015).await.unwrap();
 
         assert_ne!(
@@ -70,8 +72,7 @@ mod compile_assets {
         package.manifest.build.optimize_png = BuildOptimizePng::Level(1);
 
         let base_size = fs::metadata(
-            Compiler::new(&package)
-                .unwrap()
+            create_compiler(sandbox.path(), &package)
                 .compile(EsTarget::Es2015)
                 .await
                 .unwrap()
@@ -83,8 +84,7 @@ mod compile_assets {
         package.manifest.build.optimize_png = BuildOptimizePng::Level(6);
 
         let next_size = fs::metadata(
-            Compiler::new(&package)
-                .unwrap()
+            create_compiler(sandbox.path(), &package)
                 .compile(EsTarget::Es2020)
                 .await
                 .unwrap()
@@ -93,6 +93,40 @@ mod compile_assets {
         .unwrap()
         .len();
 
-        assert_ne!(base_size, next_size,);
+        assert_ne!(base_size, next_size);
+    }
+}
+
+mod compile_declarations {
+    use super::*;
+
+    #[tokio::test]
+    async fn generates_dmts_for_ts_files() {
+        let sandbox = create_sandbox("ts-files");
+        let package = Package::new(sandbox.path()).unwrap();
+        let compiler = create_compiler(sandbox.path(), &package);
+
+        let out_dir = compiler.compile(EsTarget::Es2018).await.unwrap();
+
+        assert!(out_dir.join("../tsconfig.es2018.json").exists());
+        assert!(out_dir.join("index.d.mts").exists());
+        assert!(out_dir.join("helpers.d.mts").exists());
+
+        // Ensure d.ts doesn't exist!
+        assert!(!out_dir.join("index.d.ts").exists());
+        assert!(!out_dir.join("helpers.d.ts").exists());
+    }
+
+    #[tokio::test]
+    async fn doesnt_generate_dmts_for_js_files() {
+        let sandbox = create_sandbox("js-files");
+        let package = Package::new(sandbox.path()).unwrap();
+        let compiler = create_compiler(sandbox.path(), &package);
+
+        let out_dir = compiler.compile(EsTarget::Es2018).await.unwrap();
+
+        assert!(!out_dir.join("../tsconfig.es2018.json").exists());
+        assert!(!out_dir.join("index.d.mts").exists());
+        assert!(!out_dir.join("helpers.d.mts").exists());
     }
 }

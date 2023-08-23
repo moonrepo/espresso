@@ -7,6 +7,7 @@ export class ClassName {
 	}
 	anonMethod = () => {
 		this.field = 456_789;
+		console.log(this.#private);
 	};
 
 	static field: string = 'abc';
@@ -41,12 +42,7 @@ assign ||= a;
 assign &&= b;
 assign ??= b;
 
-try {
-	await import('path');
-} catch {
-	// Hrmmm
-}
-
-export function Component() {
-	return <div />;
-}
+// Note: Can't test React because we don't have node modules!
+// export function Component() {
+// 	return <div />;
+// }

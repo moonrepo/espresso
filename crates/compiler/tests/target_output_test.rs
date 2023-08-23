@@ -3,19 +3,38 @@ mod utils;
 use espresso_common::EsTarget;
 use espresso_compiler::Compiler;
 use espresso_package::Package;
+use espresso_store::Store;
 use starbase_sandbox::{assert_snapshot, create_sandbox};
-use utils::read_file;
+use std::sync::Arc;
+use utils::*;
 
 macro_rules! test_target {
     ($method:ident, $target:expr) => {
-        #[tokio::test]
-        async fn $method() {
-            let sandbox = create_sandbox("syntax");
-            let package = Package::new(sandbox.path()).unwrap();
-            let compiler = Compiler::new(&package).unwrap();
-            let out_dir = compiler.compile($target).await.unwrap();
+        mod $method {
+            use super::*;
 
-            assert_snapshot!(read_file(out_dir.join("index.mjs")));
+            #[tokio::test]
+            async fn transforms_modules() {
+                let sandbox = create_sandbox("syntax");
+                let package = Package::new(sandbox.path()).unwrap();
+                let compiler = create_compiler(sandbox.path(), &package);
+
+                let out_dir = compiler.compile($target).await.unwrap();
+
+                assert_snapshot!(read_file(out_dir.join("index.mjs")));
+            }
+
+            #[tokio::test]
+            async fn creates_tsconfig() {
+                let sandbox = create_sandbox("syntax");
+                let package = Package::new(sandbox.path()).unwrap();
+                let compiler = create_compiler(sandbox.path(), &package);
+
+                let out_dir = compiler.compile($target).await.unwrap();
+                let tsconfig = format!("tsconfig.{}.json", $target.to_string());
+
+                assert_snapshot!(read_file(out_dir.join("..").join(tsconfig)));
+            }
         }
     };
 }
@@ -36,10 +55,15 @@ mod target_output {
     async fn supports_legacy_decorators() {
         let sandbox = create_sandbox("syntax-legacy-decorators");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(&package).unwrap();
+        let compiler = Compiler::new(
+            &package,
+            Arc::new(Store::load_from(sandbox.path()).unwrap()),
+        )
+        .unwrap();
         let out_dir = compiler.compile(EsTarget::Es2018).await.unwrap();
 
         assert_snapshot!(read_file(out_dir.join("index.mjs")));
         assert_snapshot!(read_file(out_dir.join("other.mjs")));
+        assert_snapshot!(read_file(out_dir.join("../tsconfig.es2018.json")));
     }
 }

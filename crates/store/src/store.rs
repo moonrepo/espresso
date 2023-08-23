@@ -2,36 +2,43 @@ use crate::storage_item::StorageItem;
 use crate::store_error::StoreError;
 use starbase::Resource;
 use starbase_archive::Archiver;
-use starbase_utils::dirs;
-use starbase_utils::fs::{self, FsError};
+use starbase_utils::{dirs, fs};
+use std::collections::HashMap;
 use std::env;
-use std::io;
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
+use tokio::sync::Mutex;
 use tracing::debug;
 
-#[derive(Resource)]
+#[derive(Clone, Resource)]
 pub struct Store {
     pub bin_dir: PathBuf,
     pub cache_dir: PathBuf,
     pub packages_dir: PathBuf,
     pub root: PathBuf,
+
+    locks: Arc<Mutex<HashMap<String, Arc<Mutex<()>>>>>,
 }
 
 impl Store {
     pub fn detect_root() -> PathBuf {
         debug!("Attempting to find store root");
 
-        if let Ok(root) = env::var("espresso_ROOT") {
+        if let Ok(root) = env::var("ESPM_ROOT") {
             return root.into();
         }
 
         dirs::home_dir()
             .expect("Could not find a home directory!")
-            .join(".espm")
+            .join(".espresso")
     }
 
     pub fn load() -> miette::Result<Self> {
-        let root = Self::detect_root();
+        Self::load_from(Self::detect_root())
+    }
+
+    pub fn load_from<P: AsRef<Path>>(root: P) -> miette::Result<Self> {
+        let root = root.as_ref();
         let bin_dir = root.join("bin");
         let cache_dir = root.join("cache");
         let packages_dir = root.join("packages");
@@ -46,14 +53,41 @@ impl Store {
             bin_dir,
             cache_dir,
             packages_dir,
-            root,
+            root: root.to_path_buf(),
+            locks: Arc::new(Mutex::new(HashMap::new())),
         })
     }
 
-    pub async fn download_archive(
+    pub async fn store_item(&self, url: &str, item: impl StorageItem) -> miette::Result<PathBuf> {
+        let output_dir = self.packages_dir.join(item.to_file_path());
+
+        if output_dir.exists() {
+            return Ok(output_dir);
+        }
+
+        let mut locks = self.locks.lock().await;
+
+        // Create a lock for this item, so that we avoid multiple processes
+        // all attempting to download and unpack the same archive!
+        let _ = locks
+            .entry(item.to_file_prefix())
+            .or_insert_with(|| Arc::new(Mutex::new(())))
+            .lock()
+            .await;
+
+        drop(locks);
+
+        let result = self
+            .unpack_archive(&self.download_archive(url, &item).await?, &item)
+            .await?;
+
+        Ok(result)
+    }
+
+    async fn download_archive(
         &self,
         url: &str,
-        item: impl StorageItem,
+        item: &impl StorageItem,
     ) -> miette::Result<PathBuf> {
         let archive_file = self.cache_dir.join(format!(
             "{}.{}",
@@ -61,22 +95,22 @@ impl Store {
             item.get_archive_ext()
         ));
 
-        debug!(
-            item = item.get_label(),
-            archive_url = ?url,
-            cache_file = ?archive_file,
-            "Downloading package archive",
-        );
-
         if archive_file.exists() {
             debug!(
                 item = item.get_label(),
-                cache_file = ?archive_file,
+                archive_file = ?archive_file,
                 "Package archive already exists in local cache, skipping download"
             );
 
             return Ok(archive_file);
         }
+
+        debug!(
+            item = item.get_label(),
+            source_url = ?url,
+            archive_file = ?archive_file,
+            "Downloading package archive",
+        );
 
         let response = reqwest::get(url)
             .await
@@ -98,35 +132,38 @@ impl Store {
             .into());
         }
 
-        let mut contents = io::Cursor::new(
-            response
-                .bytes()
-                .await
-                .map_err(|error| StoreError::Http { error })?,
-        );
+        let contents = response
+            .bytes()
+            .await
+            .map_err(|error| StoreError::Http { error })?;
 
-        let mut file = fs::create_file(&archive_file)?;
-
-        io::copy(&mut contents, &mut file).map_err(|error| FsError::Create {
-            path: archive_file.to_path_buf(),
-            error,
-        })?;
+        fs::write_file_with_lock(&archive_file, contents)?;
 
         debug!(
             item = item.get_label(),
-            cache_file = ?archive_file,
+            archive_file = ?archive_file,
             "Downloaded package archive",
         );
 
         Ok(archive_file)
     }
 
-    pub async fn unpack_archive(
+    async fn unpack_archive(
         &self,
         archive_file: &Path,
-        item: impl StorageItem,
+        item: &impl StorageItem,
     ) -> miette::Result<PathBuf> {
         let output_dir = self.packages_dir.join(item.to_file_path());
+
+        if output_dir.exists() {
+            debug!(
+                item = item.get_label(),
+                output_dir = ?output_dir,
+                "Package already exists in the store, skipping unpack",
+            );
+
+            return Ok(output_dir);
+        }
 
         debug!(
             item = item.get_label(),
@@ -135,11 +172,13 @@ impl Store {
             "Unpacking package archive",
         );
 
-        if output_dir.exists() {
-            return Ok(output_dir);
+        let mut archive = Archiver::new(&output_dir, archive_file);
+
+        if let Some(prefix) = item.get_archive_prefix() {
+            archive.set_prefix(prefix);
         }
 
-        Archiver::new(&output_dir, archive_file).unpack_from_ext()?;
+        archive.unpack_from_ext()?;
 
         debug!(
             item = item.get_label(),

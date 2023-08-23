@@ -10,6 +10,7 @@ export class ClassName {
     }
     anonMethod = ()=>{
         this.field = 456_789;
+        console.log(this.#private);
     };
     static field = 'abc';
     static{
@@ -41,12 +42,8 @@ const optional = obj?.a || 0;
 let assign = 0;
 assign ||= a;
 assign &&= b;
-assign ??= b;
-try {
-    await import('path');
-} catch  {}
-// Hrmmm
-export function Component() {
-    return /*#__PURE__*/ React.createElement("div", null);
-}
+assign ??= b; // Note: Can't test React because we don't have node modules!
+ // export function Component() {
+ // 	return <div />;
+ // }
 

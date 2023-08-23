@@ -16,10 +16,10 @@ function _define_property(obj, key, value) {
     return obj;
 }
 function _ts_decorate(decorators, target, key, desc) {
-    var c1 = arguments.length, r = c1 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d1;
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for(var i = decorators.length - 1; i >= 0; i--)if (d1 = decorators[i]) r = (c1 < 3 ? d1(r) : c1 > 3 ? d1(target, key, r) : d1(target, key)) || r;
-    return c1 > 3 && r && Object.defineProperty(target, key, r), r;
+    else for(var i = decorators.length - 1; i >= 0; i--)if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 }
 function _ts_metadata(k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
@@ -29,10 +29,24 @@ function _ts_param(paramIndex, decorator) {
         decorator(target, key, paramIndex);
     };
 }
+function a(constructor) {}
+function b(arg) {
+    return (constructor)=>{};
+}
+function c() {
+    return (target, propertyKey, descriptor)=>{};
+}
+function d(arg) {
+    return (target, propertyKey, descriptor)=>{};
+}
+function format(msg) {
+    return (target, propertyKey)=>{};
+}
+function required(target, propertyKey, parameterIndex) {}
 export let Foo = class Foo {
     method(verbose) {}
     constructor(){
-        _define_property(this, "greeting", void 0);
+        _define_property(this, "greeting", '');
     }
 };
 _ts_decorate([

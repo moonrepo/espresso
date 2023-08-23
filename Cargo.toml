@@ -3,13 +3,14 @@ resolver = "2"
 members = ["crates/*"]
 
 [workspace.dependencies]
-clap = { version = "4.3.21" }
+cached = "0.44.0"
+clap = { version = "4.3.23" }
 miette = "5.10.0"
 once_cell = "1.18.0"
 once_map = "0.4.8"
-petgraph = "0.6.3"
+petgraph = "0.6.4"
 relative-path = { version = "1.8.0", features = ["serde"] }
-reqwest = { version = "0.11.18", default-features = false, features = [
+reqwest = { version = "0.11.19", default-features = false, features = [
 	"rustls-tls",
 ] }
 schematic = { version = "0.11.2", default-features = false, features = [
@@ -19,15 +20,15 @@ schematic = { version = "0.11.2", default-features = false, features = [
 	"valid_url",
 ] }
 semver = "1.0.18"
-serde = "1.0.183"
+serde = "1.0.185"
 starbase = "0.2.3"
 starbase_archive = { version = "0.2.0", default-features = false }
 starbase_sandbox = { version = "0.1.8" }
 starbase_styles = "0.1.13"
-starbase_utils = { version = "0.2.10", default-features = false, features = [
+starbase_utils = { version = "0.2.20", default-features = false, features = [
 	"glob",
 ] }
-thiserror = "1.0.44"
-tokio = { version = "1.31.0", features = ["full", "tracing"] }
+thiserror = "1.0.47"
+tokio = { version = "1.32.0", features = ["full", "tracing"] }
 tracing = "0.1.37"
 url = { version = "2.4.0", features = ["serde"] }

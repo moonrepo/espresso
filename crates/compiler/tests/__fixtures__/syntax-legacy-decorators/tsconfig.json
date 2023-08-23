@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"allowJs": true,
+		"experimentalDecorators": true,
+		"noEmit": true,
+		"module": "esnext",
+		"rootDir": "src",
+		"target": "esnext",
+	},
+	"include": ["src/**/*"]
+}

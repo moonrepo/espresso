@@ -8,12 +8,14 @@ license = "MIT"
 espresso_common = { path = "../common" }
 espresso_manifest = { path = "../manifest" }
 espresso_package = { path = "../package" }
-anyhow = "1.0.74"
+espresso_store = { path = "../store" }
+anyhow = "1.0.75"
+cached = { workspace = true }
 futures = "0.3.28"
 miette = { workspace = true }
 oxipng = "8.0.0"
-swc = "0.264.56"
-swc_core = { version = "0.79.59", default-features = false, features = [
+swc = "0.264.63"
+swc_core = { version = "0.79.69", default-features = false, features = [
 	"common",
 	"ecma_ast",
 	"ecma_parser",
