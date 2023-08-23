@@ -1027,6 +1027,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "espresso_tsconfig"
+version = "0.1.0"
+dependencies = [
+ "schematic",
+ "serde",
+]
+
+[[package]]
 name = "espresso_workspace"
 version = "0.1.0"
 dependencies = [

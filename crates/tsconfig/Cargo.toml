@@ -1,0 +1,9 @@
+[package]
+name = "espresso_tsconfig"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+schematic = { workspace = true }
+serde = { workspace = true }
