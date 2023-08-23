@@ -8,6 +8,30 @@ use tracing::debug;
 
 pub const OUT_DIR: &str = ".espm";
 
+#[cfg(windows)]
+pub async fn command_exists(name: &str) -> bool {
+    let path = env::var("PATH").expect("Missing PATH!");
+    let pathext = env::var("PATHEXT").expect("Missing PATHEXT!");
+    let exts = pathext.split(';').collect::<Vec<_>>();
+
+    for path in env::split_paths(&path) {
+        for ext in &exts {
+            let command = path.join(format!("{name}{ext}"));
+
+            if command.exists() {
+                return true;
+            }
+        }
+    }
+
+    false
+}
+
+#[cfg(not(windows))]
+pub async fn command_exists(name: &str) -> bool {
+    Command::new("which").arg(name).output().await.is_ok()
+}
+
 #[cached(result = true)]
 pub async fn detect_javascript_runtime() -> miette::Result<String> {
     debug!("Detecting a JavaScript runtime");
@@ -19,16 +43,7 @@ pub async fn detect_javascript_runtime() -> miette::Result<String> {
     };
 
     for bin in &lookup {
-        let result = Command::new(if cfg!(windows) {
-            "Get-Command"
-        } else {
-            "which"
-        })
-        .arg(bin)
-        .output()
-        .await;
-
-        if result.is_ok() {
+        if command_exists(bin).await {
             debug!(runtime = bin, "Found a JavaScript runtime");
 
             return Ok(bin.into());
