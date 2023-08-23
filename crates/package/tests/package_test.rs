@@ -13,6 +13,24 @@ mod package {
     }
 
     #[test]
+    fn copies_info_files_to_dir() {
+        let sandbox = create_sandbox("common");
+        let package = Package::new(sandbox.path()).unwrap();
+
+        sandbox.create_file("CHANGELOG.md", "v1.0.0");
+        sandbox.create_file("LICENSE", "MIT");
+        sandbox.create_file("readme.md", "Intro");
+
+        let out_dir = sandbox.path().join("out");
+
+        package.copy_info_files(&out_dir).unwrap();
+
+        assert!(out_dir.join("CHANGELOG.md").exists());
+        assert!(out_dir.join("LICENSE").exists());
+        assert!(out_dir.join("readme.md").exists());
+    }
+
+    #[test]
     fn locates_changelog() {
         for file in [
             "CHANGELOG.md",

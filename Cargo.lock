@@ -930,6 +930,7 @@ dependencies = [
  "miette 5.10.0",
  "mimalloc",
  "starbase",
+ "starbase_sandbox",
  "starbase_styles",
  "tokio",
  "tracing",
