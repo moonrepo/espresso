@@ -235,6 +235,7 @@ pub struct CompilerOptions {
 derive_enum!(
     // https://www.typescriptlang.org/tsconfig#jsx
     #[derive(ConfigEnum)]
+    #[config(before_parse = "lowercase")]
     pub enum Jsx {
         React,
         ReactJsx,
@@ -247,6 +248,7 @@ derive_enum!(
 derive_enum!(
     // https://www.typescriptlang.org/tsconfig#module
     #[derive(ConfigEnum)]
+    #[config(before_parse = "lowercase")]
     pub enum Module {
         Amd,
         #[variant(value = "commonjs")]
@@ -270,6 +272,7 @@ derive_enum!(
 derive_enum!(
     // https://www.typescriptlang.org/tsconfig#moduleDetection
     #[derive(ConfigEnum)]
+    #[config(before_parse = "lowercase")]
     pub enum ModuleDetection {
         Auto,
         Legacy,
@@ -280,6 +283,7 @@ derive_enum!(
 derive_enum!(
     // https://www.typescriptlang.org/tsconfig#moduleResolution
     #[derive(ConfigEnum)]
+    #[config(before_parse = "lowercase")]
     pub enum ModuleResolution {
         Bundler,
         Classic,
@@ -294,6 +298,7 @@ derive_enum!(
 derive_enum!(
     // https://www.typescriptlang.org/tsconfig#target
     #[derive(ConfigEnum)]
+    #[config(before_parse = "lowercase")]
     pub enum Target {
         Es3,
         Es5,
