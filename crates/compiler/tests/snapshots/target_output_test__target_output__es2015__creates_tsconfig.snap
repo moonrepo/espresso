@@ -38,7 +38,6 @@ expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
     "sourceMap": false,
     "strict": true,
     "target": "es2015",
-    "verbatimModuleSyntax": true
   },
   "include": ["../src/**/*"]
 }

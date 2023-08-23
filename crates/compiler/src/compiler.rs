@@ -77,6 +77,7 @@ impl<'pkg> Compiler<'pkg> {
         if sources.typescript {
             let declarations = Declarations::new(
                 self.package.root.clone(),
+                out_dir.clone(),
                 Arc::clone(&build_settings),
                 Arc::clone(&self.store),
             );

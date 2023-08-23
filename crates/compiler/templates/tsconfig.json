@@ -34,7 +34,6 @@
     "sourceMap": false,
     "strict": true,
     "target": "{{ target }}",
-    "verbatimModuleSyntax": true
   },
   "include": ["../src/**/*"]
 }

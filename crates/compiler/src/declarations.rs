@@ -4,11 +4,11 @@ use espresso_manifest::PackageManifestBuild;
 use espresso_store::{Store, TypeScriptItem};
 use miette::IntoDiagnostic;
 use starbase_styles::color;
-use starbase_utils::fs;
+use starbase_utils::{fs, glob};
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::process::Command;
-use tracing::debug;
+use tracing::{debug, trace};
 
 pub static TS_VERSION: &str = "5.1.6";
 
@@ -16,18 +16,21 @@ pub static TS_VERSION: &str = "5.1.6";
 pub struct Declarations {
     pub build_settings: Arc<PackageManifestBuild>,
     pub package_root: PathBuf,
+    pub out_dir: PathBuf,
     pub store: Arc<Store>,
 }
 
 impl Declarations {
     pub fn new(
         package_root: PathBuf,
+        out_dir: PathBuf,
         build_settings: Arc<PackageManifestBuild>,
         store: Arc<Store>,
     ) -> Self {
         Self {
             build_settings,
             package_root,
+            out_dir,
             store,
         }
     }
@@ -63,6 +66,15 @@ impl Declarations {
             "Executed {} binary",
             color::shell("tsc"),
         );
+
+        trace!("Renaming .d.ts files to .d.mts");
+
+        for dts in glob::walk_files(&self.out_dir, ["**/*.d.ts"])? {
+            let mut dmts = dts.clone();
+            dmts.set_extension("mts");
+
+            fs::rename(dts, dmts)?;
+        }
 
         debug!("Generated TypeScript declarations");
 

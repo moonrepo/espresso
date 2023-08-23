@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"noEmit": true,
+		"module": "esnext",
+		"rootDir": "src",
+		"target": "esnext",
+		"strict": true
+	},
+	"include": ["src/**/*"]
+}
