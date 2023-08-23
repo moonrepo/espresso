@@ -1,5 +1,5 @@
-use crate::helpers::detect_javascript_runtime;
-use espresso_common::{EsTarget, Version, OUT_DIR};
+use crate::helpers::{detect_javascript_runtime, OUT_DIR};
+use espresso_common::{EsTarget, Version};
 use espresso_manifest::PackageManifestBuild;
 use espresso_store::{Store, TypeScriptItem};
 use miette::IntoDiagnostic;

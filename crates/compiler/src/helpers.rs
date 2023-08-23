@@ -6,6 +6,8 @@ use std::path::Path;
 use tokio::process::Command;
 use tracing::debug;
 
+pub const OUT_DIR: &str = ".espm";
+
 #[cached(result = true)]
 pub async fn detect_javascript_runtime() -> miette::Result<String> {
     debug!("Detecting a JavaScript runtime");

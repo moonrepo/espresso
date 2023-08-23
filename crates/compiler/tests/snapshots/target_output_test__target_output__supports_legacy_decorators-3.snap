@@ -38,7 +38,6 @@ expression: "read_file(out_dir.join(\"../tsconfig.es2018.json\"))"
     "sourceMap": false,
     "strict": true,
     "target": "es2018",
-    "verbatimModuleSyntax": true
   },
   "include": ["../src/**/*"]
 }

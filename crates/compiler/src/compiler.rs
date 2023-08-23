@@ -1,7 +1,8 @@
 use crate::asset::Asset;
 use crate::declarations::Declarations;
+use crate::helpers::OUT_DIR;
 use crate::module::Module;
-use espresso_common::{EsTarget, OUT_DIR};
+use espresso_common::EsTarget;
 use espresso_manifest::PackageManifestBuild;
 use espresso_package::{Package, SourceFiles};
 use espresso_store::Store;

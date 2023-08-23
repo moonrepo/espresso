@@ -1,6 +1,5 @@
 use crate::storage_item::StorageItem;
 use crate::store_error::StoreError;
-use espresso_common::OUT_DIR;
 use starbase::Resource;
 use starbase_archive::Archiver;
 use starbase_utils::{dirs, fs};
@@ -31,7 +30,7 @@ impl Store {
 
         dirs::home_dir()
             .expect("Could not find a home directory!")
-            .join(OUT_DIR)
+            .join(".espresso")
     }
 
     pub fn load() -> miette::Result<Self> {
