@@ -1,8 +1,8 @@
 use crate::common_settings::*;
 use espresso_common::{LicenseType, PackageName, Version};
 use relative_path::RelativePathBuf;
-use schematic::ValidateError;
-use schematic::{derive_enum, validate, Config, ConfigEnum};
+use schematic::schema::IntegerKind;
+use schematic::{derive_enum, validate, Config, ConfigEnum, SchemaType, Schematic, ValidateError};
 use url::Url;
 
 derive_enum!(
@@ -39,6 +39,12 @@ impl BuildOptimizePng {
 impl Default for BuildOptimizePng {
     fn default() -> Self {
         Self::Enabled(true)
+    }
+}
+
+impl Schematic for BuildOptimizePng {
+    fn generate_schema() -> SchemaType {
+        SchemaType::union([SchemaType::boolean(), SchemaType::integer(IntegerKind::U8)])
     }
 }
 

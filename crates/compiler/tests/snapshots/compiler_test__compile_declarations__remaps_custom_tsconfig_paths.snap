@@ -1,0 +1,42 @@
+---
+source: crates/compiler/tests/compiler_test.rs
+expression: "read_file(out_dir.join(\"../tsconfig.es2022.json\"))"
+---
+{
+  "compilerOptions": {
+    "baseUrl": "../src",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "module": "es2022",
+    "moduleResolution": "nodenext",
+    "outDir": "./es2022",
+    "paths": {
+      "~": [
+        "../src/index.ts",
+        ".././src/*"
+      ]
+    },
+    "rootDir": "../src",
+    "rootDirs": [
+      "../.",
+      "../../types"
+    ],
+    "target": "es2022"
+  },
+  "exclude": [
+    "../src/*.test.*",
+    "../tests/**/*"
+  ],
+  "extends": [
+    "../../../tsconfig.options.json",
+    "npm-package/tsconfig.json"
+  ],
+  "include": [
+    "../src/**/*"
+  ],
+  "references": [
+    {
+      "path": "../../../common"
+    }
+  ]
+}

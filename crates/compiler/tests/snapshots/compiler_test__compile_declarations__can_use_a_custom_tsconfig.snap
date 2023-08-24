@@ -1,0 +1,19 @@
+---
+source: crates/compiler/tests/compiler_test.rs
+expression: "read_file(out_dir.join(\"../tsconfig.es2022.json\"))"
+---
+{
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "module": "es2022",
+    "moduleResolution": "nodenext",
+    "outDir": "./es2022",
+    "rootDir": "../src",
+    "strict": false,
+    "target": "es2022"
+  },
+  "include": [
+    "../src/**/*"
+  ]
+}
