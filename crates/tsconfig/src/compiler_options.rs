@@ -1,3 +1,4 @@
+use relative_path::RelativePathBuf;
 use schematic::{derive_enum, Config, ConfigEnum};
 use std::collections::BTreeMap;
 
@@ -22,7 +23,7 @@ pub struct CompilerOptions {
 
     pub assume_changes_only_affect_direct_dependencies: Option<bool>,
 
-    pub base_url: Option<String>,
+    pub base_url: Option<RelativePathBuf>,
 
     pub check_js: Option<bool>,
 
@@ -32,7 +33,7 @@ pub struct CompilerOptions {
 
     pub declaration: Option<bool>,
 
-    pub declaration_dir: Option<String>,
+    pub declaration_dir: Option<RelativePathBuf>,
 
     pub declaration_map: Option<bool>,
 
@@ -137,11 +138,11 @@ pub struct CompilerOptions {
 
     pub no_unused_parameters: Option<bool>,
 
-    pub out_dir: Option<String>,
+    pub out_dir: Option<RelativePathBuf>,
 
-    pub out_file: Option<String>,
+    pub out_file: Option<RelativePathBuf>,
 
-    pub paths: Option<BTreeMap<String, Vec<String>>>,
+    pub paths: Option<BTreeMap<String, Vec<RelativePathBuf>>>,
 
     pub preserve_const_enums: Option<bool>,
 
@@ -151,8 +152,6 @@ pub struct CompilerOptions {
 
     pub pretty: Option<bool>,
 
-    pub react_namespace: Option<String>,
-
     pub remove_comments: Option<bool>,
 
     pub resolve_json_module: Option<bool>,
@@ -161,9 +160,9 @@ pub struct CompilerOptions {
 
     pub resolve_package_json_imports: Option<bool>,
 
-    pub root_dir: Option<String>,
+    pub root_dir: Option<RelativePathBuf>,
 
-    pub root_dirs: Option<Vec<String>>,
+    pub root_dirs: Option<Vec<RelativePathBuf>>,
 
     pub skip_default_lib_check: Option<bool>,
 
@@ -191,7 +190,7 @@ pub struct CompilerOptions {
 
     pub ts_build_info_file: Option<String>,
 
-    pub type_roots: Option<Vec<String>>,
+    pub type_roots: Option<Vec<RelativePathBuf>>,
 
     pub types: Option<Vec<String>>,
 
@@ -220,10 +219,13 @@ pub struct CompilerOptions {
     pub no_strict_generic_checks: Option<bool>,
 
     #[deprecated]
-    pub out: Option<String>,
+    pub out: Option<RelativePathBuf>,
 
     #[deprecated]
     pub preserve_value_imports: Option<bool>,
+
+    #[deprecated]
+    pub react_namespace: Option<String>,
 
     #[deprecated]
     pub suppress_excess_property_errors: Option<bool>,
@@ -320,9 +322,9 @@ derive_enum!(
 
 #[derive(Config)]
 pub struct WatchOptions {
-    pub exclude_directories: Option<Vec<String>>,
+    pub exclude_directories: Option<Vec<RelativePathBuf>>,
 
-    pub exclude_files: Option<Vec<String>>,
+    pub exclude_files: Option<Vec<RelativePathBuf>>,
 
     pub fallback_polling: Option<String>,
 

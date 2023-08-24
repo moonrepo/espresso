@@ -7,6 +7,7 @@ use espresso_tsconfig::{
     Target as TsTarget,
 };
 use miette::IntoDiagnostic;
+use relative_path::RelativePathBuf;
 use starbase_styles::color;
 use starbase_utils::{fs, glob, json};
 use std::path::PathBuf;
@@ -186,7 +187,7 @@ impl Declarations {
 
     fn inject_required_options(&self, target: &EsTarget, tsconfig: &mut PartialTsConfig) {
         tsconfig.files = None;
-        tsconfig.include = Some(vec!["../src/**/*".into()]);
+        tsconfig.include = Some(vec![RelativePathBuf::from("../src/**/*")]);
 
         let options = tsconfig
             .compiler_options
@@ -206,8 +207,8 @@ impl Declarations {
         options.module_resolution = Some(ModuleResolution::Nodenext);
 
         options.out_file = None;
-        options.out_dir = Some(format!("./{target}"));
-        options.root_dir = Some("../src".into());
+        options.out_dir = Some(RelativePathBuf::from(format!("./{target}")));
+        options.root_dir = Some(RelativePathBuf::from("../src"));
 
         options.target = Some(match target {
             EsTarget::Es2015 => TsTarget::Es2015,
@@ -234,17 +235,17 @@ impl Declarations {
     }
 
     fn remap_paths(&self, tsconfig: &mut PartialTsConfig) {
-        let cd_parent = |value: String| format!("../{value}");
+        let cd_parent = |value: RelativePathBuf| RelativePathBuf::from("..").join(value);
 
-        let cd_parent_with_check = |value: String| {
-            if value.starts_with('.') {
-                format!("../{value}")
+        let cd_parent_with_check = |value: RelativePathBuf| {
+            if value.as_str().starts_with('.') {
+                cd_parent(value)
             } else {
                 value
             }
         };
 
-        let map_list = |list: Vec<String>| list.into_iter().map(cd_parent).collect();
+        let map_list = |list: Vec<RelativePathBuf>| list.into_iter().map(cd_parent).collect();
 
         if let Some(exclude) = tsconfig.exclude.take() {
             tsconfig.exclude = Some(map_list(exclude));

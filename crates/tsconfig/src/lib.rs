@@ -1,13 +1,14 @@
 mod compiler_options;
 
 pub use compiler_options::*;
+use relative_path::RelativePathBuf;
 use schematic::Config;
 
 #[derive(Config)]
 #[config(serde(untagged))]
 pub enum TsConfigExtends {
-    String(String),
-    Array(Vec<String>),
+    String(RelativePathBuf),
+    Array(Vec<RelativePathBuf>),
 }
 
 #[derive(Config)]
@@ -18,14 +19,14 @@ pub struct TsConfig {
     #[setting(nested)]
     pub compiler_options: Option<CompilerOptions>,
 
-    pub exclude: Option<Vec<String>>,
+    pub exclude: Option<Vec<RelativePathBuf>>,
 
     #[setting(nested)]
     pub extends: Option<TsConfigExtends>,
 
-    pub files: Option<Vec<String>>,
+    pub files: Option<Vec<RelativePathBuf>>,
 
-    pub include: Option<Vec<String>>,
+    pub include: Option<Vec<RelativePathBuf>>,
 
     #[setting(nested)]
     pub references: Option<Vec<Reference>>,
@@ -36,7 +37,7 @@ pub struct TsConfig {
 
 #[derive(Config)]
 pub struct Reference {
-    pub path: String,
+    pub path: RelativePathBuf,
     pub prepend: Option<bool>,
 }
 

@@ -965,6 +965,7 @@ dependencies = [
  "futures",
  "miette 5.10.0",
  "oxipng",
+ "relative-path",
  "starbase_sandbox",
  "starbase_styles",
  "starbase_utils",
@@ -1031,6 +1032,7 @@ dependencies = [
 name = "espresso_tsconfig"
 version = "0.1.0"
 dependencies = [
+ "relative-path",
  "schematic",
  "serde",
 ]

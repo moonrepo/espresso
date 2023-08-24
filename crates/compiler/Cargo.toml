@@ -15,6 +15,7 @@ cached = { workspace = true }
 futures = "0.3.28"
 miette = { workspace = true }
 oxipng = "8.0.0"
+relative-path = { workspace = true }
 swc = "0.264.64"
 swc_core = { version = "0.79.70", default-features = false, features = [
 	"common",
