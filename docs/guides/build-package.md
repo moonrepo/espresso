@@ -18,7 +18,7 @@ espm build --target es2020
 ## Build targets
 
 Builds can define the compilation target using the `--target` option (for package authors), or the
-`build.target` setting in [`espm.toml`](../espm-toml.md) (for package consumers). If not defined,
+`build.target` setting in [`esp.toml`](../esp-toml.md) (for package consumers). If not defined,
 defaults to `es2018` (5 years old).
 
 ```toml
@@ -52,7 +52,7 @@ package/
 │   └── index.ts
 ├── tests/
 │   └── **/*.test.ts
-└── espm.toml
+└── esp.toml
 ```
 
 When built, the output directory will contain the following files:
@@ -64,7 +64,7 @@ package/.espm/es2020/
 ├── styles/*.css
 ├── images/*.png
 ├── index.{mjs,d.mts}
-└── espm.toml
+└── esp.toml
 ```
 
 ## JavaScript
@@ -81,10 +81,10 @@ this process, the following occurs:
 If a TypeScript file is detected in `src`, we'll automatically run a `tsc` process to generate
 declarations in the output directory. We achieve this with the following steps:
 
-- Create an `.espm/tsconfig.<target>.json` file, pre-configured for the chosen `target`. Will also
+- Creates an `.espm/tsconfig.<target>.json` file, pre-configured for the chosen `target`. Will also
   set the correct `module`, `rootDir`, `outDir`, so on and so forth.
-- Run `tsc` with the above configuration file, in the package root.
-- If successful, rename all `.d.ts` files to `.d.mts`. We do this since we're ESM only, and
+- Runs `tsc` with the above configuration file, in the package root.
+- If successful, renames all `.d.ts` files to `.d.mts`. We do this since we're ESM only, and
   JavaScript files are built with the `.mjs` extension.
 
 To demonstrate this, say we have the following source:
@@ -93,7 +93,7 @@ To demonstrate this, say we have the following source:
 package/
 ├── src/
 │   └── index.ts
-└── espm.toml
+└── esp.toml
 ```
 
 When built, the output directory will contain an `.mjs` file and `.d.mts` declaration file.
@@ -102,7 +102,7 @@ When built, the output directory will contain an `.mjs` file and `.d.mts` declar
 package/.espm/es2020/
 ├── index.d.mts
 ├── index.mjs
-└── espm.toml
+└── esp.toml
 ```
 
 ### Custom `tsconfig.json`
@@ -125,7 +125,7 @@ or even JSON.
 Images and other applicable files will be optimized/compressed when copied. At this point in time,
 only `png` files are supported.
 
-This can be customized in [`espm.toml`](../espm-toml.md).
+This can be customized in [`esp.toml`](../esp-toml.md).
 
 ```toml
 [build]

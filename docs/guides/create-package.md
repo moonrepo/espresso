@@ -1,18 +1,18 @@
 # Create a package
 
-A package is denoted by a manifest file called `espm.toml`. This manifest is written in
+A package is denoted by a manifest file called `esp.toml`. This manifest is written in
 [TOML](https://toml.io/en/) and configures metadata about the package, like its name and
 description, as well as dependencies (other packages) it requires, and also denotes the root of the
 package.
 
-Begin by creating the `espm.toml` file in your project, and insert the following initial content:
+Begin by creating the `esp.toml` file in your project, and insert the following initial content:
 
 ```toml
 [package]
 name = "namespace/package"
 ```
 
-> [Learn more about `espm.toml` in the official manifest documentation](../espm-toml.md)
+> [Learn more about `esp.toml` in the official manifest documentation](../esp-toml.md)
 
 ## Package structure
 
@@ -29,7 +29,7 @@ package/
 │   └── index.*
 ├── tests/
 │   └── **/*
-└── espm.toml
+└── esp.toml
 ```
 
 ### Source files

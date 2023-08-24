@@ -20,7 +20,7 @@ expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
       "es2018"
     ],
     "module": "es2015",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "noEmitOnError": true,
     "outDir": "./es2018",
     "pretty": true,

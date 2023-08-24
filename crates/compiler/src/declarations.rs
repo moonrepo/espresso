@@ -15,7 +15,7 @@ use std::sync::Arc;
 use tokio::process::Command;
 use tracing::{debug, trace};
 
-pub static TS_VERSION: &str = "5.1.6";
+pub static TS_VERSION: &str = "5.2.2";
 
 pub struct TsConfigState {
     path: PathBuf,
@@ -204,7 +204,16 @@ impl Declarations {
             EsTarget::Es2022 => Module::Es2022,
             _ => Module::Es2015,
         });
-        options.module_resolution = Some(ModuleResolution::Nodenext);
+
+        // These need to align correctly in TS 5.2+:
+        // https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/#module-and-moduleresolution-must-match-under-recent-node-js-settings
+        options.module_resolution = Some(match target {
+            EsTarget::Es2015 => ModuleResolution::Node,
+            EsTarget::Es2016 => ModuleResolution::Node,
+            EsTarget::Es2017 => ModuleResolution::Node,
+            EsTarget::Es2018 => ModuleResolution::Node,
+            _ => ModuleResolution::Node16,
+        });
 
         options.out_file = None;
         options.out_dir = Some(RelativePathBuf::from(format!("./{target}")));
