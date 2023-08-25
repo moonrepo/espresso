@@ -3,6 +3,8 @@
 The `esp.toml` manifest is a configuration file at the root of a package or workspace that defines
 metadata, dependencies, and more.
 
+> ESP stands for Ecma Script Package.
+
 ## `[workspace]`
 
 For a multi-package workspace, defines workspace metadata and how to find packages. This setting
@@ -24,7 +26,7 @@ packages = ["apps/*", "packages/*"]
 
 Defines package metadata and supports the following fields:
 
-- `name` (string) - Name of the package, including namespace.
+- `name` (string) - [Name of the package](./package.md#name-requirements), including namespace.
 - `version` (string) - Current version.
 - `description` (string) - Short description of the package.
 - `keywords` (string[]) - List of keywords.
@@ -62,8 +64,8 @@ optimize-png = 4
 
 ## `[dependencies]`
 
-Maps other dependencies (packages in the registry) that this package or workspace depends on. The
-map key is the package name, while the value is a
+Maps dependencies (packages in the registry) that this package or workspace depends on. The map key
+is the package name, while the value is a
 [semantic version requirement](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html).
 
 ```toml
@@ -81,10 +83,19 @@ installed when `espm install` is ran in production-only mode.
 
 ```toml
 [dev-dependencies]
-"microsoft/typescript" = "5.2.0"
+"microsoft/typescript" = "=5.2.2"
 "prettier/cli" = "3.0.0"
 ```
 
 ## `[install]`
 
-Controls how dependencies are installed with `espm install`. Coming soon...
+Controls how dependencies are installed with `espm install`.
+
+Supports the following fields:
+
+- `target` (es20xx) - ECMAScript target to request/compile dependencies to. Defaults to `es2018`.
+
+```toml
+[install]
+target = "es2020"
+```

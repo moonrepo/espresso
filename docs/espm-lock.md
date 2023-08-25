@@ -1,0 +1,3 @@
+# `espm.lock`
+
+Locks installed dependencies. Coming soon...
