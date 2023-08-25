@@ -1,4 +1,4 @@
-use crate::common_settings::*;
+use crate::{common_settings::*, install_setting::*};
 use relative_path::RelativePathBuf;
 use schematic::{validate, Config};
 

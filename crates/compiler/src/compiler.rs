@@ -3,7 +3,7 @@ use crate::declarations::Declarations;
 use crate::helpers::OUT_DIR;
 use crate::module::Module;
 use espresso_common::EsTarget;
-use espresso_manifest::PackageManifestBuild;
+use espresso_manifest::ManifestBuild;
 use espresso_package::{Package, SourceFiles};
 use espresso_store::Store;
 use miette::IntoDiagnostic;
@@ -108,7 +108,7 @@ impl<'pkg> Compiler<'pkg> {
         &self,
         sources: &SourceFiles,
         out_dir: &Path,
-        build_settings: Arc<PackageManifestBuild>,
+        build_settings: Arc<ManifestBuild>,
     ) -> Vec<Asset> {
         sources
             .assets
@@ -127,7 +127,7 @@ impl<'pkg> Compiler<'pkg> {
         &self,
         sources: &SourceFiles,
         out_dir: &Path,
-        build_settings: Arc<PackageManifestBuild>,
+        build_settings: Arc<ManifestBuild>,
     ) -> Vec<Module> {
         sources
             .modules

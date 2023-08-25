@@ -1,6 +1,6 @@
 use crate::compiler_error::CompilerError;
 use crate::helpers::has_extension;
-use espresso_manifest::PackageManifestBuild;
+use espresso_manifest::ManifestBuild;
 use oxipng::{optimize_from_memory, Options};
 use starbase_utils::fs;
 use std::path::PathBuf;
@@ -9,17 +9,13 @@ use tracing::{debug, trace};
 
 /// Represents a single asset file (png, svg, etc).
 pub struct Asset {
-    pub build_settings: Arc<PackageManifestBuild>,
+    pub build_settings: Arc<ManifestBuild>,
     pub out_path: PathBuf,
     pub src_path: PathBuf,
 }
 
 impl Asset {
-    pub fn new(
-        src_path: PathBuf,
-        out_path: PathBuf,
-        build_settings: Arc<PackageManifestBuild>,
-    ) -> Self {
+    pub fn new(src_path: PathBuf, out_path: PathBuf, build_settings: Arc<ManifestBuild>) -> Self {
         Self {
             build_settings,
             out_path,

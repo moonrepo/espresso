@@ -1,6 +1,6 @@
 use crate::helpers::{detect_javascript_runtime, OUT_DIR};
 use espresso_common::{EsTarget, Version};
-use espresso_manifest::PackageManifestBuild;
+use espresso_manifest::ManifestBuild;
 use espresso_store::{Store, TypeScriptItem};
 use espresso_tsconfig::{
     Module, ModuleResolution, PartialCompilerOptions, PartialTsConfig, PartialTsConfigExtends,
@@ -24,7 +24,7 @@ pub struct TsConfigState {
 
 /// Represents all TypeScript declarations within the source directory.
 pub struct Declarations {
-    pub build_settings: Arc<PackageManifestBuild>,
+    pub build_settings: Arc<ManifestBuild>,
     pub package_root: PathBuf,
     pub out_dir: PathBuf,
     pub store: Arc<Store>,
@@ -34,7 +34,7 @@ impl Declarations {
     pub fn new(
         package_root: PathBuf,
         out_dir: PathBuf,
-        build_settings: Arc<PackageManifestBuild>,
+        build_settings: Arc<ManifestBuild>,
         store: Arc<Store>,
     ) -> Self {
         Self {
