@@ -1,4 +1,7 @@
-use starbase_sandbox::{create_command_with_name, create_sandbox};
+mod utils;
+
+use starbase_sandbox::create_sandbox;
+use utils::create_espm_command;
 
 mod build {
     use super::*;
@@ -7,9 +10,10 @@ mod build {
     fn builds_polyrepo() {
         let sandbox = create_sandbox("polyrepo");
 
-        create_command_with_name(sandbox.path(), "espm")
+        create_espm_command(sandbox.path())
             .args(["build", "--target", "es2015"])
-            .assert();
+            .assert()
+            .success();
 
         assert!(sandbox.path().join(".espm/es2015").exists());
     }
@@ -18,9 +22,14 @@ mod build {
     fn builds_all_in_monorepo() {
         let sandbox = create_sandbox("monorepo");
 
-        create_command_with_name(sandbox.path(), "espm")
+        let assert = create_espm_command(sandbox.path())
             .args(["build", "--target", "es2016", "--workspace"])
-            .assert();
+            .assert()
+            .success();
+
+        dbg!(&assert);
+
+        sandbox.debug_files();
 
         assert!(sandbox.path().join("packages/bar/.espm/es2016").exists());
         assert!(sandbox.path().join("packages/baz/.espm/es2016").exists());
@@ -31,9 +40,10 @@ mod build {
     fn builds_selected_in_monorepo() {
         let sandbox = create_sandbox("monorepo");
 
-        create_command_with_name(sandbox.path(), "espm")
+        create_espm_command(sandbox.path())
             .args(["build", "--target", "es2017", "--package", "mono/baz"])
-            .assert();
+            .assert()
+            .success();
 
         assert!(!sandbox.path().join("packages/bar/.espm/es2017").exists());
         assert!(sandbox.path().join("packages/baz/.espm/es2017").exists());
@@ -44,9 +54,12 @@ mod build {
     fn copies_info_files_for_each_package() {
         let sandbox = create_sandbox("monorepo");
 
-        create_command_with_name(sandbox.path(), "espm")
+        create_espm_command(sandbox.path())
             .args(["build", "--target", "es2018", "--workspace"])
-            .assert();
+            .assert()
+            .success();
+
+        sandbox.debug_files();
 
         assert!(sandbox
             .path()
