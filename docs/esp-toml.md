@@ -69,6 +69,7 @@ is the package name, while the value is a
 [semantic version requirement](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html).
 
 ```toml
+# These are example packages!
 [dependencies]
 "meta/react" = "18.0.0"
 "vercel/next" = "~1.13.0"
@@ -82,6 +83,7 @@ Like [`[dependencies]`](#dependencies) but only used for development. These depe
 installed when `espm install` is ran in production-only mode.
 
 ```toml
+# These are example packages!
 [dev-dependencies]
 "microsoft/typescript" = "=5.2.2"
 "prettier/cli" = "3.0.0"

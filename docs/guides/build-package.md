@@ -96,7 +96,7 @@ package/
 └── esp.toml
 ```
 
-When built, the output directory will contain an `.mjs` file and `.d.mts` declaration file.
+When built, the output directory will contain an `.mjs` file and a `.d.mts` declaration file.
 
 ```
 package/.espm/es2020/
