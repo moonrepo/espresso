@@ -59,12 +59,6 @@ impl Store {
     }
 
     pub async fn store_item(&self, url: &str, item: impl StorageItem) -> miette::Result<PathBuf> {
-        let output_dir = self.packages_dir.join(item.to_file_path());
-
-        if output_dir.exists() {
-            return Ok(output_dir);
-        }
-
         let mut locks = self.locks.lock().await;
 
         // Create a lock for this item, so that we avoid multiple processes
@@ -76,6 +70,15 @@ impl Store {
             .await;
 
         drop(locks);
+
+        // After we've acquired the lock, we can check if the item already
+        // exists in the store. If we do this before the lock, other processes would
+        // return true while the archive is being unpacked, resulting in breakages!
+        let output_dir = self.packages_dir.join(item.to_file_path());
+
+        if output_dir.exists() {
+            return Ok(output_dir);
+        }
 
         let result = self
             .unpack_archive(&self.download_archive(url, &item).await?, &item)
