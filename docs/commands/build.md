@@ -21,7 +21,7 @@ espm build -p namespace/package -t es2020
 ## Build targets
 
 Builds can define the compilation target using the `--target` option (for package authors), or the
-`install.target` setting in [`esp.toml`](../esp-toml.md) (for package consumers).
+`install.target` setting in [`esp.toml`](../esp-toml.md#install) (for package consumers).
 
 ```toml
 [install]
@@ -35,7 +35,7 @@ The target controls the following:
   [`jsc.target`](https://swc.rs/docs/configuration/compilation#jsctarget) setting.
 - For TypeScript, sets the [`target`](https://www.typescriptlang.org/tsconfig#target) and
   [`lib`](https://www.typescriptlang.org/tsconfig#lib) compiler options during
-  [declaration generation](#typescript-declarations).
+  [declaration generation](#typescript).
 
 ## Output directory
 
@@ -73,8 +73,8 @@ package/.espm/es2020/
 
 ### JavaScript
 
-JavaScript files will be transformed with [swc](https://swc.rs/), and downleveled to the chosen
-target. In addition to this process, the following occurs:
+JavaScript (and TypeScript) files will be transformed with [swc](https://swc.rs/), and downleveled
+to the chosen target. In addition to this process, the following occurs:
 
 - Files are written with an `.mjs` extension to indicate they are ESM only.
 - Imports and exports within the file are suffixed with the `.mjs` extension.
@@ -129,7 +129,7 @@ or even JSON.
 Images and other applicable files will be optimized/compressed when copied. At this point in time,
 only `png` files are supported.
 
-This can be customized in [`esp.toml`](../esp-toml.md).
+This can be customized in [`esp.toml`](../esp-toml.md#build).
 
 ```toml
 [build]

@@ -10,8 +10,8 @@ for managing dependencies, interacting with the store, running `espm` commands, 
 The root of a workspace is detected using the following rules:
 
 - An [`espm.lock`](./espm-lock.md) file.
-- An [`esp.toml`](./esp-toml.md) file with a `[workspace]` section (monorepo).
-- An [`esp.toml`](./esp-toml.md) file with a `[package]` section (polyrepo).
+- An [`esp.toml`](./esp-toml.md#workspace) file with a `[workspace]` section (monorepo).
+- An [`esp.toml`](./esp-toml.md#package) file with a `[package]` section (polyrepo).
 
 ## Workspace structure
 

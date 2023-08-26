@@ -7,11 +7,11 @@ metadata, dependencies, and more.
 
 ## `[workspace]`
 
-For a multi-package workspace, defines workspace metadata and how to find packages. This setting
-_must only_ exist in the root manifest, relative from the lockfile.
+For a multi-package workspace (monorepo), defines workspace metadata and how to find packages. This
+setting _must only_ exist in the root manifest, relative from the lockfile.
 
-For a single package workspace, this setting _must not_ be used, and [`[package]`](#package) should
-be used instead.
+For a single package workspace (polyrepo), this setting _must not_ be used, and
+[`[package]`](#package) should be used instead.
 
 Supports the following fields:
 
@@ -27,6 +27,7 @@ packages = ["apps/*", "packages/*"]
 Defines package metadata and supports the following fields:
 
 - `name` (string) - [Name of the package](./package.md#name-requirements), including namespace.
+  (REQUIRED).
 - `version` (string) - Current version.
 - `description` (string) - Short description of the package.
 - `keywords` (string[]) - List of keywords.
