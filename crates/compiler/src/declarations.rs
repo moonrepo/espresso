@@ -14,7 +14,7 @@ use starbase_utils::{fs, glob, json};
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::process::Command;
-use tracing::{debug, trace};
+use tracing::debug;
 
 pub static TS_VERSION: &str = "5.2.2";
 
@@ -94,7 +94,7 @@ impl Declarations {
             return Err(CompilerError::DeclGenerateFailed)?;
         }
 
-        trace!("Renaming .d.ts files to .d.mts");
+        debug!("Renaming .d.ts files to .d.mts");
 
         for dts in glob::walk_files(&self.out_dir, ["**/*.d.ts"])? {
             let mut dmts = dts.clone();
