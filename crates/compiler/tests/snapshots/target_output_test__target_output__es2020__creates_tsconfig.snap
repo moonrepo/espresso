@@ -17,10 +17,11 @@ expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
     "isolatedModules": true,
     "lib": [
       "dom",
-      "es2020"
+      "es2020",
+      "esnext.asynciterable"
     ],
     "module": "es2020",
-    "moduleResolution": "node16",
+    "moduleResolution": "node",
     "noEmitOnError": true,
     "outDir": "./es2020",
     "pretty": true,

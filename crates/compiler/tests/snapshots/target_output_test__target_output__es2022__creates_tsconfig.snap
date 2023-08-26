@@ -17,10 +17,11 @@ expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
     "isolatedModules": true,
     "lib": [
       "dom",
-      "es2022"
+      "es2022",
+      "esnext.asynciterable"
     ],
     "module": "es2022",
-    "moduleResolution": "node16",
+    "moduleResolution": "node",
     "noEmitOnError": true,
     "outDir": "./es2022",
     "pretty": true,

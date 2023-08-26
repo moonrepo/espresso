@@ -1,3 +1,4 @@
+use crate::compiler_error::CompilerError;
 use crate::helpers::{detect_javascript_runtime, OUT_DIR};
 use espresso_common::{EsTarget, Version};
 use espresso_manifest::ManifestBuild;
@@ -18,8 +19,8 @@ use tracing::{debug, trace};
 pub static TS_VERSION: &str = "5.2.2";
 
 pub struct TsConfigState {
-    path: PathBuf,
-    project_references: bool,
+    pub path: PathBuf,
+    pub project_references: bool,
 }
 
 /// Represents all TypeScript declarations within the source directory.
@@ -69,7 +70,7 @@ impl Declarations {
             command.arg("--project");
         }
 
-        command
+        let status = command
             .arg(
                 tsconfig_state
                     .path
@@ -88,6 +89,10 @@ impl Declarations {
             "Executed {} binary",
             color::shell("tsc"),
         );
+
+        if !status.success() {
+            return Err(CompilerError::DeclGenerateFailed)?;
+        }
 
         trace!("Renaming .d.ts files to .d.mts");
 
@@ -205,15 +210,11 @@ impl Declarations {
             _ => Module::Es2015,
         });
 
-        // These need to align correctly in TS 5.2+:
+        // These need to align correctly in TS 5.2+, so we can't use `node16`
+        // or `nodenext`, so default to `node`. This is probably OK since we
+        // *don't* want to use the Node.js/npm ecosystem rules.
         // https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/#module-and-moduleresolution-must-match-under-recent-node-js-settings
-        options.module_resolution = Some(match target {
-            EsTarget::Es2015 => ModuleResolution::Node,
-            EsTarget::Es2016 => ModuleResolution::Node,
-            EsTarget::Es2017 => ModuleResolution::Node,
-            EsTarget::Es2018 => ModuleResolution::Node,
-            _ => ModuleResolution::Node16,
-        });
+        options.module_resolution = Some(ModuleResolution::Node);
 
         options.out_file = None;
         options.out_dir = Some(RelativePathBuf::from(format!("./{target}")));
@@ -238,6 +239,9 @@ impl Declarations {
                 .collect::<Vec<_>>();
 
             new_lib.push(target.to_string());
+
+            // Required for async/generators and old targets, like es2015
+            new_lib.push("esnext.asynciterable".into());
 
             options.lib = Some(new_lib);
         }

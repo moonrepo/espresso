@@ -17,7 +17,8 @@ expression: "read_file(out_dir.join(\"..\").join(tsconfig))"
     "isolatedModules": true,
     "lib": [
       "dom",
-      "es2015"
+      "es2015",
+      "esnext.asynciterable"
     ],
     "module": "es2015",
     "moduleResolution": "node",

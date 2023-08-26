@@ -1,10 +1,13 @@
 mod utils;
 
 use espresso_common::EsTarget;
-use espresso_manifest::BuildOptimizePng;
+use espresso_compiler::Declarations;
+use espresso_manifest::{BuildOptimizePng, ManifestBuild};
 use espresso_package::Package;
+use espresso_store::Store;
 use starbase_sandbox::{assert_snapshot, create_sandbox, locate_fixture};
 use std::fs;
+use std::sync::Arc;
 use utils::*;
 
 mod compile_modules {
@@ -133,7 +136,13 @@ mod compile_declarations {
     #[tokio::test]
     async fn can_use_a_custom_tsconfig() {
         let sandbox = create_sandbox("ts-files");
-        let package = Package::new(sandbox.path()).unwrap();
+
+        let decl = Declarations::new(
+            sandbox.path().to_path_buf(),
+            sandbox.path().join(".espm"),
+            Arc::new(ManifestBuild::default()),
+            Arc::new(Store::load_from(sandbox.path()).unwrap()),
+        );
 
         sandbox.create_file(
             "tsconfig.espm.json",
@@ -144,16 +153,22 @@ mod compile_declarations {
 }"#,
         );
 
-        let compiler = create_compiler(sandbox.path(), &package);
-        let out_dir = compiler.compile(EsTarget::Es2022).await.unwrap();
+        let state = decl.create_tsconfig(&EsTarget::Es2022).unwrap();
 
-        assert_snapshot!(read_file(out_dir.join("../tsconfig.es2022.json")));
+        assert_snapshot!(read_file(state.path));
+        assert!(!state.project_references);
     }
 
     #[tokio::test]
     async fn remaps_custom_tsconfig_paths() {
         let sandbox = create_sandbox("ts-files");
-        let package = Package::new(sandbox.path()).unwrap();
+
+        let decl = Declarations::new(
+            sandbox.path().to_path_buf(),
+            sandbox.path().join(".espm"),
+            Arc::new(ManifestBuild::default()),
+            Arc::new(Store::load_from(sandbox.path()).unwrap()),
+        );
 
         sandbox.create_file(
             "tsconfig.espm.json",
@@ -175,9 +190,9 @@ mod compile_declarations {
 }"#,
         );
 
-        let compiler = create_compiler(sandbox.path(), &package);
-        let out_dir = compiler.compile(EsTarget::Es2022).await.unwrap();
+        let state = decl.create_tsconfig(&EsTarget::Es2022).unwrap();
 
-        assert_snapshot!(read_file(out_dir.join("../tsconfig.es2022.json")));
+        assert_snapshot!(read_file(state.path));
+        assert!(state.project_references);
     }
 }

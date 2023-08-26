@@ -33,7 +33,7 @@ specific compilation target. The days of mismatching module systems and incorrec
 packages are over.
 
 ```toml
-[build]
+[install]
 target = "es2016"
 ```
 
