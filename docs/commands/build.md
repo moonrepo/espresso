@@ -147,7 +147,19 @@ ESNext is a what we call a moving target and may contain experimental or unstabl
 not want to encourage the use of such features in production code, especially code that is provided
 to consumers.
 
+Furthermore, since builds are cached indefinitely, an `esnext` target would introduce subtle bugs
+overtime, and may result in broken builds.
+
 #### Why is `es3` and `es5` not supported targets?
 
 We want to only support modern code and these are far too legacy. ES2015 is 8 years old, which is
 more than enough of a standard timeframe to support.
+
+#### Why doesn't the build minify?
+
+Minification is an application concern and should be handled by the consumer.
+
+#### Why doesn't the build bundle?
+
+Like minification, bundling is an application concern and should be handled by the consumer. We also
+want to preserve the folder and file structure of the package.
