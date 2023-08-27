@@ -1,4 +1,4 @@
-use crate::commands::BuildArgs;
+use crate::commands::{BuildArgs, NewArgs};
 use clap::{Args, Parser, Subcommand};
 use espresso_common::PackageName;
 use espresso_workspace::SelectQuery;
@@ -35,6 +35,9 @@ pub enum Commands {
 
     #[command(name = "debug", about = "Debug Espresso instance.", hide = true)]
     Debug,
+
+    #[command(name = "new", about = "Create a new package.")]
+    New(NewArgs),
 }
 
 #[derive(Clone, Debug, Parser)]
