@@ -22,14 +22,10 @@ mod build {
     fn builds_all_in_monorepo() {
         let sandbox = create_sandbox("monorepo");
 
-        let assert = create_espm_command(sandbox.path())
+        create_espm_command(sandbox.path())
             .args(["build", "--target", "es2016", "--workspace"])
             .assert()
             .success();
-
-        println!("{}", assert);
-
-        sandbox.debug_files();
 
         assert!(sandbox.path().join("packages/bar/.espm/es2016").exists());
         assert!(sandbox.path().join("packages/baz/.espm/es2016").exists());
@@ -58,8 +54,6 @@ mod build {
             .args(["build", "--target", "es2018", "--workspace"])
             .assert()
             .success();
-
-        sandbox.debug_files();
 
         assert!(sandbox
             .path()
