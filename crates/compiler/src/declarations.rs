@@ -1,6 +1,7 @@
+use crate::compiler_error::CompilerError;
 use crate::helpers::{detect_javascript_runtime, OUT_DIR};
 use espresso_common::{EsTarget, Version};
-use espresso_manifest::PackageManifestBuild;
+use espresso_manifest::ManifestBuild;
 use espresso_store::{Store, TypeScriptItem};
 use espresso_tsconfig::{
     Module, ModuleResolution, PartialCompilerOptions, PartialTsConfig, PartialTsConfigExtends,
@@ -13,18 +14,18 @@ use starbase_utils::{fs, glob, json};
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::process::Command;
-use tracing::{debug, trace};
+use tracing::debug;
 
-pub static TS_VERSION: &str = "5.1.6";
+pub static TS_VERSION: &str = "5.2.2";
 
 pub struct TsConfigState {
-    path: PathBuf,
-    project_references: bool,
+    pub path: PathBuf,
+    pub project_references: bool,
 }
 
 /// Represents all TypeScript declarations within the source directory.
 pub struct Declarations {
-    pub build_settings: Arc<PackageManifestBuild>,
+    pub build_settings: Arc<ManifestBuild>,
     pub package_root: PathBuf,
     pub out_dir: PathBuf,
     pub store: Arc<Store>,
@@ -34,7 +35,7 @@ impl Declarations {
     pub fn new(
         package_root: PathBuf,
         out_dir: PathBuf,
-        build_settings: Arc<PackageManifestBuild>,
+        build_settings: Arc<ManifestBuild>,
         store: Arc<Store>,
     ) -> Self {
         Self {
@@ -69,7 +70,7 @@ impl Declarations {
             command.arg("--project");
         }
 
-        command
+        let status = command
             .arg(
                 tsconfig_state
                     .path
@@ -89,7 +90,11 @@ impl Declarations {
             color::shell("tsc"),
         );
 
-        trace!("Renaming .d.ts files to .d.mts");
+        if !status.success() {
+            return Err(CompilerError::DeclGenerateFailed)?;
+        }
+
+        debug!("Renaming .d.ts files to .d.mts");
 
         for dts in glob::walk_files(&self.out_dir, ["**/*.d.ts"])? {
             let mut dmts = dts.clone();
@@ -204,7 +209,12 @@ impl Declarations {
             EsTarget::Es2022 => Module::Es2022,
             _ => Module::Es2015,
         });
-        options.module_resolution = Some(ModuleResolution::Nodenext);
+
+        // These need to align correctly in TS 5.2+, so we can't use `node16`
+        // or `nodenext`, so default to `node`. This is probably OK since we
+        // *don't* want to use the Node.js/npm ecosystem rules.
+        // https://devblogs.microsoft.com/typescript/announcing-typescript-5-2/#module-and-moduleresolution-must-match-under-recent-node-js-settings
+        options.module_resolution = Some(ModuleResolution::Node);
 
         options.out_file = None;
         options.out_dir = Some(RelativePathBuf::from(format!("./{target}")));
@@ -229,6 +239,9 @@ impl Declarations {
                 .collect::<Vec<_>>();
 
             new_lib.push(target.to_string());
+
+            // Required for async/generators and old targets, like es2015
+            new_lib.push("esnext.asynciterable".into());
 
             options.lib = Some(new_lib);
         }

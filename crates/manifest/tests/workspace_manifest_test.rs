@@ -24,7 +24,7 @@ packages = ["*"]
                 dependencies: BTreeMap::new(),
                 dev_dependencies: BTreeMap::new(),
                 install: ManifestInstall {
-                    linker: ManifestInstallLinker::NodeModules,
+                    linker: InstallLinker::NodeModules,
                     target: EsTarget::Es2018,
                 },
                 workspace: WorkspaceManifestMetadata {
@@ -75,7 +75,7 @@ target = "es2022"
             assert_eq!(
                 manifest.install,
                 ManifestInstall {
-                    linker: ManifestInstallLinker::NodeModules,
+                    linker: InstallLinker::NodeModules,
                     target: EsTarget::Es2022,
                 },
             );

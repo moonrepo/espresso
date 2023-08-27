@@ -10,6 +10,3 @@
 ## To Do
 
 - Source maps.
-- TypeScript:
-  - Project references / `--build` support
-  - Inherit `libs` from source project

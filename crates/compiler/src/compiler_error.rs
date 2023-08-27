@@ -30,6 +30,10 @@ pub enum CompilerError {
         error: anyhow::Error,
     },
 
+    #[diagnostic(code(compiler::declaration::generate_failed))]
+    #[error("Failed to generate TypeScript declarations.")]
+    DeclGenerateFailed,
+
     #[diagnostic(code(compiler::module::write_failed))]
     #[error("Failed to create module {}.", .path.style(Style::Path))]
     ModuleWriteFailed {

@@ -19,6 +19,24 @@ The overhead of publishing a package is far too great, and there's no solution i
 trying to "fix" the state of things, Espresso is a complete reimagining of how everything can work
 in a modern world.
 
+### As a package author
+
+Author your packages in modern ESM. Packages and their source code are published as-is, as packages
+are compiled on-demand for consumers. No longer are you required to pre-compile packages before
+publishing, nor fiddle with `package.json` configuration (especially `exports`), or worry about deep
+imports, or the dual-package hazard problem.
+
+### As a package consumer
+
+When consuming packages, tailor them to your exact requirements, by requesting all dependencies in a
+specific compilation target. The days of mismatching module systems and incorrectly compiled
+packages are over.
+
+```toml
+[install]
+target = "es2016"
+```
+
 ## Why the name Espresso?
 
 Espresso is currently a codename until I can think of something better, but there are a few reasons

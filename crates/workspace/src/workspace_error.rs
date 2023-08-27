@@ -18,7 +18,7 @@ pub enum WorkspaceError {
 
     #[diagnostic(code(workspace::no_root_detected))]
     #[error(
-        "Unable to detect a package workspace root. Either generate a {} by installing dependencies, or run this command from a directory with a {} manifest.",
+        "Unable to detect a package workspace root. Either generate a {} by installing dependencies, or run this command from a directory with an {} manifest.",
         LOCKFILE_NAME.style(Style::File),
         MANIFEST_NAME.style(Style::File),
     )]

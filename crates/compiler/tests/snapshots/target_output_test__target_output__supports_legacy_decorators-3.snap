@@ -17,10 +17,11 @@ expression: "read_file(out_dir.join(\"../tsconfig.es2018.json\"))"
     "isolatedModules": true,
     "lib": [
       "dom",
-      "es2018"
+      "es2018",
+      "esnext.asynciterable"
     ],
     "module": "es2015",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "noEmitOnError": true,
     "outDir": "./es2018",
     "pretty": true,

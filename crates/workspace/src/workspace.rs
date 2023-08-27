@@ -7,12 +7,12 @@ use espresso_package::Package;
 use once_cell::sync::OnceCell;
 use starbase::Resource;
 use starbase_styles::color;
-use starbase_utils::{fs, glob};
+use starbase_utils::{dirs, fs, glob};
 use std::collections::{BTreeMap, HashSet};
 use std::env;
 use std::fmt;
 use std::path::{Path, PathBuf};
-use tracing::debug;
+use tracing::{debug, trace};
 
 #[derive(Default)]
 pub struct SelectQuery<'app> {
@@ -40,28 +40,39 @@ impl Workspace {
     }
 
     pub fn load_from(working_dir: &Path) -> miette::Result<Workspace> {
+        let home_dir = dirs::home_dir().expect("Unable to determine user's home directory!");
+
         debug!(
             working_dir = ?working_dir,
             lockfile = LOCKFILE_NAME,
             "Attempting to find workspace root by locating a lockfile",
         );
 
-        let mut root = fs::find_upwards_root(LOCKFILE_NAME, working_dir);
+        let mut root = Self::find_upwards(working_dir, &home_dir, LOCKFILE_NAME, None)?;
 
         if root.is_none() {
             debug!(
                 manifest = MANIFEST_NAME,
-                "No lockfile found, locating closest manifest instead"
+                "No lockfile found, locating closest workspace manifest instead"
             );
 
-            root = fs::find_upwards_root(MANIFEST_NAME, working_dir);
+            root = Self::find_upwards(working_dir, &home_dir, MANIFEST_NAME, Some("[workspace]"))?;
+        }
+
+        if root.is_none() {
+            debug!(
+                manifest = MANIFEST_NAME,
+                "No workspace manifest found, locating closest package manifest instead"
+            );
+
+            root = Self::find_upwards(working_dir, &home_dir, MANIFEST_NAME, Some("[package]"))?;
         }
 
         let Some(root) = root else {
             return Err(WorkspaceError::NoRootDetected)?;
         };
 
-        debug!(workspace = ?root, "Creating workspace");
+        debug!(root = ?root, "Found a workspace root, creating workspace");
 
         let manifest = ManifestLoader::load(&root)?;
 
@@ -184,6 +195,51 @@ impl Workspace {
         }
 
         Ok(results)
+    }
+
+    fn find_upwards(
+        current_dir: &Path,
+        home_dir: &Path,
+        name: &str,
+        content_needle: Option<&str>,
+    ) -> miette::Result<Option<PathBuf>> {
+        let findable = current_dir.join(name);
+
+        trace!(
+            file = ?findable,
+            "Traversing upwards to find a workspace root"
+        );
+
+        if findable.exists() {
+            let mut found = true;
+
+            if let Some(needle) = content_needle {
+                trace!(needle, "Found a possible root, checking file contents");
+
+                found = fs::read_file(findable)?.contains(needle);
+            }
+
+            if found {
+                return Ok(Some(current_dir.to_path_buf()));
+            }
+        }
+
+        if current_dir.join(".git").exists() {
+            trace!("Reached the repository root, will not traverse further");
+
+            return Ok(None);
+        }
+
+        if current_dir == home_dir {
+            trace!("Reached the user's home directory, will not traverse further");
+
+            return Ok(None);
+        }
+
+        match current_dir.parent() {
+            Some(parent_dir) => Self::find_upwards(parent_dir, home_dir, name, content_needle),
+            None => Ok(None),
+        }
     }
 }
 

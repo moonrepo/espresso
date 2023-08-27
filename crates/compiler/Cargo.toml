@@ -16,8 +16,8 @@ futures = "0.3.28"
 miette = { workspace = true }
 oxipng = "8.0.0"
 relative-path = { workspace = true }
-swc = "0.264.64"
-swc_core = { version = "0.79.70", default-features = false, features = [
+swc = "0.264.71"
+swc_core = { version = "0.81.6", default-features = false, features = [
 	"common",
 	"ecma_ast",
 	"ecma_parser",

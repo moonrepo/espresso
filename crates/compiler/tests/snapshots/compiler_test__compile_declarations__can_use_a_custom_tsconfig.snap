@@ -7,7 +7,7 @@ expression: "read_file(out_dir.join(\"../tsconfig.es2022.json\"))"
     "declaration": true,
     "emitDeclarationOnly": true,
     "module": "es2022",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "outDir": "./es2022",
     "rootDir": "../src",
     "strict": false,

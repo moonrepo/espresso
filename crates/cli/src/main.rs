@@ -21,8 +21,6 @@ static GLOBAL: MiMalloc = MiMalloc;
 async fn main() -> MainResult {
     App::setup_diagnostics();
 
-    let args = CLI::parse();
-
     App::setup_tracing_with_options(TracingOptions {
         filter_modules: vec![
             "espm".into(),
@@ -37,7 +35,7 @@ async fn main() -> MainResult {
     });
 
     let mut app = App::new();
-    app.set_state(RunningCommand(args));
+    app.set_state(RunningCommand(CLI::parse()));
     app.startup(systems::detect_workspace);
     app.startup(systems::load_store);
     app.execute(systems::run_command);

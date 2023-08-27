@@ -59,23 +59,28 @@ impl Store {
     }
 
     pub async fn store_item(&self, url: &str, item: impl StorageItem) -> miette::Result<PathBuf> {
+        let mut locks = self.locks.lock().await;
+
+        // Create a lock for this item, so that we avoid multiple processes
+        // all attempting to download and unpack the same archive!
+        let entry = Arc::clone(
+            locks
+                .entry(item.to_file_prefix())
+                .or_insert_with(|| Arc::new(Mutex::new(()))),
+        );
+
+        drop(locks);
+
+        let _ = entry.lock().await;
+
+        // After we've acquired the lock, we can check if the item already
+        // exists in the store. If we do this before the lock, other processes would
+        // return true while the archive is being unpacked, resulting in breakages!
         let output_dir = self.packages_dir.join(item.to_file_path());
 
         if output_dir.exists() {
             return Ok(output_dir);
         }
-
-        let mut locks = self.locks.lock().await;
-
-        // Create a lock for this item, so that we avoid multiple processes
-        // all attempting to download and unpack the same archive!
-        let _ = locks
-            .entry(item.to_file_prefix())
-            .or_insert_with(|| Arc::new(Mutex::new(())))
-            .lock()
-            .await;
-
-        drop(locks);
 
         let result = self
             .unpack_archive(&self.download_archive(url, &item).await?, &item)

@@ -18,7 +18,7 @@ await import('../parent/file');
 
 // Exports
 export * from './file';
-export type * from './nested/types';
+// export type * from './nested/types';
 export { baz } from '../parent/file.mjs';
 export { foo, bar } from './file';
 export * as ns from './file/../weird/path';

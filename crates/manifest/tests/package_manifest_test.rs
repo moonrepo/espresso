@@ -23,7 +23,7 @@ name = "ns/pkg"
         assert_eq!(
             manifest,
             PackageManifest {
-                build: PackageManifestBuild {
+                build: ManifestBuild {
                     decorators: None,
                     exclude: vec![],
                     optimize_png: BuildOptimizePng::Enabled(true),
@@ -32,7 +32,7 @@ name = "ns/pkg"
                 dependencies: BTreeMap::new(),
                 dev_dependencies: BTreeMap::new(),
                 install: ManifestInstall {
-                    linker: ManifestInstallLinker::NodeModules,
+                    linker: InstallLinker::NodeModules,
                     target: EsTarget::Es2018,
                 },
                 package: PackageManifestMetadata {
@@ -70,7 +70,7 @@ optimize-png = false
 
             assert_eq!(
                 manifest.build,
-                PackageManifestBuild {
+                ManifestBuild {
                     decorators: None,
                     exclude: vec!["*.png".into()],
                     optimize_png: BuildOptimizePng::Enabled(false),

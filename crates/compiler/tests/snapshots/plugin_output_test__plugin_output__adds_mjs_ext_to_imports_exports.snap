@@ -8,12 +8,18 @@ import "./file.mjs";
 import './file.mjs';
 import 'styles.css';
 import "./index.mjs";
+import icon from '../icons/add.svg';
+import image from './img/hero.png';
+import { foo } from 'module';
+import { bar } from "../file.mjs";
+import * as ns1 from "./file.mjs";
 // Dynamic imports
 await import('module');
 await import("./nested/file.mjs");
 await import("../parent/file.mjs");
 // Exports
 export * from "./file.mjs";
+// export type * from './nested/types';
 export { baz } from '../parent/file.mjs';
 export { foo, bar } from "./file.mjs";
 export * as ns from "./file/../weird/path.mjs";
