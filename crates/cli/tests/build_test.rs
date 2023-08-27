@@ -27,7 +27,7 @@ mod build {
             .assert()
             .success();
 
-        dbg!(&assert);
+        println!("{}", assert);
 
         sandbox.debug_files();
 

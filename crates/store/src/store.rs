@@ -63,13 +63,15 @@ impl Store {
 
         // Create a lock for this item, so that we avoid multiple processes
         // all attempting to download and unpack the same archive!
-        let _ = locks
-            .entry(item.to_file_prefix())
-            .or_insert_with(|| Arc::new(Mutex::new(())))
-            .lock()
-            .await;
+        let entry = Arc::clone(
+            locks
+                .entry(item.to_file_prefix())
+                .or_insert_with(|| Arc::new(Mutex::new(()))),
+        );
 
         drop(locks);
+
+        let _ = entry.lock().await;
 
         // After we've acquired the lock, we can check if the item already
         // exists in the store. If we do this before the lock, other processes would
