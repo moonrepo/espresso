@@ -9,7 +9,7 @@ use espresso_manifest::{
 use miette::IntoDiagnostic;
 use starbase::{system, ExecuteArgs};
 use starbase_styles::color;
-use starbase_utils::toml;
+use starbase_utils::{fs, toml};
 use std::path::PathBuf;
 use std::process;
 
@@ -144,6 +144,9 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
         },
         true,
     )?;
+
+    fs::write_file(dest.join("README.md"), format!("# `{}`\n", name))?;
+    fs::write_file(dest.join("src/index.ts"), "export {};\n")?;
 
     println!();
     println!(
