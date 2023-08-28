@@ -1,13 +1,14 @@
 use crate::commands::{BuildArgs, NewArgs};
-use clap::{Args, Parser, Subcommand};
+use clap::{Parser, Subcommand};
 use espresso_common::PackageName;
 use espresso_workspace::SelectQuery;
+use starbase::State;
 
 pub const BIN_NAME: &str = if cfg!(windows) { "espm.exe" } else { "espm" };
 
 static HEADING_FILTER: &str = "Package filtering";
 
-#[derive(Clone, Debug, Args)]
+#[derive(Clone, Debug, State)]
 pub struct GlobalArgs {
     pub filters: Option<Vec<String>>,
     pub packages: Option<Vec<PackageName>>,

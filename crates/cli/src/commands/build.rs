@@ -5,7 +5,7 @@ use espresso_common::EsTarget;
 use espresso_compiler::Compiler;
 use espresso_store::Store;
 use espresso_workspace::Workspace;
-use starbase::SystemResult;
+use starbase::{system, ExecuteArgs};
 use starbase_styles::color;
 use std::sync::Arc;
 
@@ -22,13 +22,13 @@ pub struct BuildArgs {
     pub target: EsTarget,
 }
 
-#[tracing::instrument(skip_all)]
+#[system]
 pub async fn build(
-    workspace: &Workspace,
-    store: &Store,
-    args: &BuildArgs,
-    global_args: &GlobalArgs,
-) -> SystemResult {
+    args: StateRef<ExecuteArgs, BuildArgs>,
+    global_args: StateRef<GlobalArgs>,
+    workspace: ResourceRef<Workspace>,
+    store: ResourceRef<Store>,
+) {
     let store = Arc::new(store.to_owned());
     let packages = workspace.select_packages(global_args.to_package_select_query())?;
 
@@ -46,6 +46,4 @@ pub async fn build(
         Ok(())
     })
     .await?;
-
-    Ok(())
 }

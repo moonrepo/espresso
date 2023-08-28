@@ -3095,9 +3095,9 @@ dependencies = [
 
 [[package]]
 name = "starbase"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d50cebb3999d006a422348a983f20d0d0f1b4687d6c13294965aa0aa89b1a46"
+checksum = "7ca15b4743a346890747da0667b653e15aa10b12ea2a1d43fb9f90675cc5f478"
 dependencies = [
  "async-trait",
  "chrono",
@@ -3146,9 +3146,9 @@ dependencies = [
 
 [[package]]
 name = "starbase_macros"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ef480c59ed0d7b02bf3c3328a738370bc2b65f46dd2737342396d0cde9ca403"
+checksum = "5b0219b637f9d69170085dfa7e0ec3ef49f432b2f459e1963b4a46b700ec7080"
 dependencies = [
  "darling 0.20.3",
  "proc-macro2",

@@ -1,10 +1,11 @@
 use crate::helpers::create_theme;
+use crate::states::WorkingDir;
 use clap::Args;
 use dialoguer::Input;
 use espresso_common::{PackageName, PackageNameError};
 use miette::IntoDiagnostic;
-use starbase::SystemResult;
-use std::path::{Path, PathBuf};
+use starbase::{system, ExecuteArgs};
+use std::path::PathBuf;
 use std::process;
 
 #[derive(Args, Clone, Debug)]
@@ -25,8 +26,8 @@ pub struct NewArgs {
     pub yes: bool,
 }
 
-#[tracing::instrument(skip_all)]
-pub async fn new(working_dir: &Path, args: &NewArgs) -> SystemResult {
+#[system]
+pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<WorkingDir>) {
     let theme = create_theme();
 
     // Gather information
@@ -97,6 +98,4 @@ pub async fn new(working_dir: &Path, args: &NewArgs) -> SystemResult {
     };
 
     dbg!(&dest, &name, &description, &keywords);
-
-    Ok(())
 }
