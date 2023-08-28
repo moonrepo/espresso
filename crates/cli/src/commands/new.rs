@@ -1,10 +1,15 @@
 use crate::helpers::create_theme;
 use crate::states::WorkingDir;
 use clap::Args;
-use dialoguer::Input;
+use dialoguer::{Confirm, Input};
 use espresso_common::{PackageName, PackageNameError};
+use espresso_manifest::{
+    ManifestDependencies, PartialPackageManifest, PartialPackageManifestMetadata, MANIFEST_NAME,
+};
 use miette::IntoDiagnostic;
 use starbase::{system, ExecuteArgs};
+use starbase_styles::color;
+use starbase_utils::toml;
 use std::path::PathBuf;
 use std::process;
 
@@ -31,17 +36,17 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
     let theme = create_theme();
 
     // Gather information
-    let to = PathBuf::from(if let Some(to) = &args.to {
+    let to = if let Some(to) = &args.to {
         to.to_owned()
     } else if args.yes {
         ".".to_owned()
     } else {
         Input::<String>::with_theme(&theme)
             .with_prompt("Where to?")
-            .with_initial_text(".")
+            .default(".".into())
             .interact_text()
             .into_diagnostic()?
-    });
+    };
 
     let name = if let Some(name) = &args.name {
         name.to_owned()
@@ -90,12 +95,60 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
         input.split(',').map(|k| k.trim().to_owned()).collect()
     };
 
-    // Prepare to create
-    let dest = if to.is_absolute() {
-        to
+    // Check the destination
+    let dest = if to.is_empty() || to == "." {
+        PathBuf::new()
     } else {
-        working_dir.join(to)
+        PathBuf::from(to)
     };
 
-    dbg!(&dest, &name, &description, &keywords);
+    let dest = if dest.is_absolute() {
+        dest
+    } else {
+        working_dir.join(dest)
+    };
+
+    if dest.join(MANIFEST_NAME).exists() {
+        eprintln!("A package already exists at {}", color::path(&dest));
+        process::exit(1);
+    }
+
+    if !Confirm::with_theme(&theme)
+        .with_prompt(format!("Create a package at {}?", color::path(&dest)))
+        .interact()
+        .into_diagnostic()?
+    {
+        return Ok(());
+    }
+
+    // Create the manifest
+    let mut metadata = PartialPackageManifestMetadata {
+        name: Some(name.clone()),
+        ..Default::default()
+    };
+
+    if !description.is_empty() {
+        metadata.description = Some(description);
+    }
+
+    if !keywords.is_empty() {
+        metadata.keywords = Some(keywords);
+    }
+
+    toml::write_file(
+        dest.join(MANIFEST_NAME),
+        &PartialPackageManifest {
+            package: Some(metadata),
+            dependencies: Some(ManifestDependencies::default()),
+            ..Default::default()
+        },
+        true,
+    )?;
+
+    println!();
+    println!(
+        "Created package {} at {}?",
+        color::id(&name),
+        color::path(&dest)
+    );
 }

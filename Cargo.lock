@@ -936,6 +936,7 @@ dependencies = [
  "dialoguer",
  "espresso_common",
  "espresso_compiler",
+ "espresso_manifest",
  "espresso_package",
  "espresso_store",
  "espresso_workspace",
@@ -944,6 +945,7 @@ dependencies = [
  "starbase",
  "starbase_sandbox",
  "starbase_styles",
+ "starbase_utils",
  "tokio",
  "tracing",
 ]
@@ -3201,6 +3203,7 @@ dependencies = [
  "serde_json",
  "starbase_styles",
  "thiserror",
+ "toml",
  "tracing",
  "wax",
 ]

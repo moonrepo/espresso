@@ -12,15 +12,15 @@ pub struct WorkspaceManifestMetadata {
 #[derive(Config, Debug, Eq, PartialEq)]
 #[config(rename_all = "kebab-case")]
 pub struct WorkspaceManifest {
-    /// Dependencies for all packages in the workspace.
-    pub dependencies: ManifestDependencies,
-    pub dev_dependencies: ManifestDependencies,
+    /// Metadata about the workspace.
+    #[setting(nested)]
+    pub workspace: WorkspaceManifestMetadata,
 
     /// Controls how dependencies are installed.
     #[setting(nested)]
     pub install: ManifestInstall,
 
-    /// Metadata about the workspace.
-    #[setting(nested)]
-    pub workspace: WorkspaceManifestMetadata,
+    /// Dependencies for all packages in the workspace.
+    pub dependencies: ManifestDependencies,
+    pub dev_dependencies: ManifestDependencies,
 }
