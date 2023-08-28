@@ -13,5 +13,6 @@
 
 ## Commands
 
+- [`espm init`](./commands/init.md) - Initialize a workspace.
 - [`espm new`](./commands/new.md) - Create a package.
 - [`espm build`](./commands/build.md) - Build a package.

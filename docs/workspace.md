@@ -13,7 +13,13 @@ The root of a workspace is detected using the following rules:
 - An [`esp.toml`](./esp-toml.md#workspace) file with a `[workspace]` section (monorepo).
 - An [`esp.toml`](./esp-toml.md#package) file with a `[package]` section (polyrepo).
 
-## Workspace structure
+## Creating a workspace
+
+A workspace can be initialized using the [`espm init`](./commands/init.md) command.
+
+```shell
+espm init
+```
 
 ### Polyrepo
 
