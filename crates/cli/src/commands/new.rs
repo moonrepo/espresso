@@ -1,3 +1,4 @@
+use crate::exit;
 use crate::helpers::create_theme;
 use crate::states::WorkingDir;
 use clap::Args;
@@ -11,14 +12,13 @@ use starbase::{system, ExecuteArgs};
 use starbase_styles::color;
 use starbase_utils::{fs, toml};
 use std::path::PathBuf;
-use std::process;
 
 #[derive(Args, Clone, Debug)]
 pub struct NewArgs {
     #[arg(long, short = 'd', help = "Description of package.")]
     pub description: Option<String>,
 
-    #[arg(long, short = 'k', help = "Keyword to organize package.")]
+    #[arg(long, short = 'k', help = "List of keywords about the package.")]
     pub keyword: Option<Vec<String>>,
 
     #[arg(long, short = 'n', help = "Name of package.")]
@@ -51,8 +51,11 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
     let name = if let Some(name) = &args.name {
         name.to_owned()
     } else if args.yes {
-        eprintln!("A package name is required with --name when using --yes.");
-        process::exit(1);
+        exit!(
+            "A package name is required with {} when using {}.",
+            color::symbol("--name"),
+            color::symbol("--yes"),
+        );
     } else {
         let input = Input::<String>::with_theme(&theme)
             .with_prompt("Package name?")
@@ -109,14 +112,14 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
     };
 
     if dest.join(MANIFEST_NAME).exists() {
-        eprintln!("A package already exists at {}", color::path(&dest));
-        process::exit(1);
+        exit!("A package already exists at {}", color::path(&dest));
     }
 
-    if !Confirm::with_theme(&theme)
-        .with_prompt(format!("Create a package at {}?", color::path(&dest)))
-        .interact()
-        .into_diagnostic()?
+    if !args.yes
+        && !Confirm::with_theme(&theme)
+            .with_prompt(format!("Create a package at {}?", color::path(&dest)))
+            .interact()
+            .into_diagnostic()?
     {
         return Ok(());
     }
