@@ -1,0 +1,9 @@
+---
+source: crates/cli/tests/new_test.rs
+expression: "read_file(sandbox.path().join(\"out/esp.toml\"))"
+---
+[package]
+name = "namespace/package"
+
+[dependencies]
+

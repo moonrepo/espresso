@@ -1,12 +1,10 @@
 use espresso_workspace::Workspace;
-use starbase::SystemResult;
+use starbase::system;
 
-#[tracing::instrument(skip_all)]
-pub async fn debug(workspace: &Workspace) -> SystemResult {
+#[system]
+pub async fn debug(workspace: ResourceRef<Workspace>) {
     dbg!(workspace);
 
     dbg!("LOAD PACKAGES");
     dbg!(workspace.load_packages()?);
-
-    Ok(())
 }

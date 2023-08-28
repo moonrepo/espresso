@@ -595,6 +595,7 @@ dependencies = [
  "encode_unicode",
  "lazy_static",
  "libc",
+ "unicode-width",
  "windows-sys 0.45.0",
 ]
 
@@ -794,6 +795,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2e66c9d817f1720209181c316d28635c050fa304f9c79e47a520882661b7308"
 
 [[package]]
+name = "dialoguer"
+version = "0.10.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "59c6f2989294b9a498d3ad5491a79c6deb604617378e1cdc4bfc1c1361fe2f87"
+dependencies = [
+ "console",
+ "shell-words",
+]
+
+[[package]]
 name = "diff"
 version = "0.1.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -921,8 +932,11 @@ name = "espresso_cli"
 version = "0.1.0"
 dependencies = [
  "clap 4.4.0",
+ "console",
+ "dialoguer",
  "espresso_common",
  "espresso_compiler",
+ "espresso_manifest",
  "espresso_package",
  "espresso_store",
  "espresso_workspace",
@@ -931,6 +945,7 @@ dependencies = [
  "starbase",
  "starbase_sandbox",
  "starbase_styles",
+ "starbase_utils",
  "tokio",
  "tracing",
 ]
@@ -2931,6 +2946,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "shell-words"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24188a676b6ae68c3b2cb3a01be17fbf7240ce009799bb56d5b1409051e78fde"
+
+[[package]]
 name = "signal-hook-registry"
 version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3076,9 +3097,9 @@ dependencies = [
 
 [[package]]
 name = "starbase"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d50cebb3999d006a422348a983f20d0d0f1b4687d6c13294965aa0aa89b1a46"
+checksum = "7ca15b4743a346890747da0667b653e15aa10b12ea2a1d43fb9f90675cc5f478"
 dependencies = [
  "async-trait",
  "chrono",
@@ -3127,9 +3148,9 @@ dependencies = [
 
 [[package]]
 name = "starbase_macros"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ef480c59ed0d7b02bf3c3328a738370bc2b65f46dd2737342396d0cde9ca403"
+checksum = "5b0219b637f9d69170085dfa7e0ec3ef49f432b2f459e1963b4a46b700ec7080"
 dependencies = [
  "darling 0.20.3",
  "proc-macro2",
@@ -3182,6 +3203,7 @@ dependencies = [
  "serde_json",
  "starbase_styles",
  "thiserror",
+ "toml",
  "tracing",
  "wax",
 ]

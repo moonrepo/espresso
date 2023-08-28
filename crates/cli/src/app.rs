@@ -1,13 +1,14 @@
-use crate::commands::BuildArgs;
-use clap::{Args, Parser, Subcommand};
+use crate::commands::{BuildArgs, NewArgs};
+use clap::{Parser, Subcommand};
 use espresso_common::PackageName;
 use espresso_workspace::SelectQuery;
+use starbase::State;
 
 pub const BIN_NAME: &str = if cfg!(windows) { "espm.exe" } else { "espm" };
 
 static HEADING_FILTER: &str = "Package filtering";
 
-#[derive(Clone, Debug, Args)]
+#[derive(Clone, Debug, State)]
 pub struct GlobalArgs {
     pub filters: Option<Vec<String>>,
     pub packages: Option<Vec<PackageName>>,
@@ -35,9 +36,12 @@ pub enum Commands {
 
     #[command(name = "debug", about = "Debug Espresso instance.", hide = true)]
     Debug,
+
+    #[command(name = "new", about = "Create a new package.")]
+    New(NewArgs),
 }
 
-#[derive(Clone, Debug, Parser)]
+#[derive(Clone, Debug, Parser, State)]
 #[command(
     bin_name = BIN_NAME,
     name = "Espresso",

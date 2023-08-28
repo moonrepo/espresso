@@ -6,12 +6,11 @@ mod helpers;
 mod states;
 mod systems;
 
-use app::CLI;
+use app::{Commands, CLI};
 use clap::Parser;
 use mimalloc::MiMalloc;
 use starbase::tracing::TracingOptions;
 use starbase::{App, MainResult};
-use states::RunningCommand;
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
@@ -34,11 +33,27 @@ async fn main() -> MainResult {
         ..TracingOptions::default()
     });
 
+    let cli = CLI::parse();
+
     let mut app = App::new();
-    app.set_state(RunningCommand(CLI::parse()));
-    app.startup(systems::detect_workspace);
+    app.set_state(cli.global_args());
+    app.set_state(cli.clone());
+    app.startup(systems::set_paths);
+    app.startup(systems::find_workspace);
     app.startup(systems::load_store);
-    app.execute(systems::run_command);
+
+    match cli.command {
+        Commands::Build(args) => {
+            app.execute_with_args(commands::build, args);
+        }
+        Commands::Debug => {
+            app.execute(commands::debug);
+        }
+        Commands::New(args) => {
+            app.execute_with_args(commands::new, args);
+        }
+    };
+
     app.run().await?;
 
     Ok(())

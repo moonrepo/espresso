@@ -26,7 +26,7 @@ pub enum PackageNameError {
     InvalidNamespace,
 
     #[diagnostic(code(package::name::namespace_length))]
-    #[error("Package namespace (left of /) may only be 2-32 characters in length.")]
+    #[error("Package namespace (left of /) must be 2-32 characters in length.")]
     NamespaceLength,
 
     #[diagnostic(code(package::name::invalid_name))]
@@ -34,7 +34,7 @@ pub enum PackageNameError {
     InvalidName,
 
     #[diagnostic(code(package::name::name_length))]
-    #[error("Package name (right of /) may only be 2-32 characters in length.")]
+    #[error("Package name (right of /) must be 2-32 characters in length.")]
     NameLength,
 }
 

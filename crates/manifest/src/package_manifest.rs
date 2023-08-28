@@ -26,19 +26,19 @@ pub struct PackageManifestMetadata {
 #[derive(Config, Debug, Eq, PartialEq)]
 #[config(rename_all = "kebab-case")]
 pub struct PackageManifest {
+    /// Metadata about the package.
+    #[setting(nested)]
+    pub package: PackageManifestMetadata,
+
     /// Controls how a package is built.
     #[setting(nested)]
     pub build: ManifestBuild,
-
-    /// Dependencies for this package.
-    pub dependencies: ManifestDependencies,
-    pub dev_dependencies: ManifestDependencies,
 
     /// Controls how dependencies are installed.
     #[setting(nested)]
     pub install: ManifestInstall,
 
-    /// Metadata about the package.
-    #[setting(nested)]
-    pub package: PackageManifestMetadata,
+    /// Dependencies for this package.
+    pub dependencies: ManifestDependencies,
+    pub dev_dependencies: ManifestDependencies,
 }

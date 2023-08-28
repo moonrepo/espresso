@@ -11,14 +11,18 @@ path = "src/main.rs"
 [dependencies]
 espresso_common = { path = "../common" }
 espresso_compiler = { path = "../compiler" }
+espresso_manifest = { path = "../manifest" }
 espresso_package = { path = "../package" }
 espresso_store = { path = "../store" }
 espresso_workspace = { path = "../workspace" }
 clap = { workspace = true, features = ["derive", "env", "wrap_help"] }
+console = "0.15.7"
+dialoguer = { version = "0.10.4", default-features = false }
 miette = { workspace = true }
 mimalloc = { version = "0.1.38", default-features = false }
 starbase = { workspace = true }
 starbase_styles = { workspace = true }
+starbase_utils = { workspace = true, features = ["toml"] }
 tokio = { workspace = true }
 tracing = { workspace = true }
 
