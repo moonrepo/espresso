@@ -8,7 +8,7 @@ use espresso_manifest::{
     ManifestDependencies, PartialPackageManifest, PartialPackageManifestMetadata, MANIFEST_NAME,
 };
 use miette::IntoDiagnostic;
-use starbase::{system, ExecuteArgs};
+use starbase::{system, SystemResult};
 use starbase_styles::color;
 use starbase_utils::{fs, toml};
 use std::path::PathBuf;
@@ -37,8 +37,7 @@ pub struct NewArgs {
     pub yes: bool,
 }
 
-#[system]
-pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<WorkingDir>) {
+pub async fn internal_new(args: &NewArgs, working_dir: &WorkingDir) -> SystemResult {
     let theme = create_theme();
 
     // Gather information
@@ -165,4 +164,11 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
         color::id(&name),
         color::path(&dest)
     );
+
+    Ok(())
+}
+
+#[system]
+pub async fn new(args: ArgsRef<NewArgs>, working_dir: StateRef<WorkingDir>) {
+    internal_new(args, working_dir).await?;
 }

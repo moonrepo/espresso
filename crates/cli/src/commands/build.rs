@@ -5,7 +5,7 @@ use espresso_common::EsTarget;
 use espresso_compiler::Compiler;
 use espresso_store::Store;
 use espresso_workspace::Workspace;
-use starbase::{system, ExecuteArgs};
+use starbase::system;
 use starbase_styles::color;
 use std::sync::Arc;
 
@@ -24,7 +24,7 @@ pub struct BuildArgs {
 
 #[system]
 pub async fn build(
-    args: StateRef<ExecuteArgs, BuildArgs>,
+    args: ArgsRef<BuildArgs>,
     global_args: StateRef<GlobalArgs>,
     workspace: ResourceRef<Workspace>,
     store: ResourceRef<Store>,

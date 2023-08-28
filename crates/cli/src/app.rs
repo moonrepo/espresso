@@ -37,6 +37,12 @@ pub enum Commands {
     #[command(name = "debug", about = "Debug Espresso instance.", hide = true)]
     Debug,
 
+    #[command(
+        name = "init",
+        about = "Initialize a new Espresso workspace and scaffold necessary files."
+    )]
+    Init(NewArgs),
+
     #[command(name = "new", about = "Create a new package.")]
     New(NewArgs),
 }
