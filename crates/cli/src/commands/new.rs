@@ -101,6 +101,8 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
     // Check the destination
     let dest = if to.is_empty() || to == "." {
         PathBuf::new()
+    } else if to.starts_with("..") {
+        exit!("Destination cannot traverse upwards from the working directory.");
     } else {
         PathBuf::from(to)
     };
@@ -153,7 +155,7 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
 
     println!();
     println!(
-        "Created package {} at {}?",
+        "Created package {} at {}",
         color::id(&name),
         color::path(&dest)
     );
