@@ -1,8 +1,8 @@
-use super::new::{internal_new, NewArgs};
+use super::new::{internal_new, resolve_dest, NewArgs};
 use crate::exit;
 use crate::helpers::create_theme;
 use crate::states::WorkingDir;
-use dialoguer::{Input, MultiSelect, Select};
+use dialoguer::{Confirm, Input, MultiSelect, Select};
 use espresso_lockfile::LOCKFILE_NAME;
 use espresso_manifest::{
     PartialWorkspaceManifest, PartialWorkspaceManifestMetadata, MANIFEST_NAME,
@@ -12,27 +12,27 @@ use relative_path::RelativePathBuf;
 use starbase::system;
 use starbase_styles::color;
 use starbase_utils::{fs, toml};
+use std::env;
 
 #[system]
 pub fn init(args: ArgsRef<NewArgs>, working_dir: StateRef<WorkingDir>) {
     let theme = create_theme();
 
-    if working_dir.join(MANIFEST_NAME).exists() {
-        exit!(
-            "A package or workspace already exists at {}",
-            color::path(&working_dir)
-        );
-    }
-
-    let workspace_type = Select::with_theme(&theme)
-        .with_prompt("What kind of workspace to create?")
-        .items(&[
-            format!("Single package {}", color::muted_light("(polyrepo)")),
-            format!("Multiple packages {}", color::muted_light("(monorepo)")),
-        ])
-        .default(0)
-        .interact()
-        .into_diagnostic()?;
+    let workspace_type = if let Ok(value) = env::var("ESPM_INIT_WORKSPACE") {
+        value.parse().into_diagnostic()?
+    } else if args.yes {
+        0
+    } else {
+        Select::with_theme(&theme)
+            .with_prompt("What kind of workspace to create?")
+            .items(&[
+                format!("Single package {}", color::muted_light("(polyrepo)")),
+                format!("Multiple packages {}", color::muted_light("(monorepo)")),
+            ])
+            .default(0)
+            .interact()
+            .into_diagnostic()?
+    };
 
     // Polyrepo
     if workspace_type == 0 {
@@ -41,16 +41,29 @@ pub fn init(args: ArgsRef<NewArgs>, working_dir: StateRef<WorkingDir>) {
     }
 
     // Monorepo
-    let glob_types = MultiSelect::with_theme(&theme)
-        .with_prompt("How to locate packages?")
-        .items(&["apps/*", "packages/*", "Custom"])
-        .defaults(&[false, true, false])
-        .interact()
-        .into_diagnostic()?;
+    let dest = resolve_dest(args.to.as_deref().unwrap_or("."), &working_dir);
+
+    if dest.join(MANIFEST_NAME).exists() {
+        exit!(
+            "A package or workspace already exists at {}",
+            color::path(&dest)
+        );
+    }
+
+    let glob_types = if args.yes {
+        vec![1]
+    } else {
+        MultiSelect::with_theme(&theme)
+            .with_prompt("How to locate packages?")
+            .items(&["apps/*", "packages/*", "Custom"])
+            .defaults(&[false, true, false])
+            .interact()
+            .into_diagnostic()?
+    };
 
     let mut globs = vec![];
 
-    if glob_types.contains(&2) {
+    if !args.yes && glob_types.contains(&2) {
         let input = Input::<String>::with_theme(&theme)
             .with_prompt("Glob pattern(s)?")
             .interact_text()
@@ -67,16 +80,25 @@ pub fn init(args: ArgsRef<NewArgs>, working_dir: StateRef<WorkingDir>) {
         }
     }
 
+    if !args.yes
+        && !Confirm::with_theme(&theme)
+            .with_prompt(format!("Create workspace at {}?", color::path(&dest)))
+            .interact()
+            .into_diagnostic()?
+    {
+        return Ok(());
+    }
+
     // Create the folders
     for glob in &globs {
         if glob.ends_with("/*") {
-            fs::create_dir_all(working_dir.join(&glob[0..(glob.len() - 2)]))?;
+            fs::create_dir_all(dest.join(&glob[0..(glob.len() - 2)]))?;
         }
     }
 
     // Create the manifest
     toml::write_file(
-        working_dir.join(MANIFEST_NAME),
+        dest.join(MANIFEST_NAME),
         &PartialWorkspaceManifest {
             workspace: Some(PartialWorkspaceManifestMetadata {
                 packages: Some(globs.into_iter().map(RelativePathBuf::from).collect()),
@@ -89,8 +111,5 @@ pub fn init(args: ArgsRef<NewArgs>, working_dir: StateRef<WorkingDir>) {
     fs::write_file(LOCKFILE_NAME, "# Coming soon!")?;
 
     println!();
-    println!(
-        "Created Espresso workspace at {}",
-        color::path(&working_dir)
-    );
+    println!("Created Espresso workspace at {}", color::path(&dest));
 }

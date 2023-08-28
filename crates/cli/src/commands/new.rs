@@ -37,10 +37,26 @@ pub struct NewArgs {
     pub yes: bool,
 }
 
+pub fn resolve_dest(to: &str, working_dir: &WorkingDir) -> PathBuf {
+    let dest = if to.is_empty() || to == "." {
+        PathBuf::new()
+    } else if to.starts_with("..") {
+        exit!("Destination cannot traverse upwards from the working directory.");
+    } else {
+        PathBuf::from(to)
+    };
+
+    if dest.is_absolute() {
+        dest
+    } else {
+        working_dir.join(dest)
+    }
+}
+
 pub async fn internal_new(args: &NewArgs, working_dir: &WorkingDir) -> SystemResult {
     let theme = create_theme();
 
-    // Gather information
+    // Check destination
     let to = if let Some(to) = &args.to {
         to.to_owned()
     } else if args.yes {
@@ -53,6 +69,13 @@ pub async fn internal_new(args: &NewArgs, working_dir: &WorkingDir) -> SystemRes
             .into_diagnostic()?
     };
 
+    let dest = resolve_dest(&to, working_dir);
+
+    if dest.join(MANIFEST_NAME).exists() {
+        exit!("A package already exists at {}", color::path(&dest));
+    }
+
+    // Gather metadata
     let name = if let Some(name) = &args.name {
         name.to_owned()
     } else if args.yes {
@@ -102,25 +125,6 @@ pub async fn internal_new(args: &NewArgs, working_dir: &WorkingDir) -> SystemRes
 
         input.split(',').map(|k| k.trim().to_owned()).collect()
     };
-
-    // Check the destination
-    let dest = if to.is_empty() || to == "." {
-        PathBuf::new()
-    } else if to.starts_with("..") {
-        exit!("Destination cannot traverse upwards from the working directory.");
-    } else {
-        PathBuf::from(to)
-    };
-
-    let dest = if dest.is_absolute() {
-        dest
-    } else {
-        working_dir.join(dest)
-    };
-
-    if dest.join(MANIFEST_NAME).exists() {
-        exit!("A package already exists at {}", color::path(&dest));
-    }
 
     if !args.yes
         && !Confirm::with_theme(&theme)
