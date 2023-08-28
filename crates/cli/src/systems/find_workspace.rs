@@ -9,7 +9,7 @@ pub fn find_workspace(
     working_dir: StateRef<WorkingDir>,
     resources: ResourcesMut,
 ) -> SystemResult {
-    if !matches!(cli.command, Commands::New(_)) {
+    if !matches!(cli.command, Commands::Init(_) | Commands::New(_)) {
         resources.set(Workspace::load_from(working_dir)?);
     }
 }

@@ -92,7 +92,11 @@ pub fn init(args: ArgsRef<NewArgs>, working_dir: StateRef<WorkingDir>) {
     // Create the folders
     for glob in &globs {
         if glob.ends_with("/*") {
-            fs::create_dir_all(dest.join(&glob[0..(glob.len() - 2)]))?;
+            let folder = &glob[0..(glob.len() - 2)];
+
+            if !folder.contains('*') {
+                fs::create_dir_all(dest.join(folder))?;
+            }
         }
     }
 
@@ -108,7 +112,7 @@ pub fn init(args: ArgsRef<NewArgs>, working_dir: StateRef<WorkingDir>) {
         true,
     )?;
 
-    fs::write_file(LOCKFILE_NAME, "# Coming soon!")?;
+    fs::write_file(dest.join(LOCKFILE_NAME), "# Coming soon!")?;
 
     println!();
     println!("Created Espresso workspace at {}", color::path(&dest));
