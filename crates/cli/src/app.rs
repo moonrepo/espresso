@@ -41,7 +41,7 @@ pub enum Commands {
     New(NewArgs),
 }
 
-#[derive(Clone, Debug, Parser)]
+#[derive(Clone, Debug, Parser, State)]
 #[command(
     bin_name = BIN_NAME,
     name = "Espresso",

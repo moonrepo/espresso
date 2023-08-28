@@ -1,11 +1,11 @@
-use crate::app::Commands;
-use crate::states::{RunningCommand, WorkingDir};
+use crate::app::{Commands, CLI};
+use crate::states::WorkingDir;
 use espresso_workspace::Workspace;
 use starbase::system;
 
 #[system]
 pub fn find_workspace(
-    cli: StateRef<RunningCommand>,
+    cli: StateRef<CLI>,
     working_dir: StateRef<WorkingDir>,
     resources: ResourcesMut,
 ) -> SystemResult {

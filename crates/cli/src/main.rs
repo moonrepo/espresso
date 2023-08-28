@@ -11,7 +11,6 @@ use clap::Parser;
 use mimalloc::MiMalloc;
 use starbase::tracing::TracingOptions;
 use starbase::{App, MainResult};
-use states::RunningCommand;
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
@@ -38,7 +37,7 @@ async fn main() -> MainResult {
 
     let mut app = App::new();
     app.set_state(cli_args.global_args());
-    app.set_state(RunningCommand(cli_args.clone()));
+    app.set_state(cli_args.clone());
     app.startup(systems::set_paths);
     app.startup(systems::find_workspace);
     app.startup(systems::load_store);
