@@ -24,10 +24,16 @@ pub struct NewArgs {
     #[arg(long, short = 'n', help = "Name of package.")]
     pub name: Option<PackageName>,
 
-    #[arg(long, help = "Path to create the package in.")]
+    #[arg(
+        long,
+        help = "Path to create the package in, relative from working directory."
+    )]
     pub to: Option<String>,
 
-    #[arg(long, help = "Skip all prompts and use default values.")]
+    #[arg(
+        long,
+        help = "Skip all interactive prompts and use default or provided values"
+    )]
     pub yes: bool,
 }
 

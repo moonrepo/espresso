@@ -13,4 +13,5 @@
 
 ## Commands
 
-- [`espm build`](./commands/build.md) - Builds a package.
+- [`espm new`](./commands/new.md) - Create a package.
+- [`espm build`](./commands/build.md) - Build a package.

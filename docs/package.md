@@ -81,7 +81,15 @@ in [TOML](https://toml.io/en/) and configures metadata about the package, like i
 description, as well as dependencies (other packages) it requires, and also denotes the root of the
 package.
 
-Begin by creating the `esp.toml` file in your project, and insert the following initial content:
+To easily create a package, run the [`espm new`](./commands/new.md) command and answer all the
+prompts.
+
+```shell
+espm new
+```
+
+Otherwise, if you'd prefer to create a package manually, begin by creating the `esp.toml` file in
+your project, and insert the following initial content:
 
 ```toml
 [package]
