@@ -28,13 +28,13 @@ impl GlobalArgs {
 
 #[derive(Clone, Debug, Subcommand)]
 pub enum Commands {
-    #[command(name = "debug", about = "Debug Espresso instance.", hide = true)]
+    #[command(name = "debug", about = "Debug espresso instance.", hide = true)]
     Debug,
 
     #[command(
         name = "init",
         about = "Initialize a new workspace.",
-        long_about = "Initialize a new Espresso workspace and scaffold necessary files."
+        long_about = "Initialize a new espresso workspace and scaffold necessary files."
     )]
     Init(NewArgs),
 
@@ -60,7 +60,7 @@ pub enum Commands {
 #[derive(Clone, Debug, Parser, State)]
 #[command(
     bin_name = BIN_NAME,
-    name = "Espresso",
+    name = "espresso",
     about = "Next-generation JavaScript package manager.",
     version,
     disable_colored_help = true,

@@ -14,7 +14,7 @@ espm new --name namespace/package --yes
 ## Options
 
 - `--to` - Destination to create the package in, relative from the current working directory.
-  Defaults to ".".
+  Defaults to `.`.
 - `--name`, `-n` - Name of package.
 - `--description`, `-d` - Description of package.
 - `--keyword`, `-k` - List of keywords about the package. Can be provided multiple times.

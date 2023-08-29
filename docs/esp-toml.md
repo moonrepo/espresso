@@ -27,7 +27,7 @@ packages = ["apps/*", "packages/*"]
 Defines package metadata and supports the following fields:
 
 - `name` (string) - [Name of the package](./package.md#name-requirements), including namespace.
-  (REQUIRED).
+  (REQUIRED)
 - `version` (string) - Current version.
 - `description` (string) - Short description of the package.
 - `keywords` (string[]) - List of keywords.
@@ -41,7 +41,7 @@ Defines package metadata and supports the following fields:
 [package]
 name = "espresso/cli"
 version = "1.2.3"
-description = "Espresso package manager."
+description = "espresso package manager."
 license = "MIT"
 ```
 

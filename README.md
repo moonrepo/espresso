@@ -1,6 +1,6 @@
-# Espresso
+# espresso
 
-Espresso is a next-generation package registry and management system for JavaScript, that is not
+espresso is a next-generation package registry and management system for JavaScript, that is not
 coupled to the current Node.js module and npm systems, and instead is a new paradigm to move the
 JavaScript ecosystem forward.
 
@@ -16,7 +16,7 @@ ecosystem is in a state of chaos. This is further exacerbated By TypeScript, its
 compiler options, the `.cts` (`.d.cts`) and `.mts` (`.d.mts`) file extensions.
 
 The overhead of publishing a package is far too great, and there's no solution in sight. Instead of
-trying to "fix" the state of things, Espresso is a complete reimagining of how everything can work
+trying to "fix" the state of things, espresso is a complete reimagining of how everything can work
 in a modern world.
 
 ### As a package author
@@ -37,9 +37,9 @@ packages are over.
 target = "es2016"
 ```
 
-## Why the name Espresso?
+## Why the name espresso?
 
-Espresso is currently a codename until I can think of something better, but there are a few reasons
+espresso is currently a codename until I can think of something better, but there are a few reasons
 for it. The current binary is named `espm`, which stands for EcmaScript Package Manager, and since
 the first 3 letters align with espresso, and JavaScript is already a coffee themed name, it made
 sense!

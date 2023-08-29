@@ -8,8 +8,8 @@
 
 ## Configs
 
-- [`esp.toml`](./esp-toml.md) - Manifest file.
-- [`espm.lock`](./espm-lock.md) - Lockfile.
+- [`esp.toml`](./esp-toml.md) - Package manifest file.
+- [`espm.lock`](./espm-lock.md) - Dependencies lockfile.
 
 ## Commands
 

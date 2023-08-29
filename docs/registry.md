@@ -4,7 +4,7 @@ The registry is an upstream service (the server) that stores records of all avai
 their versions, supported platforms and module formats, and stores their compiled tarballs (in cloud
 storage).
 
-With that said, Espresso will have a completely separate registry than npm, that works quite
+With that said, espresso will have a completely separate registry than npm, that works quite
 differently. This is required to solve an array of problems with the current ecosystem, and these 2
 registries are not backwards compatible.
 
@@ -49,7 +49,7 @@ Why is this necessary? A few reasons:
 
 ## Supported module formats
 
-In Espresso, only ESM source code is allowed, and only ESM compiled code will be produced. We
+In espresso, only ESM source code is allowed, and only ESM compiled code will be produced. We
 require that all packages are written in native/strict ESM, and during the publishing process, we'll
 run some verification checks to ensure that the package is valid ESM.
 
@@ -65,7 +65,7 @@ And then check the source code itself.
 
 ## Build-on-demand
 
-The biggest selling point of the Espresso registry is that packages are built on demand when
+The biggest selling point of the espresso registry is that packages are built on demand when
 requested (being downloaded as a dependency). The registry is basically a build-as-a-service (BaaS)
 platform.
 

@@ -115,5 +115,5 @@ pub fn init(args: ArgsRef<NewArgs>, working_dir: StateRef<WorkingDir>) {
     fs::write_file(dest.join(LOCKFILE_NAME), "# Coming soon!")?;
 
     println!();
-    println!("Created Espresso workspace at {}", color::path(&dest));
+    println!("Created espresso workspace at {}", color::path(&dest));
 }
