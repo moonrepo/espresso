@@ -1,8 +1,11 @@
 [package]
 name = "espresso_cli"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
 license = "MIT"
+description = "Next-generation JavaScript package manager."
+homepage = "https://espresso.build"
+repository = "https://github.com/moonrepo/espresso"
 
 [[bin]]
 name = "espm"
