@@ -6,7 +6,8 @@ use starbase::State;
 
 pub const BIN_NAME: &str = if cfg!(windows) { "espm.exe" } else { "espm" };
 
-static HEADING_FILTER: &str = "Package filtering";
+static HEADING_FILTER: &str = "Package selection";
+static HEADING_PKG_MANAGEMENT: &str = "Package management";
 
 #[derive(Clone, Debug, State)]
 pub struct GlobalArgs {
@@ -27,25 +28,40 @@ impl GlobalArgs {
 
 #[derive(Clone, Debug, Subcommand)]
 pub enum Commands {
+    #[command(name = "debug", about = "Debug espresso instance.", hide = true)]
+    Debug,
+
     #[command(
+        name = "init",
+        about = "Initialize a new workspace.",
+        long_about = "Initialize a new espresso workspace and scaffold necessary files."
+    )]
+    Init(NewArgs),
+
+    // PACKAGE MANAGEMENT
+    #[command(
+        alias = "b",
         name = "build",
         about = "Build a package.",
-        long_about = "Build a package by transforming source files (from the package's `src` directory) to the `.espm/<target>` output directory."
+        long_about = "Build a package by transforming source files (from the package's `src` directory) to the `.espm/<target>` output directory.",
+        next_help_heading = HEADING_PKG_MANAGEMENT,
     )]
     Build(BuildArgs),
 
-    #[command(name = "debug", about = "Debug Espresso instance.", hide = true)]
-    Debug,
-
-    #[command(name = "new", about = "Create a new package.")]
+    #[command(
+        alias = "n",
+        name = "new",
+        about = "Create a new package.",
+        next_help_heading = HEADING_PKG_MANAGEMENT,
+    )]
     New(NewArgs),
 }
 
 #[derive(Clone, Debug, Parser, State)]
 #[command(
     bin_name = BIN_NAME,
-    name = "Espresso",
-    about = "Next-generation JavaScript package and dependency manager.",
+    name = "espresso",
+    about = "Next-generation JavaScript package manager.",
     version,
     disable_colored_help = true,
     disable_help_subcommand = true,

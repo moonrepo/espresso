@@ -49,6 +49,9 @@ async fn main() -> MainResult {
         Commands::Debug => {
             app.execute(commands::debug);
         }
+        Commands::Init(args) => {
+            app.execute_with_args(commands::init, args);
+        }
         Commands::New(args) => {
             app.execute_with_args(commands::new, args);
         }

@@ -1,0 +1,7 @@
+---
+source: crates/cli/tests/init_test.rs
+expression: read_file(sandbox.path().join(MANIFEST_NAME))
+---
+[workspace]
+packages = ["packages/*"]
+

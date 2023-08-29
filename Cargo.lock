@@ -936,12 +936,14 @@ dependencies = [
  "dialoguer",
  "espresso_common",
  "espresso_compiler",
+ "espresso_lockfile",
  "espresso_manifest",
  "espresso_package",
  "espresso_store",
  "espresso_workspace",
  "miette 5.10.0",
  "mimalloc",
+ "relative-path",
  "starbase",
  "starbase_sandbox",
  "starbase_styles",
@@ -3097,9 +3099,9 @@ dependencies = [
 
 [[package]]
 name = "starbase"
-version = "0.2.4"
+version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ca15b4743a346890747da0667b653e15aa10b12ea2a1d43fb9f90675cc5f478"
+checksum = "328b77f92b09f8788a894d063cefd3f7876f0bef776baec6946bdd2e75f24117"
 dependencies = [
  "async-trait",
  "chrono",
@@ -3148,9 +3150,9 @@ dependencies = [
 
 [[package]]
 name = "starbase_macros"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b0219b637f9d69170085dfa7e0ec3ef49f432b2f459e1963b4a46b700ec7080"
+checksum = "cd2a77f76022474557803637dbefe72e38fa196564e9a1daf3c695c06b1ee222"
 dependencies = [
  "darling 0.20.3",
  "proc-macro2",

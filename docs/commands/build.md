@@ -69,7 +69,7 @@ package/.espm/es2020/
 └── esp.toml
 ```
 
-## Sources
+## Source types
 
 ### JavaScript
 

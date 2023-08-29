@@ -8,7 +8,7 @@ use espresso_manifest::{
     ManifestDependencies, PartialPackageManifest, PartialPackageManifestMetadata, MANIFEST_NAME,
 };
 use miette::IntoDiagnostic;
-use starbase::{system, ExecuteArgs};
+use starbase::{system, SystemResult};
 use starbase_styles::color;
 use starbase_utils::{fs, toml};
 use std::path::PathBuf;
@@ -37,11 +37,26 @@ pub struct NewArgs {
     pub yes: bool,
 }
 
-#[system]
-pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<WorkingDir>) {
+pub fn resolve_dest(to: &str, working_dir: &WorkingDir) -> PathBuf {
+    let dest = if to.is_empty() || to == "." {
+        PathBuf::new()
+    } else if to.starts_with("..") {
+        exit!("Destination cannot traverse upwards from the working directory.");
+    } else {
+        PathBuf::from(to)
+    };
+
+    if dest.is_absolute() {
+        dest
+    } else {
+        working_dir.join(dest)
+    }
+}
+
+pub async fn internal_new(args: &NewArgs, working_dir: &WorkingDir) -> SystemResult {
     let theme = create_theme();
 
-    // Gather information
+    // Check destination
     let to = if let Some(to) = &args.to {
         to.to_owned()
     } else if args.yes {
@@ -54,6 +69,13 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
             .into_diagnostic()?
     };
 
+    let dest = resolve_dest(&to, working_dir);
+
+    if dest.join(MANIFEST_NAME).exists() {
+        exit!("A package already exists at {}", color::path(&dest));
+    }
+
+    // Gather metadata
     let name = if let Some(name) = &args.name {
         name.to_owned()
     } else if args.yes {
@@ -104,25 +126,6 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
         input.split(',').map(|k| k.trim().to_owned()).collect()
     };
 
-    // Check the destination
-    let dest = if to.is_empty() || to == "." {
-        PathBuf::new()
-    } else if to.starts_with("..") {
-        exit!("Destination cannot traverse upwards from the working directory.");
-    } else {
-        PathBuf::from(to)
-    };
-
-    let dest = if dest.is_absolute() {
-        dest
-    } else {
-        working_dir.join(dest)
-    };
-
-    if dest.join(MANIFEST_NAME).exists() {
-        exit!("A package already exists at {}", color::path(&dest));
-    }
-
     if !args.yes
         && !Confirm::with_theme(&theme)
             .with_prompt(format!("Create a package at {}?", color::path(&dest)))
@@ -165,4 +168,11 @@ pub async fn new(args: StateRef<ExecuteArgs, NewArgs>, working_dir: StateRef<Wor
         color::id(&name),
         color::path(&dest)
     );
+
+    Ok(())
+}
+
+#[system]
+pub async fn new(args: ArgsRef<NewArgs>, working_dir: StateRef<WorkingDir>) {
+    internal_new(args, working_dir).await?;
 }

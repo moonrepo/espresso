@@ -8,10 +8,11 @@
 
 ## Configs
 
-- [`esp.toml`](./esp-toml.md) - Manifest file.
-- [`espm.lock`](./espm-lock.md) - Lockfile.
+- [`esp.toml`](./esp-toml.md) - Package manifest file.
+- [`espm.lock`](./espm-lock.md) - Dependencies lockfile.
 
 ## Commands
 
+- [`espm init`](./commands/init.md) - Initialize a workspace.
 - [`espm new`](./commands/new.md) - Create a package.
 - [`espm build`](./commands/build.md) - Build a package.

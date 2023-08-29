@@ -11,6 +11,7 @@ path = "src/main.rs"
 [dependencies]
 espresso_common = { path = "../common" }
 espresso_compiler = { path = "../compiler" }
+espresso_lockfile = { path = "../lockfile" }
 espresso_manifest = { path = "../manifest" }
 espresso_package = { path = "../package" }
 espresso_store = { path = "../store" }
@@ -20,6 +21,7 @@ console = "0.15.7"
 dialoguer = { version = "0.10.4", default-features = false }
 miette = { workspace = true }
 mimalloc = { version = "0.1.38", default-features = false }
+relative-path = { workspace = true }
 starbase = { workspace = true }
 starbase_styles = { workspace = true }
 starbase_utils = { workspace = true, features = ["toml"] }
