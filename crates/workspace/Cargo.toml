@@ -1,8 +1,9 @@
 [package]
 name = "espresso_workspace"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
 license = "MIT"
+publish = false
 
 [dependencies]
 espresso_common = { path = "../common" }

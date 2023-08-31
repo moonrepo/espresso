@@ -954,7 +954,7 @@ dependencies = [
 
 [[package]]
 name = "espresso_common"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "clap 4.4.0",
  "miette 5.10.0",
@@ -969,7 +969,7 @@ dependencies = [
 
 [[package]]
 name = "espresso_compiler"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "anyhow",
  "cached",
@@ -995,11 +995,11 @@ dependencies = [
 
 [[package]]
 name = "espresso_lockfile"
-version = "0.1.0"
+version = "0.0.1"
 
 [[package]]
 name = "espresso_manifest"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "espresso_common",
  "miette 5.10.0",
@@ -1016,7 +1016,7 @@ dependencies = [
 
 [[package]]
 name = "espresso_package"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "espresso_manifest",
  "miette 5.10.0",
@@ -1030,7 +1030,7 @@ dependencies = [
 
 [[package]]
 name = "espresso_store"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "espresso_common",
  "miette 5.10.0",
@@ -1046,7 +1046,7 @@ dependencies = [
 
 [[package]]
 name = "espresso_tsconfig"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "relative-path",
  "schematic",
@@ -1055,7 +1055,7 @@ dependencies = [
 
 [[package]]
 name = "espresso_workspace"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "espresso_common",
  "espresso_lockfile",
