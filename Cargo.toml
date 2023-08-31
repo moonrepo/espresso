@@ -4,7 +4,7 @@ members = ["crates/*"]
 
 [workspace.dependencies]
 cached = "0.44.0"
-clap = { version = "4.4.0", features = ["derive"] }
+clap = { version = "4.4.2", features = ["derive"] }
 miette = "5.10.0"
 once_cell = "1.18.0"
 once_map = "0.4.8"
@@ -13,7 +13,7 @@ relative-path = { version = "1.9.0", features = ["serde"] }
 reqwest = { version = "0.11.20", default-features = false, features = [
 	"rustls-tls",
 ] }
-schematic = { version = "0.11.4", default-features = false, features = [
+schematic = { version = "0.11.5", default-features = false, features = [
 	"schema",
 	"toml",
 	"type_relative_path",
@@ -34,16 +34,19 @@ starbase_utils = { version = "0.2.20", default-features = false, features = [
 thiserror = "1.0.47"
 tokio = { version = "1.32.0", features = ["full", "tracing"] }
 tracing = "0.1.37"
-url = { version = "2.4.0", features = ["serde"] }
+url = { version = "2.4.1", features = ["serde"] }
 
 # Config for 'cargo dist'
 [workspace.metadata.dist]
+# Whether to consider the binaries in a package for distribution (defaults true)
+dist = true
 # The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.1.0"
+cargo-dist-version = "0.2.0"
 # CI backends to support (see 'cargo dist generate-ci')
 ci = ["github"]
 # The installers to generate for each app
 installers = ["shell", "powershell"]
+# Path that installers should place binaries in
 install-path = "~/.espresso/bin"
 # Target platforms to build apps for (Rust target-triple syntax)
 targets = [

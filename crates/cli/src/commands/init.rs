@@ -41,7 +41,7 @@ pub fn init(args: ArgsRef<NewArgs>, working_dir: StateRef<WorkingDir>) {
     }
 
     // Monorepo
-    let dest = resolve_dest(args.to.as_deref().unwrap_or("."), &working_dir);
+    let dest = resolve_dest(args.to.as_deref().unwrap_or("."), working_dir);
 
     if dest.join(MANIFEST_NAME).exists() {
         exit!(
