@@ -1,5 +1,5 @@
 use crate::{build_setting::*, common_settings::*, install_setting::*};
-use espresso_common::{LicenseType, PackageName, Version};
+use espresso_common::{Category, LicenseType, PackageName, Version};
 use schematic::{validate, Config};
 use url::Url;
 
@@ -8,15 +8,24 @@ use url::Url;
 pub struct PackageManifestMetadata {
     #[setting(validate = validate::not_empty)]
     pub name: PackageName,
+
     pub version: Option<Version>,
 
     pub description: String,
+
+    #[setting(validate = validate::max_length(5))]
     pub keywords: Vec<String>,
+
     pub license: Option<LicenseType>,
+
+    #[setting(validate = validate::max_length(5))]
+    pub categories: Vec<Category>,
 
     #[setting(validate = validate::url_secure)]
     pub repository: Option<Url>,
+
     pub homepage: Option<Url>,
+
     pub documentation: Option<Url>,
 
     #[setting(default = true)]
