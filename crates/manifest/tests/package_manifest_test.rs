@@ -281,6 +281,22 @@ publish = false
         }
 
         #[test]
+        #[should_panic(expected = "length is greater than 5")]
+        fn errors_too_many_keywords() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                MANIFEST_NAME,
+                r#"
+[package]
+name = "ns/pkg"
+keywords = ["a", "b", "c", "d", "e", "f"]
+"#,
+            );
+
+            ManifestLoader::load_package(sandbox.path()).unwrap();
+        }
+
+        #[test]
         fn parses_license() {
             let sandbox = create_empty_sandbox();
             sandbox.create_file(
@@ -474,6 +490,46 @@ documentation = "http://espm.io/docs"
 [package]
 name = "ns/pkg"
 documentation = "invalid/url"
+"#,
+            );
+
+            ManifestLoader::load_package(sandbox.path()).unwrap();
+        }
+
+        #[test]
+        fn parses_categories() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                MANIFEST_NAME,
+                r#"
+[package]
+name = "ns/pkg"
+categories = ["async", "file-system", "lint-rules"]
+"#,
+            );
+
+            let manifest = ManifestLoader::load_package(sandbox.path()).unwrap();
+
+            assert_eq!(
+                manifest.package.categories,
+                vec![
+                    Category::Asynchronous,
+                    Category::FileSystem,
+                    Category::LintRules
+                ]
+            );
+        }
+
+        #[test]
+        #[should_panic(expected = "length is greater than 5")]
+        fn errors_too_many_categories() {
+            let sandbox = create_empty_sandbox();
+            sandbox.create_file(
+                MANIFEST_NAME,
+                r#"
+[package]
+name = "ns/pkg"
+categories = ["async", "file-system", "lint-rules", "ci", "cd", "application-framework"]
 "#,
             );
 

@@ -6,59 +6,73 @@ derive_enum!(
     #[derive(ConfigEnum)]
     pub enum Category {
         // General categories
+        #[serde(alias = "a11y")]
         Accessibility,
         Algorithm,
         Architecture,
-        #[variant(alias = "async")]
+        #[serde(alias = "async")]
         Asynchronous,
         Authentication,
         Authorization,
+        Automation,
+        Blockchain,
         Caching,
-        #[variant(alias = "cli")]
+        #[serde(alias = "cli")]
         CommandLineInterface,
         CommandLineUtilities,
         Compiler,
         Compression,
         Concurrency,
         Configuration,
-        #[variant(alias = "ci")]
+        #[serde(alias = "ci")]
         ContinuousIntegration,
-        #[variant(alias = "cd")]
+        #[serde(alias = "cd")]
         ContinuousDeployment,
+        #[serde(alias = "cms")]
+        ContentManagementSystem,
+        Crypto,
         Cryptography,
         Database,
         DataStructure,
         DateTime,
         Debugging,
-        #[variant(alias = "devx")]
+        #[serde(alias = "devx")]
         DeveloperExperience,
         DevelopmentTool,
         Encoding,
         FileSystem,
+        Finance,
         Gaming,
         Graphics,
-        #[variant(alias = "gui")]
+        #[serde(alias = "gui")]
         GraphicalInterface,
         InternalTool,
-        #[variant(alias = "i18n")]
+        #[serde(alias = "i18n")]
         Internationalization,
-        #[variant(alias = "l10n")]
+        #[serde(alias = "l10n")]
         Localization,
         Logging,
         Mathematics,
-        Media,
+        MediaProcessing,
         MediaAudio,
         MediaImage,
         MediaVideo,
-        Network,
+        Mobile,
+        Networking,
         Os,
+        Parser,
         Profiling,
+        Publishing,
+        Rendering,
+        Security,
+        Social,
         TemplateEngine,
         Testing,
         TestingUtilities,
-        #[variant(alias = "ux")]
+        TextProcessing,
+        #[serde(alias = "ux")]
         UserExperience,
-        #[variant(alias = "ui")]
+        #[serde(alias = "ui")]
         UserInterface,
         Virtualization,
         Visualization,
@@ -68,23 +82,32 @@ derive_enum!(
         // Frontend specific
         ApplicationFramework,
         Bundler,
+        ClientFramework,
+        CloudPlatform,
         CodeFormatter,
         CodeGenerator,
         ComponentLibrary,
+        CssFramework,
+        CssInJs,
+        DependencyGraph,
         Deployment,
         DesignSystem,
         EditorExtension,
         Environment,
         Linter,
-        LintRule,
+        LintRules,
         Plugin,
         Primitives,
         Reactivity,
+        ServerFramework,
+        #[serde(alias = "ssr")]
+        ServerSideRenderer,
+        #[serde(alias = "ssg")]
+        StaticSiteGenerator,
         Styles,
         Theme,
         TestRunner,
         TypeChecker,
         TypeUtilities,
-        ViewFramework,
     }
 );
