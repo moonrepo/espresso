@@ -40,6 +40,9 @@ derive_enum!(
         DeveloperExperience,
         DevelopmentTool,
         Encoding,
+        #[serde(alias = "e2e")]
+        EndToEnd,
+        ErrorHandling,
         FileSystem,
         Finance,
         Gaming,
@@ -96,6 +99,8 @@ derive_enum!(
         Environment,
         Linter,
         LintRules,
+        MonorepoTool,
+        MonorepoUtilities,
         Plugin,
         Primitives,
         Reactivity,
@@ -105,8 +110,11 @@ derive_enum!(
         #[serde(alias = "ssg")]
         StaticSiteGenerator,
         Styles,
+        StyleGuide,
+        TaskRunner,
         Theme,
         TestRunner,
+        Toolchain,
         TypeChecker,
         TypeUtilities,
     }
