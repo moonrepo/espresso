@@ -71,14 +71,15 @@ impl Store {
 
         drop(locks);
 
-        let _ = entry.lock().await;
+        let _entry_lock = entry.lock().await;
 
         // After we've acquired the lock, we can check if the item already
         // exists in the store. If we do this before the lock, other processes would
         // return true while the archive is being unpacked, resulting in breakages!
         let output_dir = self.packages_dir.join(item.to_file_path());
+        let _fs_lock = fs::lock_directory(&output_dir)?;
 
-        if output_dir.exists() {
+        if output_dir.exists() && !output_dir.join(".lock").exists() {
             return Ok(output_dir);
         }
 
@@ -160,7 +161,7 @@ impl Store {
     ) -> miette::Result<PathBuf> {
         let output_dir = self.packages_dir.join(item.to_file_path());
 
-        if output_dir.exists() {
+        if output_dir.exists() && !output_dir.join(".lock").exists() {
             debug!(
                 item = item.get_label(),
                 output_dir = ?output_dir,
