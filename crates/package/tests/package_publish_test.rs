@@ -76,10 +76,19 @@ mod package_publish {
     }
 
     #[test]
-    #[should_panic(expected = "a valid git repository is required")]
+    #[should_panic(expected = "a Git repository URL is required")]
     fn errors_if_no_repository() {
         let mut package = create_package();
         package.manifest.package.repository = None;
+
+        package.validate_for_publish().unwrap()
+    }
+
+    #[test]
+    #[should_panic(expected = "not a valid Git repository")]
+    fn errors_if_not_a_git_repository() {
+        let mut package = create_package();
+        package.manifest.package.repository = Some("https://moonrepo.dev".try_into().unwrap());
 
         package.validate_for_publish().unwrap()
     }

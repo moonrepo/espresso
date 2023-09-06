@@ -6,6 +6,7 @@ use relative_path::RelativePathBuf;
 use schematic::{Path as SettingPath, ValidateError, ValidateErrorType, ValidatorError};
 use starbase_utils::{fs, glob};
 use std::path::{Path, PathBuf};
+use std::process::Command;
 use tracing::{debug, trace};
 
 #[derive(Debug, Default)]
@@ -201,10 +202,24 @@ impl Package {
             });
         }
 
-        if self.manifest.package.repository.is_none() {
+        if let Some(url) = &self.manifest.package.repository {
+            let output = Command::new("git")
+                .arg("ls-remote")
+                .arg("--exit-code")
+                .arg("--heads")
+                .arg(url.to_string())
+                .output();
+
+            if output.is_err() || output.is_ok_and(|o| !o.status.success()) {
+                errors.push(ValidateErrorType::Setting {
+                    path: package_path.join_key("repository"),
+                    error: ValidateError::new("not a valid Git repository"),
+                });
+            }
+        } else if self.manifest.package.repository.is_none() {
             errors.push(ValidateErrorType::Setting {
                 path: package_path.join_key("repository"),
-                error: ValidateError::new("a valid git repository is required"),
+                error: ValidateError::new("a Git repository URL is required"),
             });
         }
 
