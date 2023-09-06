@@ -3,11 +3,12 @@ use crate::source_files::SourceFiles;
 use espresso_manifest::{ManifestLoader, PackageManifest};
 use miette::IntoDiagnostic;
 use relative_path::RelativePathBuf;
+use schematic::{Path as SettingPath, ValidateError, ValidateErrorType, ValidatorError};
 use starbase_utils::{fs, glob};
 use std::path::{Path, PathBuf};
 use tracing::{debug, trace};
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Package {
     pub manifest: PackageManifest,
     pub root: PathBuf,
@@ -159,6 +160,65 @@ impl Package {
 
     pub fn locate_readme(&self) -> Option<PathBuf> {
         self.locate_file_in_root(&["README", "ABOUT"])
+    }
+
+    pub fn validate_for_publish(&self) -> miette::Result<()> {
+        let mut errors = vec![];
+        let package_path = SettingPath::default().join_key("package");
+
+        if !self.manifest.package.publish {
+            errors.push(ValidateErrorType::Setting {
+                path: package_path.join_key("publish"),
+                error: ValidateError::new("this package cannot be published"),
+            });
+        }
+
+        if self.manifest.package.version.is_none() {
+            errors.push(ValidateErrorType::Setting {
+                path: package_path.join_key("version"),
+                error: ValidateError::new("a semantic version is required"),
+            });
+        }
+
+        if self.manifest.package.description.is_empty() {
+            errors.push(ValidateErrorType::Setting {
+                path: package_path.join_key("description"),
+                error: ValidateError::new("a description is required"),
+            });
+        }
+
+        if self.manifest.package.license.is_none() {
+            errors.push(ValidateErrorType::Setting {
+                path: package_path.join_key("license"),
+                error: ValidateError::new("a license (in SPDX format) is required"),
+            });
+        }
+
+        if self.manifest.package.categories.is_empty() {
+            errors.push(ValidateErrorType::Setting {
+                path: package_path.join_key("categories"),
+                error: ValidateError::new("at least 1 category is required"),
+            });
+        }
+
+        if self.manifest.package.repository.is_none() {
+            errors.push(ValidateErrorType::Setting {
+                path: package_path.join_key("repository"),
+                error: ValidateError::new("a valid git repository is required"),
+            });
+        }
+
+        if !errors.is_empty() {
+            return Err(PackageError::InvalidForPublish {
+                error: ValidatorError {
+                    path: SettingPath::default(),
+                    errors,
+                },
+            }
+            .into());
+        }
+
+        Ok(())
     }
 
     fn locate_file_in_root(&self, lookups: &[&str]) -> Option<PathBuf> {

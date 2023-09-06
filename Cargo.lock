@@ -1017,9 +1017,11 @@ dependencies = [
 name = "espresso_package"
 version = "0.1.0"
 dependencies = [
+ "espresso_common",
  "espresso_manifest",
  "miette 5.10.0",
  "relative-path",
+ "schematic",
  "starbase_sandbox",
  "starbase_styles",
  "starbase_utils",

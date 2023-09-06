@@ -1,10 +1,18 @@
 use miette::Diagnostic;
+use schematic::ValidatorError;
 use starbase_styles::{Style, Stylize};
 use std::path::PathBuf;
 use thiserror::Error;
 
 #[derive(Debug, Diagnostic, Error)]
 pub enum PackageError {
+    #[diagnostic(code(package::publish::invalid))]
+    #[error("Unable to publish package, invalid settings.")]
+    InvalidForPublish {
+        #[source]
+        error: ValidatorError,
+    },
+
     #[diagnostic(code(package::missing))]
     #[error(
         "No package was found at {}.",
