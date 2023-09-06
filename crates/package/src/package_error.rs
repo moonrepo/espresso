@@ -1,3 +1,4 @@
+use espresso_manifest::MANIFEST_NAME;
 use miette::Diagnostic;
 use schematic::ValidatorError;
 use starbase_styles::{Style, Stylize};
@@ -7,7 +8,7 @@ use thiserror::Error;
 #[derive(Debug, Diagnostic, Error)]
 pub enum PackageError {
     #[diagnostic(code(package::publish::invalid))]
-    #[error("Unable to publish package, invalid settings.")]
+    #[error("Unable to publish package, invalid settings in {}.", MANIFEST_NAME.style(Style::File))]
     InvalidForPublish {
         #[source]
         error: ValidatorError,
