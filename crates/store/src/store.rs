@@ -55,13 +55,13 @@ impl Store {
     pub async fn store_item(&self, url: &str, item: impl StorageItem) -> miette::Result<PathBuf> {
         let output_dir = self.packages_dir.join(item.to_file_path());
 
-        if output_dir.exists() && !output_dir.join(".lock").exists() {
+        if output_dir.exists() && !fs::is_dir_locked(&output_dir) {
             return Ok(output_dir);
         }
 
         // Create a lock for this item, so that we avoid multiple processes
         // all attempting to download and unpack the same archive!
-        let _dir_lock = fs::lock_directory(&output_dir)?;
+        let _dir_lock = fs::lock_directory(&output_dir).await?;
 
         let result = self
             .unpack_archive(&self.download_archive(url, &item).await?, &item)
