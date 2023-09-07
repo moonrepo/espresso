@@ -161,7 +161,7 @@ impl Store {
     ) -> miette::Result<PathBuf> {
         let output_dir = self.packages_dir.join(item.to_file_path());
 
-        if output_dir.exists() && !output_dir.join(".lock").exists() {
+        if output_dir.exists() {
             debug!(
                 item = item.get_label(),
                 output_dir = ?output_dir,

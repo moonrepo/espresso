@@ -6,6 +6,7 @@ license = "MIT"
 publish = false
 
 [dependencies]
+espresso_common = { path = "../common" }
 espresso_manifest = { path = "../manifest" }
 miette = { workspace = true }
 relative-path = { workspace = true }
@@ -16,5 +17,4 @@ thiserror = { workspace = true }
 tracing = { workspace = true }
 
 [dev-dependencies]
-espresso_common = { path = "../common" }
 starbase_sandbox = { workspace = true }

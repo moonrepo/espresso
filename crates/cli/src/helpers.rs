@@ -58,7 +58,7 @@ pub fn create_theme() -> ColorfulTheme {
 pub fn start_checkpoint<T: AsRef<str>>(label: T) {
     println!(
         "{} {}",
-        create_style(Color::Yellow as u8).bold().style("===>"),
+        create_style(Color::Yellow as u8).bold().style("==>"),
         OwoStyle::new().bold().style(label.as_ref()),
     );
 }

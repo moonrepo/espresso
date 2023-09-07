@@ -1,15 +1,26 @@
+use super::build::internal_build;
 use crate::app::GlobalArgs;
-use crate::helpers::loop_packages;
+use crate::helpers::start_checkpoint;
 use clap::Args;
-use espresso_common::EsTarget;
-use espresso_compiler::Compiler;
+use espresso_common::{Channel, EsTarget};
 use espresso_store::Store;
 use espresso_workspace::Workspace;
 use starbase::system;
+use starbase_styles::color;
 use std::sync::Arc;
+use tracing::debug;
 
 #[derive(Args, Clone, Debug)]
-pub struct PublishArgs {}
+pub struct PublishArgs {
+    #[arg(
+        value_enum,
+        long,
+        env = "ESPM_CHANNEL",
+        help = "Release channel to publish to.",
+        default_value_t
+    )]
+    pub channel: Channel,
+}
 
 #[system]
 pub async fn publish(
@@ -21,20 +32,21 @@ pub async fn publish(
     let store = Arc::new(store.to_owned());
     let packages = workspace.select_packages(global_args.to_package_select_query())?;
 
-    loop_packages(packages, |package| async {
-        println!("Validating manifest");
+    start_checkpoint("Validating manifests");
+
+    for package in &packages {
+        debug!("Validating {}", color::id(package.name()));
 
         package.validate_for_publish()?;
+    }
 
-        println!("Running a test build");
+    start_checkpoint("Running test builds");
 
-        Compiler::new(package, Arc::clone(&store))?
-            .compile(EsTarget::Es2015)
-            .await?;
+    for package in &packages {
+        debug!("Building {}", color::id(package.name()));
 
-        println!("Other steps... TODO");
+        internal_build(package, EsTarget::Es2015, Arc::clone(&store)).await?;
+    }
 
-        Ok(())
-    })
-    .await?;
+    start_checkpoint("Publishing packages (TODO)");
 }

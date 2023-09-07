@@ -225,6 +225,7 @@ impl Package {
 
         if !errors.is_empty() {
             return Err(PackageError::InvalidForPublish {
+                name: self.manifest.package.name.clone(),
                 error: ValidatorError {
                     path: SettingPath::default(),
                     errors,
