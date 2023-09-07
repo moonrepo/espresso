@@ -3,11 +3,8 @@ use crate::store_error::StoreError;
 use starbase::Resource;
 use starbase_archive::Archiver;
 use starbase_utils::{dirs, fs};
-use std::collections::HashMap;
 use std::env;
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
-use tokio::sync::Mutex;
 use tracing::debug;
 
 #[derive(Clone, Resource)]
@@ -16,8 +13,6 @@ pub struct Store {
     pub cache_dir: PathBuf,
     pub packages_dir: PathBuf,
     pub root: PathBuf,
-
-    locks: Arc<Mutex<HashMap<String, Arc<Mutex<()>>>>>,
 }
 
 impl Store {
@@ -54,34 +49,19 @@ impl Store {
             cache_dir,
             packages_dir,
             root: root.to_path_buf(),
-            locks: Arc::new(Mutex::new(HashMap::new())),
         })
     }
 
     pub async fn store_item(&self, url: &str, item: impl StorageItem) -> miette::Result<PathBuf> {
-        let mut locks = self.locks.lock().await;
-
-        // Create a lock for this item, so that we avoid multiple processes
-        // all attempting to download and unpack the same archive!
-        let entry = Arc::clone(
-            locks
-                .entry(item.to_file_prefix())
-                .or_insert_with(|| Arc::new(Mutex::new(()))),
-        );
-
-        drop(locks);
-
-        let _entry_lock = entry.lock().await;
-
-        // After we've acquired the lock, we can check if the item already
-        // exists in the store. If we do this before the lock, other processes would
-        // return true while the archive is being unpacked, resulting in breakages!
         let output_dir = self.packages_dir.join(item.to_file_path());
-        let _fs_lock = fs::lock_directory(&output_dir)?;
 
         if output_dir.exists() && !output_dir.join(".lock").exists() {
             return Ok(output_dir);
         }
+
+        // Create a lock for this item, so that we avoid multiple processes
+        // all attempting to download and unpack the same archive!
+        let _dir_lock = fs::lock_directory(&output_dir)?;
 
         let result = self
             .unpack_archive(&self.download_archive(url, &item).await?, &item)
