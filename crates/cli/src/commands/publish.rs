@@ -45,7 +45,7 @@ pub async fn publish(
     for package in &packages {
         debug!("Building {}", color::id(package.name()));
 
-        internal_build(package, EsTarget::Es2015, Arc::clone(&store)).await?;
+        internal_build(Arc::clone(&store), Arc::clone(package), EsTarget::Es2015).await?;
     }
 
     start_checkpoint("Publishing packages (TODO)");

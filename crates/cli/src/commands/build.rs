@@ -25,11 +25,13 @@ pub struct BuildArgs {
 }
 
 pub async fn internal_build(
-    package: &Package,
-    target: EsTarget,
     store: Arc<Store>,
+    package: Arc<Package>,
+    target: EsTarget,
 ) -> AppResult<PathBuf> {
-    let out_dir = Compiler::new(package, store)?.compile(target).await?;
+    let out_dir = Compiler::new(Arc::clone(&package), store)?
+        .compile(target)
+        .await?;
 
     package.copy_info_files(&out_dir)?;
 
@@ -49,7 +51,7 @@ pub async fn build(
     loop_packages(packages, |package| async {
         println!("Building target {}", color::symbol(args.target.to_string()));
 
-        let out_dir = internal_build(package, args.target, Arc::clone(&store)).await?;
+        let out_dir = internal_build(Arc::clone(&store), package, args.target).await?;
 
         println!("Built to {}", color::path(out_dir));
 

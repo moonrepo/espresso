@@ -14,7 +14,7 @@ macro_rules! test_cjs {
         sandbox.create_file(MANIFEST_NAME, "[package]\nname = \"ns/detect-cjs\"");
 
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = create_compiler(sandbox.path(), &package);
+        let compiler = create_compiler(package);
 
         if let Err(error) = compiler.compile(EsTarget::Es2015).await {
             match error.downcast::<CompilerError>().unwrap() {

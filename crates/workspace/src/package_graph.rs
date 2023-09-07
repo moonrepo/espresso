@@ -5,6 +5,7 @@ use petgraph::algo::toposort;
 use petgraph::stable_graph::{NodeIndex, StableDiGraph};
 use starbase_styles::color;
 use std::collections::BTreeMap;
+use std::sync::Arc;
 use tracing::{debug, trace};
 
 // This is a simple DAG that represents the dependency graph of local
@@ -13,11 +14,11 @@ use tracing::{debug, trace};
 pub struct PackageGraph<'ws> {
     graph: StableDiGraph<&'ws PackageName, ()>,
     indices: BTreeMap<&'ws PackageName, NodeIndex>,
-    packages: &'ws BTreeMap<PackageName, Package>,
+    packages: &'ws BTreeMap<PackageName, Arc<Package>>,
 }
 
 impl<'ws> PackageGraph<'ws> {
-    pub fn new(packages: &BTreeMap<PackageName, Package>) -> PackageGraph {
+    pub fn new(packages: &BTreeMap<PackageName, Arc<Package>>) -> PackageGraph {
         debug!("Creating a package graph with {} packages", packages.len());
 
         let mut graph = PackageGraph {
