@@ -52,7 +52,6 @@ pub fn create_theme() -> ColorfulTheme {
             .bold()
             .color256(Color::Teal as u8),
         unpicked_item_prefix: style(" ".to_string()).for_stderr(),
-        ..ColorfulTheme::default()
     }
 }
 

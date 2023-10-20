@@ -27,9 +27,9 @@ espresso_store = { path = "../store" }
 espresso_workspace = { path = "../workspace" }
 clap = { workspace = true, features = ["derive", "env", "wrap_help"] }
 console = "0.15.7"
-dialoguer = { version = "0.10.4", default-features = false }
+dialoguer = { version = "0.11.0", default-features = false }
 miette = { workspace = true }
-mimalloc = { version = "0.1.38", default-features = false }
+mimalloc = { version = "0.1.39", default-features = false }
 relative-path = { workspace = true }
 starbase = { workspace = true }
 starbase_styles = { workspace = true }

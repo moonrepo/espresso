@@ -56,6 +56,12 @@ impl Store {
         let output_dir = self.packages_dir.join(item.to_file_path());
 
         if output_dir.exists() && !fs::is_dir_locked(&output_dir) {
+            debug!(
+                item = item.get_label(),
+                output_dir = ?output_dir,
+                "Package already exists in the store, skipping unpack",
+            );
+
             return Ok(output_dir);
         }
 
@@ -140,16 +146,6 @@ impl Store {
         item: &impl StorageItem,
     ) -> miette::Result<PathBuf> {
         let output_dir = self.packages_dir.join(item.to_file_path());
-
-        if output_dir.exists() && !fs::is_dir_locked(&output_dir) {
-            debug!(
-                item = item.get_label(),
-                output_dir = ?output_dir,
-                "Package already exists in the store, skipping unpack",
-            );
-
-            return Ok(output_dir);
-        }
 
         debug!(
             item = item.get_label(),
