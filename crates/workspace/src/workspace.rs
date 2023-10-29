@@ -11,6 +11,7 @@ use starbase_utils::{dirs, fs, glob};
 use std::collections::{BTreeMap, HashSet};
 use std::fmt;
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 use tracing::{debug, trace};
 
 #[derive(Default)]
@@ -27,7 +28,7 @@ pub struct Workspace {
     pub root: PathBuf,
     pub working_dir: PathBuf,
 
-    packages: OnceCell<BTreeMap<PackageName, Package>>,
+    packages: OnceCell<BTreeMap<PackageName, Arc<Package>>>,
 }
 
 impl Workspace {
@@ -77,7 +78,7 @@ impl Workspace {
         })
     }
 
-    pub fn load_packages(&self) -> miette::Result<&BTreeMap<PackageName, Package>> {
+    pub fn load_packages(&self) -> miette::Result<&BTreeMap<PackageName, Arc<Package>>> {
         self.packages.get_or_try_init(|| {
             let mut packages = BTreeMap::new();
 
@@ -93,7 +94,7 @@ impl Workspace {
                     color::id(package.name()),
                 );
 
-                packages.insert(package.manifest.package.name.clone(), package);
+                packages.insert(package.manifest.package.name.clone(), Arc::new(package));
 
                 Ok(())
             };
@@ -123,11 +124,11 @@ impl Workspace {
                 }
             };
 
-            Ok::<BTreeMap<PackageName, Package>, miette::Report>(packages)
+            Ok::<BTreeMap<PackageName, Arc<Package>>, miette::Report>(packages)
         })
     }
 
-    pub fn select_packages(&self, query: SelectQuery) -> miette::Result<Vec<&Package>> {
+    pub fn select_packages(&self, query: SelectQuery) -> miette::Result<Vec<Arc<Package>>> {
         let packages = self.load_packages()?;
         let mut selected_names = HashSet::new();
 
@@ -171,7 +172,7 @@ impl Workspace {
 
         for name in PackageGraph::new(packages).toposort()? {
             if selected_names.contains(name) {
-                results.push(packages.get(name).unwrap());
+                results.push(Arc::clone(packages.get(name).unwrap()));
             }
         }
 

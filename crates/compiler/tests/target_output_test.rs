@@ -1,11 +1,8 @@
 mod utils;
 
 use espresso_common::EsTarget;
-use espresso_compiler::Compiler;
 use espresso_package::Package;
-use espresso_store::Store;
 use starbase_sandbox::{assert_snapshot, create_sandbox};
-use std::sync::Arc;
 use utils::*;
 
 macro_rules! test_target {
@@ -17,7 +14,7 @@ macro_rules! test_target {
             async fn transforms_modules() {
                 let sandbox = create_sandbox("syntax");
                 let package = Package::new(sandbox.path()).unwrap();
-                let compiler = create_compiler(sandbox.path(), &package);
+                let compiler = create_compiler(package);
 
                 let out_dir = compiler.compile($target).await.unwrap();
 
@@ -28,7 +25,7 @@ macro_rules! test_target {
             async fn creates_tsconfig() {
                 let sandbox = create_sandbox("syntax");
                 let package = Package::new(sandbox.path()).unwrap();
-                let compiler = create_compiler(sandbox.path(), &package);
+                let compiler = create_compiler(package);
 
                 let out_dir = compiler.compile($target).await.unwrap();
                 let tsconfig = format!("tsconfig.{}.json", $target.to_string());
@@ -55,11 +52,7 @@ mod target_output {
     async fn supports_legacy_decorators() {
         let sandbox = create_sandbox("syntax-legacy-decorators");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = Compiler::new(
-            &package,
-            Arc::new(Store::load_from(sandbox.path()).unwrap()),
-        )
-        .unwrap();
+        let compiler = create_compiler(package);
         let out_dir = compiler.compile(EsTarget::Es2018).await.unwrap();
 
         assert_snapshot!(read_file(out_dir.join("index.mjs")));

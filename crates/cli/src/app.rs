@@ -1,4 +1,4 @@
-use crate::commands::{BuildArgs, NewArgs};
+use crate::commands::{BuildArgs, NewArgs, PublishArgs};
 use clap::{Parser, Subcommand};
 use espresso_common::PackageName;
 use espresso_workspace::SelectQuery;
@@ -7,7 +7,7 @@ use starbase::State;
 pub const BIN_NAME: &str = if cfg!(windows) { "espm.exe" } else { "espm" };
 
 static HEADING_FILTER: &str = "Package selection";
-static HEADING_PKG_MANAGEMENT: &str = "Package management";
+// static HEADING_PKG_MANAGEMENT: &str = "Package management";
 
 #[derive(Clone, Debug, State)]
 pub struct GlobalArgs {
@@ -28,6 +28,14 @@ impl GlobalArgs {
 
 #[derive(Clone, Debug, Subcommand)]
 pub enum Commands {
+    #[command(
+        alias = "b",
+        name = "build",
+        about = "Build a package.",
+        long_about = "Build a package by transforming source files (from the package's `src` directory) to the `.espm/<target>` output directory."
+    )]
+    Build(BuildArgs),
+
     #[command(name = "debug", about = "Debug espresso instance.", hide = true)]
     Debug,
 
@@ -38,23 +46,15 @@ pub enum Commands {
     )]
     Init(NewArgs),
 
-    // PACKAGE MANAGEMENT
-    #[command(
-        alias = "b",
-        name = "build",
-        about = "Build a package.",
-        long_about = "Build a package by transforming source files (from the package's `src` directory) to the `.espm/<target>` output directory.",
-        next_help_heading = HEADING_PKG_MANAGEMENT,
-    )]
-    Build(BuildArgs),
+    #[command(alias = "n", name = "new", about = "Create a new package.")]
+    New(NewArgs),
 
     #[command(
-        alias = "n",
-        name = "new",
-        about = "Create a new package.",
-        next_help_heading = HEADING_PKG_MANAGEMENT,
+        alias = "p",
+        name = "publish",
+        about = "Publish a package to the espresso registry."
     )]
-    New(NewArgs),
+    Publish(PublishArgs),
 }
 
 #[derive(Clone, Debug, Parser, State)]

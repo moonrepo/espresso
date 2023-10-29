@@ -1,10 +1,26 @@
+use espresso_common::PackageName;
+use espresso_manifest::MANIFEST_NAME;
 use miette::Diagnostic;
+use schematic::ValidatorError;
 use starbase_styles::{Style, Stylize};
 use std::path::PathBuf;
 use thiserror::Error;
 
 #[derive(Debug, Diagnostic, Error)]
 pub enum PackageError {
+    #[diagnostic(code(package::publish::invalid_settings))]
+    #[error(
+        "Unable to publish package {}, invalid {} settings.",
+        .name.to_string().style(Style::Id),
+        MANIFEST_NAME.style(Style::File),
+    )]
+    InvalidForPublish {
+        name: PackageName,
+
+        #[source]
+        error: ValidatorError,
+    },
+
     #[diagnostic(code(package::missing))]
     #[error(
         "No package was found at {}.",

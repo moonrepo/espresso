@@ -16,14 +16,14 @@ use swc_core::common::{FilePathMapping, SourceMap};
 use tokio::task::{self, JoinHandle};
 use tracing::debug;
 
-pub struct Compiler<'pkg> {
+pub struct Compiler {
     compiler: Arc<SwcCompiler>,
-    package: &'pkg Package,
+    package: Arc<Package>,
     store: Arc<Store>,
 }
 
-impl<'pkg> Compiler<'pkg> {
-    pub fn new(package: &Package, store: Arc<Store>) -> miette::Result<Compiler> {
+impl Compiler {
+    pub fn new(package: Arc<Package>, store: Arc<Store>) -> miette::Result<Compiler> {
         debug!(package = package.name(), "Creating compiler");
 
         Ok(Compiler {

@@ -55,6 +55,9 @@ async fn main() -> MainResult {
         Commands::New(args) => {
             app.execute_with_args(commands::new, args);
         }
+        Commands::Publish(args) => {
+            app.execute_with_args(commands::publish, args);
+        }
     };
 
     app.run().await?;

@@ -15,10 +15,10 @@ anyhow = "1.0.75"
 cached = { workspace = true }
 futures = "0.3.28"
 miette = { workspace = true }
-oxipng = "8.0.0"
+oxipng = "9.0.0"
 relative-path = { workspace = true }
-swc = "0.264.71"
-swc_core = { version = "0.81.6", default-features = false, features = [
+swc = "0.266.1"
+swc_core = { version = "0.83.2", default-features = false, features = [
 	"common",
 	"ecma_ast",
 	"ecma_parser",

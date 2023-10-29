@@ -17,7 +17,7 @@ mod compile_modules {
     async fn compiles_js_files_to_each_target() {
         let sandbox = create_sandbox("js-files");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = create_compiler(sandbox.path(), &package);
+        let compiler = create_compiler(package);
 
         for target in [EsTarget::Es2015, EsTarget::Es2018, EsTarget::Es2022] {
             let out_dir = compiler.compile(target).await.unwrap();
@@ -45,7 +45,7 @@ mod compile_assets {
     async fn copies_non_js_files() {
         let sandbox = create_sandbox("assets");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = create_compiler(sandbox.path(), &package);
+        let compiler = create_compiler(package);
         let out_dir = compiler.compile(EsTarget::Es2015).await.unwrap();
 
         assert!(out_dir.join("cat.png").exists());
@@ -56,7 +56,7 @@ mod compile_assets {
     async fn optimizes_png() {
         let sandbox = create_sandbox("assets");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = create_compiler(sandbox.path(), &package);
+        let compiler = create_compiler(package);
         let out_dir = compiler.compile(EsTarget::Es2015).await.unwrap();
 
         assert_ne!(
@@ -70,12 +70,12 @@ mod compile_assets {
     #[tokio::test]
     async fn optimizes_png_with_diff_level() {
         let sandbox = create_sandbox("assets");
-        let mut package = Package::new(sandbox.path()).unwrap();
 
+        let mut package = Package::new(sandbox.path()).unwrap();
         package.manifest.build.optimize_png = BuildOptimizePng::Level(1);
 
         let base_size = fs::metadata(
-            create_compiler(sandbox.path(), &package)
+            create_compiler(package)
                 .compile(EsTarget::Es2015)
                 .await
                 .unwrap()
@@ -84,10 +84,11 @@ mod compile_assets {
         .unwrap()
         .len();
 
+        let mut package = Package::new(sandbox.path()).unwrap();
         package.manifest.build.optimize_png = BuildOptimizePng::Level(6);
 
         let next_size = fs::metadata(
-            create_compiler(sandbox.path(), &package)
+            create_compiler(package)
                 .compile(EsTarget::Es2020)
                 .await
                 .unwrap()
@@ -107,7 +108,7 @@ mod compile_declarations {
     async fn generates_dmts_for_ts_files() {
         let sandbox = create_sandbox("ts-files");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = create_compiler(sandbox.path(), &package);
+        let compiler = create_compiler(package);
 
         let out_dir = compiler.compile(EsTarget::Es2018).await.unwrap();
 
@@ -124,7 +125,7 @@ mod compile_declarations {
     async fn doesnt_generate_dmts_for_js_files() {
         let sandbox = create_sandbox("js-files");
         let package = Package::new(sandbox.path()).unwrap();
-        let compiler = create_compiler(sandbox.path(), &package);
+        let compiler = create_compiler(package);
 
         let out_dir = compiler.compile(EsTarget::Es2018).await.unwrap();
 

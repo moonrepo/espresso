@@ -3,6 +3,7 @@ use dialoguer::theme::ColorfulTheme;
 use espresso_package::Package;
 use starbase_styles::color::{create_style, Color, OwoStyle};
 use std::future::Future;
+use std::sync::Arc;
 
 pub fn create_theme() -> ColorfulTheme {
     ColorfulTheme {
@@ -51,24 +52,20 @@ pub fn create_theme() -> ColorfulTheme {
             .bold()
             .color256(Color::Teal as u8),
         unpicked_item_prefix: style(" ".to_string()).for_stderr(),
-        ..ColorfulTheme::default()
     }
 }
 
 pub fn start_checkpoint<T: AsRef<str>>(label: T) {
     println!(
         "{} {}",
-        create_style(Color::Yellow as u8).bold().style("===>"),
+        create_style(Color::Yellow as u8).bold().style("==>"),
         OwoStyle::new().bold().style(label.as_ref()),
     );
 }
 
-pub async fn loop_packages<'pkg, F, Fut>(
-    packages: Vec<&'pkg Package>,
-    func: F,
-) -> miette::Result<()>
+pub async fn loop_packages<F, Fut>(packages: Vec<Arc<Package>>, func: F) -> miette::Result<()>
 where
-    F: Fn(&'pkg Package) -> Fut,
+    F: Fn(Arc<Package>) -> Fut,
     Fut: Future<Output = miette::Result<()>>,
 {
     let last_index = packages.len() - 1;
@@ -76,7 +73,7 @@ where
     for (index, package) in packages.iter().enumerate() {
         start_checkpoint(package.name());
 
-        func(package).await?;
+        func(Arc::clone(package)).await?;
 
         if index != last_index {
             println!();

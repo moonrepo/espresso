@@ -6,9 +6,11 @@ license = "MIT"
 publish = false
 
 [dependencies]
+espresso_common = { path = "../common" }
 espresso_manifest = { path = "../manifest" }
 miette = { workspace = true }
 relative-path = { workspace = true }
+schematic = { workspace = true }
 starbase_styles = { workspace = true }
 starbase_utils = { workspace = true }
 thiserror = { workspace = true }
