@@ -67,7 +67,7 @@ impl Store {
 
         // Create a lock for this item, so that we avoid multiple processes
         // all attempting to download and unpack the same archive!
-        let _dir_lock = fs::lock_directory(&output_dir).await?;
+        let _dir_lock = fs::lock_directory(&output_dir)?;
 
         let result = self
             .unpack_archive(&self.download_archive(url, &item).await?, &item)
@@ -129,7 +129,7 @@ impl Store {
             .await
             .map_err(|error| StoreError::Http { error })?;
 
-        fs::write_file_with_lock(&archive_file, contents)?;
+        fs::write_file(&archive_file, contents)?;
 
         debug!(
             item = item.get_label(),
